@@ -1,0 +1,5 @@
+{
+  "name": "RAISE-Mentoring Log System (Gen-Next)",
+  "description": "A comprehensive system for managing mentoring logs, competency assessments, and budget tracking for the New Breed Graduate Project. Features mobile-first logging, automated payment calculation, and competency tracking via radar charts.",
+  "requestFramePermissions": []
+}

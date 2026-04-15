@@ -11,6 +11,33 @@
         font-family: 'Inter', sans-serif;
         background-color: #f3f4f6;
       }
+
+      /* Custom Premium Scrollbar - Soft Theme */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px; /* Slightly thinner for elegance */
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f5f9; /* Soft slate-50 background */
+        border-radius: 20px;
+        margin: 4px 0;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1; /* Soft slate-300 thumb */
+        border-radius: 20px;
+        border: 2px solid #f1f5f9; /* Padding effect */
+        min-height: 40px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; /* Slate-400 on hover */
+      }
+
+      /* Hide arrows for a cleaner look as per modern UI standards */
+      .custom-scrollbar::-webkit-scrollbar-button {
+        display: none;
+      }
     </style>
   <script type="importmap">
 {

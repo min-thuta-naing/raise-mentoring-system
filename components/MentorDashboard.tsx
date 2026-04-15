@@ -14,6 +14,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Legend
 } from 'recharts';
+import { MentorProfile } from './profile/MentorProfile';
 import { Layout } from './Layout';
 import { MentorLogForm } from './MentorLogForm';
 
@@ -1082,6 +1083,7 @@ export const MentorDashboard: React.FC = () => {
                                 <Route path="schedule" element={<ScheduleView />} />
                                 <Route path="logs" element={<HistoryView />} />
                                 <Route path="materials" element={<MaterialsView />} />
+                                <Route path="profile" element={<MentorProfile />} />
                                 <Route path="students" element={
                                     <StudentDirectory 
                                         users={users} 

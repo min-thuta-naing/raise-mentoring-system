@@ -18,3 +18,8 @@ View your app in AI Studio: https://ai.studio/apps/5da9004b-57f3-4c97-9846-f3a69
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+
+Students: /welcome/students
+Mentors: /welcome/mentor
+Admins: /auth/portal-secure-v8821-admin

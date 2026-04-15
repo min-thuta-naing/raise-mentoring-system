@@ -41,7 +41,8 @@ interface DataContextType {
   updateLogStatus: (id: string, status: LogStatus, reason?: string) => void;
   getStudentsByBatch: (batchId: string) => User[];
   addUser: (user: User) => void;
-  addBatch: (batch: Batch) => void;
+  addBatch: (batch: Batch) => Promise<void>;
+  updateBatch: (batch: Batch) => Promise<void>;
   addModule: (module: Module) => Promise<void>;
   updateModule: (module: Module) => Promise<void>;
   deleteModule: (id: string) => Promise<void>;
@@ -61,7 +62,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
   const [logs, setLogs] = useState<MentoringLog[]>(INITIAL_LOGS);
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
-  const [batches, setBatches] = useState<Batch[]>(MOCK_BATCHES);
+  const [batches, setBatches] = useState<Batch[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [groups, setGroups] = useState<Group[]>(MOCK_GROUPS);
   const [interventions, setInterventions] = useState<Intervention[]>(MOCK_INTERVENTIONS);
@@ -98,6 +99,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
       }) as LessonPlan[];
       setLessonPlans(fetchedPlans);
+    });
+    return unsubscribe;
+  }, []);
+
+  // Real-time listener for Batches
+  useEffect(() => {
+    const q = collection(db, 'batches');
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedBatches = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id
+        };
+      }) as Batch[];
+      setBatches(fetchedBatches.length > 0 ? fetchedBatches : MOCK_BATCHES);
     });
     return unsubscribe;
   }, []);
@@ -317,8 +334,28 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUsers(prev => [...prev, user]);
   };
 
-  const addBatch = (batch: Batch) => {
-    setBatches(prev => [...prev, batch]);
+  const addBatch = async (batch: Batch) => {
+    try {
+      await addDoc(collection(db, 'batches'), {
+        ...batch,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error adding batch:', error);
+    }
+  };
+
+  const updateBatch = async (batch: Batch) => {
+    try {
+      const { id, ...data } = batch;
+      await updateDoc(doc(db, 'batches', id), {
+        ...data,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error updating batch:', error);
+      throw error;
+    }
   };
 
   const addModule = async (module: Module) => {
@@ -420,6 +457,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       getStudentsByBatch,
       addUser,
       addBatch,
+      updateBatch,
       addModule,
       updateModule,
       deleteModule,

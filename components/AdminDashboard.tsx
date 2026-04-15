@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../services/DataContext';
-import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool } from 'lucide-react';
+import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool, UserPlus, Layers } from 'lucide-react';
 
 // Shared Components
 import { Layout } from './Layout';
@@ -13,6 +13,8 @@ import { OverviewTab } from './admin/OverviewTab';
 import { PlanningTab } from './admin/PlanningTab';
 import { ApprovalsTab } from './admin/ApprovalsTab';
 import { SetupTab } from './admin/SetupTab';
+import { UserRegistrationTab } from './admin/UserRegistrationTab';
+import { BatchManagementTab } from './admin/BatchManagementTab';
 
 /**
  * Main Admin Dashboard Entry Point
@@ -21,7 +23,7 @@ import { SetupTab } from './admin/SetupTab';
 export const AdminDashboard: React.FC = () => {
     const { 
         logs, users, batches, modules, groups, lessonPlans,
-        updateLogStatus, addUser, addBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
+        updateLogStatus, addUser, addBatch, updateBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
     } = useData();
     const navigate = useNavigate();
     const location = useLocation();
@@ -30,6 +32,8 @@ export const AdminDashboard: React.FC = () => {
         { id: 'overview', label: 'Overview', icon: <LayoutGrid size={18} />, path: '/admin/overview' },
         { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
         { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals' },
+        { id: 'registration', label: 'User Registration', icon: <UserPlus size={18} />, path: '/admin/registration' },
+        { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
         { id: 'entry', label: 'New Entry', icon: <PenTool size={18} />, path: '/admin/entry' },
         { id: 'setup', label: 'Configuration', icon: <Settings size={18} />, path: '/admin/setup' },
     ];
@@ -43,6 +47,10 @@ export const AdminDashboard: React.FC = () => {
                 return { title: 'Curriculum Planning', subtitle: 'Design modules, schedule lesson plans, and manage learning tracks.' };
             case '/admin/approvals':
                 return { title: 'Log Verification', subtitle: 'Review and approve mentoring logs for accuracy and compliance.' };
+            case '/admin/registration':
+                return { title: 'User Registration', subtitle: 'Add new students and mentors to the mentoring ecosystem.' };
+            case '/admin/batches':
+                return { title: 'Batch Management', subtitle: 'Create and organize student cohorts and academic periods.' };
             case '/admin/entry':
                 return { title: 'Manual Entry', subtitle: 'Add new mentoring sessions or historical data to the system.' };
             case '/admin/setup':
@@ -93,6 +101,20 @@ export const AdminDashboard: React.FC = () => {
                                 users={users} 
                                 modules={modules}
                                 onUpdateStatus={updateLogStatus} 
+                            />
+                        } />
+                        <Route path="registration" element={
+                            <UserRegistrationTab 
+                                users={users}
+                                batches={batches}
+                                onAddUser={addUser}
+                            />
+                        } />
+                        <Route path="batches" element={
+                            <BatchManagementTab 
+                                batches={batches}
+                                onAddBatch={addBatch}
+                                onUpdateBatch={updateBatch}
                             />
                         } />
                         <Route path="entry" element={<MentorLogForm />} />

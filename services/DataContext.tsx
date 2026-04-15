@@ -72,10 +72,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const q = collection(db, 'modules');
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedModules = snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      })) as Module[];
+      const fetchedModules = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id,
+          createdAt: data.createdAt?.toMillis?.() || data.createdAt
+        };
+      }) as Module[];
       setModules(fetchedModules);
     });
     return unsubscribe;
@@ -85,10 +89,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const q = collection(db, 'lessonPlans');
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedPlans = snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      })) as LessonPlan[];
+      const fetchedPlans = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id,
+          createdAt: data.createdAt?.toMillis?.() || data.createdAt
+        };
+      }) as LessonPlan[];
       setLessonPlans(fetchedPlans);
     });
     return unsubscribe;

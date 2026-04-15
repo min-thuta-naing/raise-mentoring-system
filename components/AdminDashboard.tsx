@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../services/DataContext';
 import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool } from 'lucide-react';
 
@@ -24,6 +24,7 @@ export const AdminDashboard: React.FC = () => {
         updateLogStatus, addUser, addBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
     } = useData();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: <LayoutGrid size={18} />, path: '/admin/overview' },
@@ -33,13 +34,35 @@ export const AdminDashboard: React.FC = () => {
         { id: 'setup', label: 'Configuration', icon: <Settings size={18} />, path: '/admin/setup' },
     ];
 
+    // Page Title Mapping
+    const getPageContent = () => {
+        switch (location.pathname) {
+            case '/admin/overview':
+                return { title: 'System Overview', subtitle: 'Monitor mentor performance, student metrics, and audit logs.' };
+            case '/admin/planning':
+                return { title: 'Curriculum Planning', subtitle: 'Design modules, schedule lesson plans, and manage learning tracks.' };
+            case '/admin/approvals':
+                return { title: 'Log Verification', subtitle: 'Review and approve mentoring logs for accuracy and compliance.' };
+            case '/admin/entry':
+                return { title: 'Manual Entry', subtitle: 'Add new mentoring sessions or historical data to the system.' };
+            case '/admin/setup':
+                return { title: 'System Settings', subtitle: 'Configure batches, manage user roles, and update global parameters.' };
+            case '/admin/profile':
+                return { title: 'Admin Profile', subtitle: 'Manage your personal account settings and preferences.' };
+            default:
+                return { title: 'Admin Dashboard', subtitle: 'Manage sessions, verify logs, and configure system.' };
+        }
+    };
+
+    const { title, subtitle } = getPageContent();
+
     return (
         <Layout navItems={tabs}>
             <div className="space-y-6">
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                        <p className="text-gray-500">Manage sessions, verify logs, and configure system.</p>
+                    <div className="animate-fade-in">
+                        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                        <p className="text-gray-500 text-sm">{subtitle}</p>
                     </div>
                 </header>
 
@@ -55,9 +78,13 @@ export const AdminDashboard: React.FC = () => {
                         <Route path="planning" element={
                             <PlanningTab 
                                 modules={modules}
+                                batches={batches}
                                 users={users}
                                 lessonPlans={lessonPlans}
                                 onAddPlan={addLessonPlan}
+                                onAddModule={addModule}
+                                onUpdateModule={updateModule}
+                                onDeleteModule={deleteModule}
                             />
                         } />
                         <Route path="approvals" element={
@@ -76,9 +103,6 @@ export const AdminDashboard: React.FC = () => {
                                 groups={groups}
                                 users={users}
                                 onAddBatch={addBatch}
-                                onAddModule={addModule}
-                                onUpdateModule={updateModule}
-                                onDeleteModule={deleteModule}
                                 onAddUser={addUser}
                                 onAddGroup={addGroup}
                                 onUpdateGroup={updateGroup}

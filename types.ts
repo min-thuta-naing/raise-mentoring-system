@@ -79,6 +79,7 @@ export interface Module {
   name: string; // e.g. "Data Science"
   assessmentConfig?: AssessmentCategory[]; // Custom rubrics for this module
   expectedArtifactType?: ArtifactType;
+  createdAt?: number; // Timestamp for tracking recent creations
 }
 
 export interface Group {
@@ -100,6 +101,7 @@ export interface LessonPlan {
   topic: string;
   mentorId: string;
   status: PlanStatus;
+  createdAt?: number;
 }
 
 export interface CompetencyScore {

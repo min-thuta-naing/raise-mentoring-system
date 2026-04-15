@@ -3,12 +3,14 @@ import { Check, Circle } from 'lucide-react';
 
 interface PasswordRequirementsProps {
   password: string;
-  activeColor?: 'indigo' | 'emerald' | 'rose';
+  activeColor?: 'indigo' | 'emerald' | 'rose' | 'brand';
+  theme?: 'light' | 'dark';
 }
 
 export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ 
   password, 
-  activeColor = 'indigo' 
+  activeColor = 'indigo',
+  theme = 'dark'
 }) => {
   const requirements = [
     { label: 'Upper Case Character', regex: /[A-Z]/ },
@@ -22,16 +24,22 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
     indigo: 'text-indigo-400',
     emerald: 'text-emerald-400',
     rose: 'text-rose-400',
+    brand: 'text-[#482121]'
   };
 
   const bgMap = {
     indigo: 'bg-indigo-500/10',
     emerald: 'bg-emerald-500/10',
-    rose: 'bg-rose-500/10'
+    rose: 'bg-rose-500/10',
+    brand: 'bg-[#482121]/10'
   };
 
+  const isLight = theme === 'light';
+
   return (
-    <div className={`p-4 rounded-2xl border border-white/5 bg-white/5 space-y-2 mt-4 animate-fade-in`}>
+    <div className={`p-4 rounded-2xl border space-y-2 mt-4 animate-fade-in ${
+      isLight ? 'bg-black/[0.02] border-black/5' : 'bg-white/5 border-white/5'
+    }`}>
       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
         Password Requirements
       </p>
@@ -43,14 +51,14 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
               key={index} 
               className={`flex items-center space-x-2 transition-all duration-300 ${isMet ? 'opacity-100' : 'opacity-40'}`}
             >
-              <div className={`p-1 rounded-full transition-colors ${isMet ? bgMap[activeColor] : 'bg-white/5'}`}>
+              <div className={`p-1 rounded-full transition-colors ${isMet ? bgMap[activeColor] : (isLight ? 'bg-black/5' : 'bg-white/5')}`}>
                 {isMet ? (
                   <Check className={`w-3 h-3 ${colorMap[activeColor]}`} />
                 ) : (
                   <Circle className="w-3 h-3 text-slate-500" />
                 )}
               </div>
-              <span className={`text-[11px] font-medium transition-colors ${isMet ? 'text-white' : 'text-slate-500'}`}>
+              <span className={`text-[11px] font-medium transition-colors ${isMet ? (isLight ? 'text-slate-900' : 'text-white') : 'text-slate-500'}`}>
                 {req.label}
               </span>
             </div>

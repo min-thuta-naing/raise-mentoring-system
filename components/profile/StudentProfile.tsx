@@ -72,7 +72,7 @@ export const StudentProfile: React.FC = () => {
                     
                     <div className="flex-1 text-center md:text-left">
                         <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
-                             <h1 className="text-3xl font-bold text-white tracking-tight">{currentUser.fullName}</h1>
+                             <h1 className="text-3xl font-bold text-black tracking-tight">{currentUser.fullName}</h1>
                              <span className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit mx-auto md:mx-0">Student</span>
                         </div>
                         <div className="space-y-2">

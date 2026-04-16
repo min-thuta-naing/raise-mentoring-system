@@ -8,6 +8,7 @@ interface PlanningTabProps {
   users: User[];
   lessonPlans: LessonPlan[];
   onAddPlan: (plan: LessonPlan) => void;
+  onUpdatePlan: (plan: LessonPlan) => Promise<void>;
   onAddModule: (m: Module) => void;
   onUpdateModule: (m: Module) => void;
   onDeleteModule: (id: string) => void;
@@ -19,12 +20,15 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
   users,
   lessonPlans,
   onAddPlan,
+  onUpdatePlan,
   onAddModule,
   onUpdateModule,
   onDeleteModule
 }) => {
   const [selectedModuleId, setSelectedModuleId] = useState(modules[0]?.id || '');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlanIds, setSelectedPlanIds] = useState<string[]>([]);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Module Management State
   const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
@@ -176,6 +180,43 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
     setIsRecurring(false); setRecurrenceCount(1);
   };
 
+  const togglePlanSelection = (id: string) => {
+    setSelectedPlanIds(prev =>
+      prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = (filteredPlans: LessonPlan[]) => {
+    const draftPlans = filteredPlans.filter(p => p.status === PlanStatus.DRAFT);
+    if (selectedPlanIds.length === draftPlans.length && draftPlans.length > 0) {
+      setSelectedPlanIds([]);
+    } else {
+      setSelectedPlanIds(draftPlans.map(p => p.id));
+    }
+  };
+
+  const handlePublishSelected = async () => {
+    if (selectedPlanIds.length === 0) return;
+    
+    setIsPublishing(true);
+    try {
+      const plansToPublish = lessonPlans.filter(p => selectedPlanIds.includes(p.id));
+      for (const plan of plansToPublish) {
+        await onUpdatePlan({
+          ...plan,
+          status: PlanStatus.PUBLISHED
+        });
+      }
+      setSelectedPlanIds([]);
+      alert(`Successfully published ${plansToPublish.length} sessions!`);
+    } catch (error) {
+      console.error("Error publishing plans:", error);
+      alert("Failed to publish some plans. Please try again.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   // Module Handlers
   const handleSaveModule = (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,7 +318,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         <nav className="flex items-center gap-4">
           <button
             onClick={() => document.getElementById('modules-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="text-indigo-600 border-b-2 border-indigo-600 pb-1"
+            className="hover:text-indigo-600 transition-colors"
           >
             Modules
           </button>
@@ -320,6 +361,11 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
             const allSortedModules = [...modules].sort((a, b) => a.name.localeCompare(b.name));
             const displayedAllModules = allSortedModules.slice(0, 3);
             const remainingCount = allSortedModules.length - 3;
+
+            // Reset selection when module changes
+            useEffect(() => {
+              setSelectedPlanIds([]);
+            }, [selectedModuleId]);
 
             return (
               <div className="space-y-6">
@@ -447,8 +493,17 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               <Calendar size={20} className="text-indigo-600" /> Lesson Plan
             </h3>
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-50">
-                <Send size={14} /> Publish All Drafts
+              <button 
+                onClick={handlePublishSelected}
+                disabled={selectedPlanIds.length === 0 || isPublishing}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                  selectedPlanIds.length > 0 
+                  ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+                  : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <Send size={14} className={isPublishing ? 'animate-pulse' : ''} />
+                {isPublishing ? 'Publishing...' : `Publish Selected (${selectedPlanIds.length})`}
               </button>
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -463,6 +518,14 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50 text-gray-500 font-medium sticky top-0 z-10">
                 <tr>
+                  <th className="p-3 w-10">
+                    <input 
+                      type="checkbox" 
+                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      checked={selectedPlanIds.length > 0 && selectedPlanIds.length === filteredPlans.filter(p => p.status === PlanStatus.DRAFT).length}
+                      onChange={() => handleSelectAll(filteredPlans)}
+                    />
+                  </th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Date</th>
                   <th className="p-3">Time</th>
@@ -474,7 +537,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               <tbody className="divide-y divide-gray-100">
                 {filteredPlans.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-gray-400 italic">
+                    <td colSpan={7} className="p-8 text-center text-gray-400 italic">
                       No sessions planned for this module yet.
                     </td>
                   </tr>
@@ -486,8 +549,25 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                   return new Date(a.date).getTime() - new Date(b.date).getTime();
                 }).map(plan => {
                   const m = users.find(u => u.id === plan.mentorId);
+                  const isSelected = selectedPlanIds.includes(plan.id);
+                  const isDraft = plan.status !== PlanStatus.PUBLISHED;
+
                   return (
-                    <tr key={plan.id} className="hover:bg-gray-50">
+                    <tr key={plan.id} className={`hover:bg-gray-50 transition-colors ${isSelected ? 'bg-indigo-50/50' : ''}`}>
+                      <td className="p-3">
+                        {isDraft ? (
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-indigo-600 focus:ring-indigo-500"
+                            checked={isSelected}
+                            onChange={() => togglePlanSelection(plan.id)}
+                          />
+                        ) : (
+                          <div className="w-4 h-4 flex items-center justify-center">
+                            <Send size={12} className="text-green-500" />
+                          </div>
+                        )}
+                      </td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${plan.status === PlanStatus.PUBLISHED ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
                           {plan.status || 'DRAFT'}

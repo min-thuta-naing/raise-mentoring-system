@@ -24,7 +24,7 @@ import { BatchManagementTab } from './admin/BatchManagementTab';
 export const AdminDashboard: React.FC = () => {
     const { 
         logs, users, batches, modules, groups, lessonPlans,
-        updateLogStatus, addUser, approveUser, rejectUser, addBatch, updateBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
+        updateLogStatus, addUser, approveUser, rejectUser, addBatch, updateBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan, updateLessonPlan
     } = useData();
     const navigate = useNavigate();
     const location = useLocation();
@@ -35,10 +35,17 @@ export const AdminDashboard: React.FC = () => {
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: <LayoutGrid size={18} />, path: '/admin/overview' },
-        { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
+        { 
+            id: 'curriculum', 
+            label: 'Curriculum Management', 
+            icon: <Calendar size={18} />,
+            subItems: [
+                { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
+                { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
+            ]
+        },
         { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals', badge: pendingLogs },
         { id: 'registration', label: 'User Registration', icon: <UserPlus size={18} />, path: '/admin/registration', badge: pendingRegistrations },
-        { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
         { id: 'entry', label: 'New Entry', icon: <PenTool size={18} />, path: '/admin/entry' },
         { id: 'setup', label: 'Configuration', icon: <Settings size={18} />, path: '/admin/setup' },
     ];
@@ -95,6 +102,7 @@ export const AdminDashboard: React.FC = () => {
                                 users={users}
                                 lessonPlans={lessonPlans}
                                 onAddPlan={addLessonPlan}
+                                onUpdatePlan={updateLessonPlan}
                                 onAddModule={addModule}
                                 onUpdateModule={updateModule}
                                 onDeleteModule={deleteModule}

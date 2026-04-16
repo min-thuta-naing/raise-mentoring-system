@@ -51,6 +51,7 @@ interface DataContextType {
   updateGroup: (group: Group) => void;
   addIntervention: (intervention: Intervention) => void;
   addLessonPlan: (plan: LessonPlan) => Promise<void>;
+  updateLessonPlan: (plan: LessonPlan) => Promise<void>;
   updateStudentSubmission: (logId: string, studentId: string, artifactUrl: string, reflection: string) => void;
   updateProfile: (fullName: string, avatarUrl: string) => Promise<void>;
   approveUser: (userId: string, role: Role, data: Partial<User>) => Promise<void>;
@@ -538,6 +539,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateLessonPlan = async (updatedPlan: LessonPlan) => {
+    try {
+      const { id, ...data } = updatedPlan;
+      const docRef = doc(db, 'lessonPlans', id);
+      await updateDoc(docRef, {
+        ...data,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error updating lesson plan:', error);
+    }
+  };
+
   const updateProfile = async (fullName: string, avatarUrl: string) => {
     if (!currentUser) return;
     
@@ -671,6 +685,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       updateGroup,
       addIntervention,
       addLessonPlan,
+      updateLessonPlan,
       updateStudentSubmission,
       updateProfile
     }}>

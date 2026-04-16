@@ -563,19 +563,59 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const collectionName = getCollectionName(role);
       const docRef = doc(db, collectionName, userId);
       
+      // Find user details for the email
+      const userProfile = users.find(u => u.id === userId);
+      
       // Sanitization: Firestore does not accept 'undefined'
       const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
         if (value !== undefined) acc[key] = value;
         return acc;
       }, {} as any);
 
+      console.log(`[DB] Approving ${role} ${userId}...`);
       await updateDoc(docRef, {
         ...cleanData,
         status: UserStatus.APPROVED,
         approvedAt: serverTimestamp()
       });
       
-      alert('User approved successfully!');
+      // 2. Queue Approval Email
+      if (userProfile?.email) {
+        console.log(`[MAIL] Queuing approval email for ${userProfile.email}...`);
+        const portalUrl = role === Role.MENTOR ? '/welcome/mentor' : '/welcome/students';
+        
+        await addDoc(collection(db, 'mail'), {
+          to: userProfile.email,
+          message: {
+            subject: 'RAISE: Your Account has been Approved!',
+            text: `Hello ${userProfile.fullName},\n\nYour registration for the RAISE Mentoring System has been approved by our administrators. You can now login to your portal at: ${window.location.origin}${portalUrl}\n\nWelcome to the community!`,
+            html: `
+              <div style="font-family: sans-serif; padding: 20px; color: #334155;">
+                <h2 style="color: #4f46e5;">Welcome to RAISE!</h2>
+                <p>Hello <strong>${userProfile.fullName}</strong>,</p>
+                <p>We are excited to inform you that your registration for the RAISE Mentoring System has been <strong>approved</strong>.</p>
+                <div style="margin: 30px 0;">
+                  <a href="${window.location.origin}${portalUrl}" 
+                     style="background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                    Login to Portal
+                  </a>
+                </div>
+                <p style="font-size: 0.9em; color: #64748b;">If the button doesn't work, copy this link: ${window.location.origin}${portalUrl}</p>
+                <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+                <p style="font-size: 0.8em; color: #94a3b8;">This is an automated notification from the RAISE Mentoring System.</p>
+              </div>
+            `
+          },
+          metadata: {
+            userId: userId,
+            type: 'APPROVAL_NOTIFICATION',
+            timestamp: new Date().toISOString()
+          }
+        });
+        console.log(`[MAIL] Email document successfully created in "mail" collection.`);
+      }
+
+      alert('User approved and notification queued successfully!');
     } catch (error: any) {
       console.error('Approval error:', error.message);
       throw error;

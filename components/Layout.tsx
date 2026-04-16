@@ -9,6 +9,7 @@ export interface NavItem {
   label: string;
   icon: React.ReactNode;
   path: string;
+  badge?: number;
 }
 
 interface LayoutProps {
@@ -119,7 +120,17 @@ export const Layout: React.FC<LayoutProps> = ({ children, navItems = [] }) => {
                     <div className={`${active ? 'text-white' : 'text-slate-500 group-hover:text-indigo-400'} transition-colors`}>
                         {React.cloneElement(item.icon as React.ReactElement, { size: 20 })}
                     </div>
-                    <span className="text-sm">{item.label}</span>
+                    <span className="text-sm flex-1 text-left">{item.label}</span>
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <span className={`
+                        flex items-center justify-center min-w-[20px] h-5 px-1.5 
+                        rounded-full text-[10px] font-black 
+                        ${active ? 'bg-white text-indigo-600' : 'bg-indigo-500 text-white'} 
+                        shadow-md animate-pulse
+                      `}>
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
                 );
               })}

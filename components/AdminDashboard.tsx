@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../services/DataContext';
 import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool, UserPlus, Layers } from 'lucide-react';
+import { Role, UserStatus, LogStatus } from '../types';
 
 // Shared Components
 import { Layout } from './Layout';
@@ -28,11 +29,15 @@ export const AdminDashboard: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Calculate pending counts for badges
+    const pendingRegistrations = users.filter(u => u.status === UserStatus.PENDING).length;
+    const pendingLogs = logs.filter(l => l.status === LogStatus.PENDING).length;
+
     const tabs = [
         { id: 'overview', label: 'Overview', icon: <LayoutGrid size={18} />, path: '/admin/overview' },
         { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
-        { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals' },
-        { id: 'registration', label: 'User Registration', icon: <UserPlus size={18} />, path: '/admin/registration' },
+        { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals', badge: pendingLogs },
+        { id: 'registration', label: 'User Registration', icon: <UserPlus size={18} />, path: '/admin/registration', badge: pendingRegistrations },
         { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
         { id: 'entry', label: 'New Entry', icon: <PenTool size={18} />, path: '/admin/entry' },
         { id: 'setup', label: 'Configuration', icon: <Settings size={18} />, path: '/admin/setup' },

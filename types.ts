@@ -46,6 +46,7 @@ export interface User {
   fullName: string;
   email: string;
   avatarUrl?: string;
+  coverPhotoUrl?: string;
   status: UserStatus;
   // Specific to mentors
   mentorType?: MentorType; 

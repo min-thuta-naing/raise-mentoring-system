@@ -232,4 +232,29 @@ const generateHistory = (): MentoringLog[] => {
   return logs;
 };
 
+export const PRESET_COVERS = [
+  '/images/covers/1.png',
+  '/images/covers/2.png',
+  '/images/covers/3.png',
+  '/images/covers/4.png',
+  '/images/covers/5.png'
+];
+
+export const DEFAULT_COVER = '/images/covers/placeholder.png';
+export const DEFAULT_AVATAR = '/images/avatars/placeholder.png';
+
+export const PRESET_AVATARS = [
+  '/images/avatars/1.png',
+  '/images/avatars/2.png',
+  '/images/avatars/3.png',
+  '/images/avatars/4.png',
+  '/images/avatars/5.png',
+  '/images/avatars/6.png',
+  '/images/avatars/7.png',
+  '/images/avatars/8.png',
+  '/images/avatars/9.png',
+  '/images/avatars/10.png',
+  '/images/avatars/11.png'
+];
+
 export const INITIAL_LOGS: MentoringLog[] = generateHistory();

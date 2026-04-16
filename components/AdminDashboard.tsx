@@ -79,12 +79,14 @@ export const AdminDashboard: React.FC = () => {
     return (
         <Layout navItems={tabs}>
             <div className="space-y-6">
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="animate-fade-in">
-                        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-                        <p className="text-gray-500 text-sm">{subtitle}</p>
-                    </div>
-                </header>
+                {location.pathname !== '/admin/profile' && (
+                    <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="animate-fade-in">
+                            <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                            <p className="text-gray-500 text-sm">{subtitle}</p>
+                        </div>
+                    </header>
+                )}
 
                 <main>
                     <Routes>

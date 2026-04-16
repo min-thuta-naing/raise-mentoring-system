@@ -53,7 +53,7 @@ interface DataContextType {
   addLessonPlan: (plan: LessonPlan) => Promise<void>;
   updateLessonPlan: (plan: LessonPlan) => Promise<void>;
   updateStudentSubmission: (logId: string, studentId: string, artifactUrl: string, reflection: string) => void;
-  updateProfile: (fullName: string, avatarUrl: string) => Promise<void>;
+  updateProfile: (fullName: string, avatarUrl: string, coverPhotoUrl?: string) => Promise<void>;
   approveUser: (userId: string, role: Role, data: Partial<User>) => Promise<void>;
   rejectUser: (userId: string, role: Role) => Promise<void>;
 }
@@ -192,6 +192,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               email: data.email,
               fullName: data.fullName,
               role: data.role as Role,
+              avatarUrl: data.avatarUrl,
+              coverPhotoUrl: data.coverPhotoUrl,
               mentorType: data.mentorType,
               batchId: data.batchId,
               status: (data.status as UserStatus) || UserStatus.APPROVED
@@ -552,20 +554,26 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const updateProfile = async (fullName: string, avatarUrl: string) => {
+  const updateProfile = async (fullName?: string, avatarUrl?: string, coverPhotoUrl?: string) => {
     if (!currentUser) return;
     
     try {
       const collectionName = getCollectionName(currentUser.role);
       const docRef = doc(db, collectionName, currentUser.id);
       
-      await setDoc(docRef, {
-        ...currentUser,
-        fullName,
-        avatarUrl
-      }, { merge: true });
+      const updateData: any = {};
+      if (fullName !== undefined) updateData.fullName = fullName;
+      if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl;
+      if (coverPhotoUrl !== undefined) updateData.coverPhotoUrl = coverPhotoUrl;
+      
+      if (Object.keys(updateData).length === 0) return;
 
-      setCurrentUser(prev => prev ? { ...prev, fullName, avatarUrl } : null);
+      await updateDoc(docRef, updateData);
+
+      setCurrentUser(prev => prev ? { 
+        ...prev, 
+        ...updateData
+      } : null);
     } catch (error: any) {
       console.error('Update profile error:', error.message);
       throw error;

@@ -34,12 +34,19 @@ export enum ActivityType {
   PRACTICE = 'PRACTICE'
 }
 
+export enum UserStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+
 export interface User {
   id: string;
   role: Role;
   fullName: string;
   email: string;
   avatarUrl?: string;
+  status: UserStatus;
   // Specific to mentors
   mentorType?: MentorType; 
   // Specific to students

@@ -11,7 +11,6 @@ interface SetupTabProps {
   users: User[];
   onAddBatch: (b: Batch) => void;
   onUpdateModule: (m: Module) => void;
-  onAddUser: (u: User) => void;
   onAddGroup: (g: Group) => void;
   onUpdateGroup: (g: Group) => void;
 }
@@ -23,7 +22,6 @@ export const SetupTab: React.FC<SetupTabProps> = ({
   users,
   onAddBatch,
   onUpdateModule,
-  onAddUser,
   onAddGroup,
   onUpdateGroup
 }) => {

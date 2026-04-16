@@ -10,11 +10,10 @@ export const StudentSignup: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [batchId, setBatchId] = useState('GEN-8');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { signup, batches } = useData();
+  const { signup } = useData();
   const navigate = useNavigate();
 
   const isPasswordValid = (pass: string) => {
@@ -39,15 +38,15 @@ export const StudentSignup: React.FC = () => {
         email,
         fullName,
         role: Role.STUDENT,
-        batchId,
       }, password);
-      navigate('/student');
+      navigate('/welcome/students/signup/approval_request');
     } catch (err: any) {
       setError(err.message || 'Failed to create student account.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <AuthLayout 
@@ -92,19 +91,6 @@ export const StudentSignup: React.FC = () => {
               />
             </div>
             <PasswordRequirements password={password} activeColor="brand" theme="light" />
-          </div>
-
-          <div className="relative group">
-            <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#482121] transition-colors" />
-            <select
-              value={batchId}
-              onChange={(e) => setBatchId(e.target.value)}
-              className="w-full bg-black/[0.03] border border-black/5 rounded-2xl py-3 pl-12 pr-4 text-slate-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#482121]/20 transition-all font-medium"
-            >
-              {batches.map(batch => (
-                <option key={batch.id} value={batch.id} className="bg-white">{batch.name}</option>
-              ))}
-            </select>
           </div>
         </div>
 

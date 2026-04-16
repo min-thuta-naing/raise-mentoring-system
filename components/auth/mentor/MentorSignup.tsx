@@ -10,9 +10,9 @@ export const MentorSignup: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mentorType, setMentorType] = useState<MentorType>(MentorType.INTERNAL);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { signup } = useData();
   const navigate = useNavigate();
@@ -39,15 +39,42 @@ export const MentorSignup: React.FC = () => {
         email,
         fullName,
         role: Role.MENTOR,
-        mentorType,
       }, password);
-      navigate('/mentor');
+      setIsSuccess(true);
     } catch (err: any) {
       setError(err.message || 'Failed to create mentor account.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <AuthLayout 
+        title="Application Received!" 
+        subtitle="Your mentor registration has been submitted successfully."
+      >
+        <div className="text-center space-y-6 py-8">
+          <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
+            <ArrowRight className="w-10 h-10 text-emerald-500 -rotate-90" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-white">Under Review</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Our academic team is reviewing your profile. You will receive 
+              access to the portal once your account is approved.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/welcome/mentor/login')}
+            className="w-full py-3 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/20"
+          >
+            Go to Login
+          </button>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout 
@@ -91,18 +118,6 @@ export const MentorSignup: React.FC = () => {
               />
             </div>
             <PasswordRequirements password={password} activeColor="emerald" />
-          </div>
-
-          <div className="relative group">
-            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
-            <select
-              value={mentorType}
-              onChange={(e) => setMentorType(e.target.value as MentorType)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all"
-            >
-              <option value={MentorType.INTERNAL} className="bg-slate-900">Internal Mentor</option>
-              <option value={MentorType.EXTERNAL} className="bg-slate-900">External Mentor</option>
-            </select>
           </div>
         </div>
 

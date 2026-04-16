@@ -23,7 +23,7 @@ import { BatchManagementTab } from './admin/BatchManagementTab';
 export const AdminDashboard: React.FC = () => {
     const { 
         logs, users, batches, modules, groups, lessonPlans,
-        updateLogStatus, addUser, addBatch, updateBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
+        updateLogStatus, addUser, approveUser, rejectUser, addBatch, updateBatch, addModule, updateModule, deleteModule, addGroup, updateGroup, addLessonPlan
     } = useData();
     const navigate = useNavigate();
     const location = useLocation();
@@ -107,7 +107,8 @@ export const AdminDashboard: React.FC = () => {
                             <UserRegistrationTab 
                                 users={users}
                                 batches={batches}
-                                onAddUser={addUser}
+                                onApproveUser={approveUser}
+                                onRejectUser={rejectUser}
                             />
                         } />
                         <Route path="batches" element={
@@ -125,7 +126,6 @@ export const AdminDashboard: React.FC = () => {
                                 groups={groups}
                                 users={users}
                                 onAddBatch={addBatch}
-                                onAddUser={addUser}
                                 onAddGroup={addGroup}
                                 onUpdateGroup={updateGroup}
                             />

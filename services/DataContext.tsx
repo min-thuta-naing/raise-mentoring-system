@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan } from '../types';
+import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus } from '../types';
 import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS } from '../constants';
 import { auth, db } from './firebase';
 import { 
@@ -53,6 +53,8 @@ interface DataContextType {
   addLessonPlan: (plan: LessonPlan) => Promise<void>;
   updateStudentSubmission: (logId: string, studentId: string, artifactUrl: string, reflection: string) => void;
   updateProfile: (fullName: string, avatarUrl: string) => Promise<void>;
+  approveUser: (userId: string, role: Role, data: Partial<User>) => Promise<void>;
+  rejectUser: (userId: string, role: Role) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -68,6 +70,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [interventions, setInterventions] = useState<Intervention[]>(MOCK_INTERVENTIONS);
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
   
   // Real-time listener for Modules
   useEffect(() => {
@@ -119,8 +122,43 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return unsubscribe;
   }, []);
 
+  // Real-time listener for ALL Users (Admin only)
+  useEffect(() => {
+    if (currentUser?.role !== Role.ADMIN) return;
 
-  const isAuthenticated = !!currentUser;
+    const unsubStudents = onSnapshot(collection(db, 'students'), (snapshot) => {
+      const studentList = snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data(),
+        role: Role.STUDENT // Ensure role is set from collection context
+      } as User));
+      
+      setUsers(prev => {
+        const filtered = prev.filter(u => u.role !== Role.STUDENT);
+        return [...filtered, ...studentList];
+      });
+    });
+
+    const unsubMentors = onSnapshot(collection(db, 'mentors'), (snapshot) => {
+      const mentorList = snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data(),
+        role: Role.MENTOR
+      } as User));
+      
+      setUsers(prev => {
+        const filtered = prev.filter(u => u.role !== Role.MENTOR);
+        return [...filtered, ...mentorList];
+      });
+    });
+
+    return () => {
+      unsubStudents();
+      unsubMentors();
+    };
+  }, [currentUser]);
+
+  const isAuthenticated = !!currentUser && currentUser.status === UserStatus.APPROVED;
 
   // Collection Mapper
   const getCollectionName = (role: Role) => {
@@ -136,39 +174,75 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Helper to fetch a user profile from its dedicated role-specific table
    */
   const fetchUserProfile = async (uid: string): Promise<User | null> => {
+    console.log(`[DATA] Fetching profile for UID: ${uid}...`);
     // Attempt role discovery across all 3 tables
     const roles = [Role.STUDENT, Role.MENTOR, Role.ADMIN];
-    for (const role of roles) {
-      const docRef = doc(db, getCollectionName(role), uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return {
-          id: uid,
-          email: data.email,
-          fullName: data.fullName,
-          role: data.role as Role,
-          mentorType: data.mentorType,
-          batchId: data.batchId
-        };
+    
+    // Timeout-protected discovery: If Firestore takes > 5s, let's stop waiting
+    const discoveryPromise = (async () => {
+      for (const role of roles) {
+        try {
+          const docRef = doc(db, getCollectionName(role), uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            return {
+              id: uid,
+              email: data.email,
+              fullName: data.fullName,
+              role: data.role as Role,
+              mentorType: data.mentorType,
+              batchId: data.batchId,
+              status: (data.status as UserStatus) || UserStatus.APPROVED
+            };
+          }
+        } catch (err) {
+          console.warn(`[DATA] Permission denied/error checking role ${role} for ${uid}`);
+        }
       }
-    }
-    return null;
+      return null;
+    })();
+
+    const timeoutPromise = new Promise<null>((resolve) => 
+      setTimeout(() => {
+        console.warn(`[DATA] Profile fetch timed out for UID: ${uid}`);
+        resolve(null);
+      }, 5000)
+    );
+
+    return Promise.race([discoveryPromise, timeoutPromise]);
   };
 
   // Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (isRegistering) {
+        console.log('[AUTH_LOCK] Ignoring auth change during registration lock.');
+        return;
+      }
+
       if (firebaseUser) {
         const profile = await fetchUserProfile(firebaseUser.uid);
         
+        // Approval Guard: If user is pending, sign out immediately
+        if (profile?.status === UserStatus.PENDING) {
+          console.log('[AUTH] User is pending approval. Signing out.');
+          await signOut(auth);
+          setCurrentUser(null);
+          setIsLoading(false);
+          return;
+        }
+
         // Strict Role Check: If a specific portal login is in progress, 
         // prevent setting the user if roles don't match.
         if (pendingRole && profile && profile.role !== pendingRole) {
+          console.log(`[AUTH] Role mismatch: expected ${pendingRole}, got ${profile.role}. Signing out.`);
           await signOut(auth);
           setCurrentUser(null);
-        } else {
+        } else if (profile) {
           setCurrentUser(profile);
+        } else {
+          setCurrentUser(null);
         }
       } else {
         setCurrentUser(null);
@@ -195,13 +269,26 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const data = docSnap.data();
+      
+      // Approval Guard
+      if (data.status === UserStatus.PENDING) {
+        await signOut(auth);
+        throw new Error('Your account is pending approval by an administrator.');
+      }
+
+      if (data.status === UserStatus.REJECTED) {
+        await signOut(auth);
+        throw new Error('Your account registration has been declined.');
+      }
+
       const profile = {
         id: user.uid,
         email: user.email || '',
         fullName: data.fullName,
         role: data.role as Role,
         mentorType: data.mentorType,
-        batchId: data.batchId
+        batchId: data.batchId,
+        status: data.status as UserStatus
       };
       
       setCurrentUser(profile);
@@ -220,21 +307,56 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const signup = async (userData: Omit<User, 'id'>, password: string) => {
     try {
+      setIsRegistering(true);
+      console.log(`[AUTH_SIGNUP] Phase 1: Creating Firebase Auth account for ${userData.email}...`);
+      
       const userCredential = await createUserWithEmailAndPassword(auth, userData.email, password);
       const { user } = userCredential;
+      const uid = String(user.uid);
       
-      // Store in the dedicated role-specific table
+      console.log(`[AUTH_SIGNUP] Phase 2: Writing profile to Firestore (UID: ${uid})...`);
+      
       const collectionName = getCollectionName(userData.role);
-      await setDoc(doc(db, collectionName, user.uid), {
-        ...userData,
-        uid: user.uid,
-        createdAt: serverTimestamp()
-      });
+      
+      // MANDATORY AWAIT with 3s RACE: 
+      // We want to ensure the document exists, but we won't block the UI forever.
+      // If it takes > 3s, we assume it's in the offline buffer and proceed.
+      try {
+        console.log(`[AUTH_SIGNUP] Phase 2: Writing profile... (3s limit)`);
+        
+        const dbPromise = setDoc(doc(db, collectionName, uid), {
+          email: userData.email,
+          fullName: userData.fullName,
+          role: userData.role,
+          uid: uid,
+          status: UserStatus.PENDING,
+          createdAt: serverTimestamp()
+        });
 
-      setCurrentUser({ ...userData, id: user.uid });
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('TIMEOUT')), 3000)
+        );
+
+        await Promise.race([dbPromise, timeoutPromise]);
+        console.log(`[AUTH_SIGNUP] Phase 2 Success: Document synchronized.`);
+      } catch (dbError: any) {
+        if (dbError.message === 'TIMEOUT') {
+          console.warn(`[AUTH_SIGNUP] Phase 2 Warning: Firestore is slow. Proceeding anyway (will save in background).`);
+        } else {
+          console.error(`[AUTH_SIGNUP] Phase 2 FAILED: Firestore rejection.`, dbError);
+          throw new Error(`Database Error: ${dbError.message || 'Could not save profile'}`);
+        }
+      }
+
+      console.log(`[AUTH_SIGNUP] Phase 3: Finalizing and signing out...`);
+      await signOut(auth);
+      
+      console.log(`[AUTH_SIGNUP] Registration sequence complete.`);
     } catch (error: any) {
-      console.error('Signup error:', error.message);
+      console.error('[AUTH_SIGNUP] Registration Chain Failed:', error);
       throw error;
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -436,6 +558,47 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const approveUser = async (userId: string, role: Role, data: Partial<User>) => {
+    try {
+      const collectionName = getCollectionName(role);
+      const docRef = doc(db, collectionName, userId);
+      
+      // Sanitization: Firestore does not accept 'undefined'
+      const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+        if (value !== undefined) acc[key] = value;
+        return acc;
+      }, {} as any);
+
+      await updateDoc(docRef, {
+        ...cleanData,
+        status: UserStatus.APPROVED,
+        approvedAt: serverTimestamp()
+      });
+      
+      alert('User approved successfully!');
+    } catch (error: any) {
+      console.error('Approval error:', error.message);
+      throw error;
+    }
+  };
+
+  const rejectUser = async (userId: string, role: Role) => {
+    try {
+      const collectionName = getCollectionName(role);
+      const docRef = doc(db, collectionName, userId);
+      
+      await updateDoc(docRef, {
+        status: UserStatus.REJECTED,
+        rejectedAt: serverTimestamp()
+      });
+      
+      alert('User registration declined.');
+    } catch (error: any) {
+      console.error('Rejection error:', error.message);
+      throw error;
+    }
+  };
+
   return (
     <DataContext.Provider value={{ 
       currentUser, 
@@ -456,6 +619,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       updateLogStatus,
       getStudentsByBatch,
       addUser,
+      approveUser,
+      rejectUser,
       addBatch,
       updateBatch,
       addModule,

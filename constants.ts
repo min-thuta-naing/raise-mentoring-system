@@ -1,5 +1,5 @@
 
-import { Batch, Module, Role, User, LogStatus, AttendanceStatus, MentoringLog, Group, Intervention, MentorType, AssessmentCategory, ArtifactType, LessonPlan, PlanStatus, ActivityType } from './types';
+import { Batch, Module, Role, User, LogStatus, AttendanceStatus, MentoringLog, Group, Intervention, MentorType, AssessmentCategory, ArtifactType, LessonPlan, PlanStatus, ActivityType, UserStatus } from './types';
 
 export const MOCK_BATCHES: Batch[] = [
   { id: 'b1', name: 'Batch 5', startDate: '2023-08-01', endDate: '2023-12-31', status: 'ACTIVE' },
@@ -130,7 +130,7 @@ export const MOCK_LESSON_PLANS: LessonPlan[] = [
 
 export const MOCK_USERS: User[] = [
   // Admin
-  { id: 'u1', role: Role.ADMIN, fullName: 'Sarah Connor', email: 'admin@gennext.com', avatarUrl: 'https://i.pravatar.cc/150?u=u1', mentorType: MentorType.NONE },
+  { id: 'u1', role: Role.ADMIN, fullName: 'Sarah Connor', email: 'admin@gennext.com', avatarUrl: 'https://i.pravatar.cc/150?u=u1', mentorType: MentorType.NONE, status: UserStatus.APPROVED },
   // Mentors
   { 
     id: 'u2', 
@@ -138,7 +138,8 @@ export const MOCK_USERS: User[] = [
     fullName: 'Dr. Alan Grant', 
     email: 'alan@jurassic.com', 
     avatarUrl: 'https://i.pravatar.cc/150?u=u2',
-    mentorType: MentorType.EXTERNAL
+    mentorType: MentorType.EXTERNAL,
+    status: UserStatus.APPROVED
   },
   { 
     id: 'u3', 
@@ -146,15 +147,16 @@ export const MOCK_USERS: User[] = [
     fullName: 'Ellie Sattler', 
     email: 'ellie@paleo.com', 
     avatarUrl: 'https://i.pravatar.cc/150?u=u3',
-    mentorType: MentorType.INTERNAL
+    mentorType: MentorType.INTERNAL,
+    status: UserStatus.APPROVED
   },
   // Students Batch 1
-  { id: 's1', role: Role.STUDENT, fullName: 'John Doe', email: 'john@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s1' },
-  { id: 's2', role: Role.STUDENT, fullName: 'Jane Smith', email: 'jane@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s2' },
-  { id: 's3', role: Role.STUDENT, fullName: 'Bob Brown', email: 'bob@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s3' },
+  { id: 's1', role: Role.STUDENT, fullName: 'John Doe', email: 'john@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s1', status: UserStatus.APPROVED },
+  { id: 's2', role: Role.STUDENT, fullName: 'Jane Smith', email: 'jane@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s2', status: UserStatus.APPROVED },
+  { id: 's3', role: Role.STUDENT, fullName: 'Bob Brown', email: 'bob@student.com', batchId: 'b1', avatarUrl: 'https://i.pravatar.cc/150?u=s3', status: UserStatus.APPROVED },
   // Students Batch 2
-  { id: 's4', role: Role.STUDENT, fullName: 'Alice Wonder', email: 'alice@student.com', batchId: 'b2', avatarUrl: 'https://i.pravatar.cc/150?u=s4' },
-  { id: 's5', role: Role.STUDENT, fullName: 'Charlie Chaplin', email: 'charlie@student.com', batchId: 'b2', avatarUrl: 'https://i.pravatar.cc/150?u=s5' },
+  { id: 's4', role: Role.STUDENT, fullName: 'Alice Wonder', email: 'alice@student.com', batchId: 'b2', avatarUrl: 'https://i.pravatar.cc/150?u=s4', status: UserStatus.APPROVED },
+  { id: 's5', role: Role.STUDENT, fullName: 'Charlie Chaplin', email: 'charlie@student.com', batchId: 'b2', avatarUrl: 'https://i.pravatar.cc/150?u=s5', status: UserStatus.APPROVED },
 ];
 
 export const MOCK_GROUPS: Group[] = [

@@ -7,6 +7,7 @@ import { StudentView } from './components/StudentView';
 import { Role } from './types';
 import { StudentLogin } from './components/auth/student/StudentLogin';
 import { StudentSignup } from './components/auth/student/StudentSignup';
+import { StudentApprovalRequest } from './components/auth/student/StudentApprovalRequest';
 import { MentorLogin } from './components/auth/mentor/MentorLogin';
 import { MentorSignup } from './components/auth/mentor/MentorSignup';
 import { AdminLogin } from './components/auth/admin/AdminLogin';
@@ -91,6 +92,7 @@ const AppContent: React.FC = () => {
         <Route path="/welcome/students" element={!isAuthenticated ? <StudentWelcome /> : <Navigate to="/" replace />} />
         <Route path="/welcome/students/login" element={!isAuthenticated ? <StudentLogin /> : <Navigate to="/" replace />} />
         <Route path="/welcome/students/signup" element={!isAuthenticated ? <StudentSignup /> : <Navigate to="/" replace />} />
+        <Route path="/welcome/students/signup/approval_request" element={<StudentApprovalRequest />} />
         
         {/* Mentors */}
         <Route path="/welcome/mentor" element={!isAuthenticated ? <MentorWelcome /> : <Navigate to="/" replace />} />

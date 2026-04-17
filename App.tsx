@@ -42,8 +42,13 @@ const RoleSync: React.FC = () => {
 };
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole?: Role }> = ({ children, allowedRole }) => {
-  const { currentUser, isAuthenticated } = useData();
+  const { currentUser, isAuthenticated, isLoading } = useData();
   const location = useLocation();
+
+  // On first load, wait for auth to resolve before making redirect decisions
+  if (isLoading) {
+    return null;
+  }
 
   if (!isAuthenticated || !currentUser) {
     const path = location.pathname;
@@ -70,79 +75,94 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole?: Role }
 const AppContent: React.FC = () => {
   const { currentUser, isAuthenticated, isLoading } = useData();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#050510] flex items-center justify-center font-outfit">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-emerald-500/20 border-b-emerald-500 rounded-full animate-spin-reverse"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <BrowserRouter>
-      {isAuthenticated && <RoleSync />}
-      <Routes>
-        {/* Isolated Auth Paths */}
-        {/* Students */}
-        <Route path="/welcome/students" element={!isAuthenticated ? <StudentWelcome /> : <Navigate to="/" replace />} />
-        <Route path="/welcome/students/login" element={!isAuthenticated ? <StudentLogin /> : <Navigate to="/" replace />} />
-        <Route path="/welcome/students/signup" element={!isAuthenticated ? <StudentSignup /> : <Navigate to="/" replace />} />
-        <Route path="/welcome/students/signup/approval_request" element={<StudentApprovalRequest />} />
-        
-        {/* Mentors */}
-        <Route path="/welcome/mentor" element={!isAuthenticated ? <MentorWelcome /> : <Navigate to="/" replace />} />
-        <Route path="/welcome/mentor/login" element={!isAuthenticated ? <MentorLogin /> : <Navigate to="/" replace />} />
-        <Route path="/welcome/mentor/signup" element={!isAuthenticated ? <MentorSignup /> : <Navigate to="/" replace />} />
+    <>
+      <BrowserRouter>
+        {isAuthenticated && <RoleSync />}
+        <Routes>
+          {/* Isolated Auth Paths */}
+          {/* Students */}
+          <Route path="/welcome/students" element={!isAuthenticated ? <StudentWelcome /> : <Navigate to="/" replace />} />
+          <Route path="/welcome/students/login" element={!isAuthenticated ? <StudentLogin /> : <Navigate to="/" replace />} />
+          <Route path="/welcome/students/signup" element={!isAuthenticated ? <StudentSignup /> : <Navigate to="/" replace />} />
+          <Route path="/welcome/students/signup/approval_request" element={<StudentApprovalRequest />} />
+          
+          {/* Mentors */}
+          <Route path="/welcome/mentor" element={!isAuthenticated ? <MentorWelcome /> : <Navigate to="/" replace />} />
+          <Route path="/welcome/mentor/login" element={!isAuthenticated ? <MentorLogin /> : <Navigate to="/" replace />} />
+          <Route path="/welcome/mentor/signup" element={!isAuthenticated ? <MentorSignup /> : <Navigate to="/" replace />} />
 
-        {/* Admins (Complex Path) */}
-        <Route path="/auth/portal-secure-v8821-admin" element={!isAuthenticated ? <AdminWelcome /> : <Navigate to="/" replace />} />
-        <Route path="/auth/portal-secure-v8821-admin/login" element={!isAuthenticated ? <AdminLogin /> : <Navigate to="/" replace />} />
-        <Route path="/auth/portal-secure-v8821-admin/enroll" element={!isAuthenticated ? <AdminSignup /> : <Navigate to="/" replace />} />
-        
-        <Route 
-          path="/admin/*" 
-          element={
-            <ProtectedRoute allowedRole={Role.ADMIN}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/mentor/*" 
-          element={
-            <ProtectedRoute allowedRole={Role.MENTOR}>
-              <MentorDashboard />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/student/*" 
-          element={
-            <ProtectedRoute allowedRole={Role.STUDENT}>
-              <StudentView />
-            </ProtectedRoute>
-          } 
-        />
+          {/* Admins (Complex Path) */}
+          <Route path="/auth/portal-secure-v8821-admin" element={!isAuthenticated ? <AdminWelcome /> : <Navigate to="/" replace />} />
+          <Route path="/auth/portal-secure-v8821-admin/login" element={!isAuthenticated ? <AdminLogin /> : <Navigate to="/" replace />} />
+          <Route path="/auth/portal-secure-v8821-admin/enroll" element={!isAuthenticated ? <AdminSignup /> : <Navigate to="/" replace />} />
+          
+          <Route 
+            path="/admin/*" 
+            element={
+              <ProtectedRoute allowedRole={Role.ADMIN}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/mentor/*" 
+            element={
+              <ProtectedRoute allowedRole={Role.MENTOR}>
+                <MentorDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/student/*" 
+            element={
+              <ProtectedRoute allowedRole={Role.STUDENT}>
+                <StudentView />
+              </ProtectedRoute>
+            } 
+          />
 
-        {/* Default redirect based on auth status */}
-        <Route 
-          path="/" 
-          element={
-            isAuthenticated && currentUser
-              ? <Navigate to={`/${currentUser.role.toLowerCase()}`} replace />
-              : <Navigate to="/welcome/students" replace />
-          } 
-        />
-        
-        {/* Catch-all redirect to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Default redirect based on auth status */}
+          <Route 
+            path="/" 
+            element={
+              isAuthenticated && currentUser
+                ? <Navigate to={`/${currentUser.role.toLowerCase()}`} replace />
+                : <Navigate to="/welcome/students" replace />
+            } 
+          />
+          
+          {/* Catch-all redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+
+      {/* Loading Overlay - Beautiful Running Pastel Gradient */}
+      {isLoading && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden animate-fade-in pastel-mesh shadow-2xl">
+          {/* Central Spinner */}
+          <div className="relative z-10 flex flex-col items-center gap-6">
+            <div className="dot-spinner" style={{ '--uib-color': '#1E293B' } as any}>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+              <div className="dot-spinner__dot"></div>
+            </div>
+            
+            <span className="text-[12px] font-black text-slate-800 tracking-[0.4em] uppercase opacity-75 animate-pulse">
+              Loading
+            </span>
+          </div>
+
+          {/* Minimal Glass Element for Depth */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]"></div>
+        </div>
+      )}
+    </>
   );
 };
 

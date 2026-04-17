@@ -344,11 +344,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         console.log(`[AUTH_SIGNUP] Phase 2: Writing profile... (3s limit)`);
         
-        const dbPromise = setDoc(doc(db, collectionName, uid), {
+          const dbPromise = setDoc(doc(db, collectionName, uid), {
           email: userData.email,
           fullName: userData.fullName,
           role: userData.role,
           uid: uid,
+          avatarUrl: '',
+          coverPhotoUrl: '',
           status: UserStatus.PENDING,
           createdAt: serverTimestamp()
         });

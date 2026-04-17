@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../services/DataContext';
 import { LogStatus, MentoringLog, ActivityType, LessonPlan, User, Role, Group, AttendanceStatus, Module } from '../types';
 import { 
@@ -1047,6 +1047,8 @@ export const MentorDashboard: React.FC = () => {
         { id: 'materials', label: 'Materials', icon: <FolderOpen size={18} />, path: '/mentor/materials' },
     ];
 
+    const location = useLocation();
+
     return (
         <Layout navItems={navItems}>
             <Routes>
@@ -1065,17 +1067,6 @@ export const MentorDashboard: React.FC = () => {
                 } />
                 <Route path="*" element={
                     <div className="space-y-6">
-                        {/* 1. Header */}
-                        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <img src={currentUser.avatarUrl} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
-                                <div>
-                                    <h1 className="text-2xl font-bold text-gray-900">Mentor Workspace</h1>
-                                    <p className="text-sm text-gray-500">{currentUser.mentorType || 'External'} Mentor • {currentUser.email}</p>
-                                </div>
-                            </div>
-                        </div>
-
                         {/* 2. Main Content Area */}
                         <div className="min-h-[500px]">
                             <Routes>

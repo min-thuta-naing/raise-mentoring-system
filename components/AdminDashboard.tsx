@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../services/DataContext';
-import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool, UserPlus, Layers } from 'lucide-react';
+import { LayoutGrid, Calendar, CheckSquare, Settings, PenTool, UserPlus, Layers, Users } from 'lucide-react';
 import { Role, UserStatus, LogStatus } from '../types';
 
 // Shared Components
@@ -16,6 +16,7 @@ import { ApprovalsTab } from './admin/ApprovalsTab';
 import { SetupTab } from './admin/SetupTab';
 import { UserRegistrationTab } from './admin/UserRegistrationTab';
 import { BatchManagementTab } from './admin/BatchManagementTab';
+import { GroupMatchingTab } from './admin/GroupMatchingTab';
 
 /**
  * Main Admin Dashboard Entry Point
@@ -42,6 +43,7 @@ export const AdminDashboard: React.FC = () => {
             subItems: [
                 { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
                 { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
+                { id: 'groups', label: 'Group Matching', icon: <Users size={18} />, path: '/admin/groups' },
             ]
         },
         { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals', badge: pendingLogs },
@@ -63,6 +65,8 @@ export const AdminDashboard: React.FC = () => {
                 return { title: 'User Registration', subtitle: 'Add new students and mentors to the mentoring ecosystem.' };
             case '/admin/batches':
                 return { title: 'Batch Management', subtitle: 'Create and organize student cohorts and academic periods.' };
+            case '/admin/groups':
+                return { title: 'Group Matching', subtitle: 'Assign students to groups and match them with mentors for a module.' };
             case '/admin/entry':
                 return { title: 'Manual Entry', subtitle: 'Add new mentoring sessions or historical data to the system.' };
             case '/admin/setup':
@@ -133,6 +137,7 @@ export const AdminDashboard: React.FC = () => {
                                 onUpdateBatch={updateBatch}
                             />
                         } />
+                        <Route path="groups" element={<GroupMatchingTab />} />
                         <Route path="entry" element={<MentorLogForm />} />
                         <Route path="setup" element={
                             <SetupTab 

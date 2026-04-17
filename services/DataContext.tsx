@@ -49,6 +49,7 @@ interface DataContextType {
   getModulesByBatch: (batchId: string) => Module[];
   addGroup: (group: Group) => void;
   updateGroup: (group: Group) => void;
+  deleteGroup: (id: string) => Promise<void>;
   addIntervention: (intervention: Intervention) => void;
   addLessonPlan: (plan: LessonPlan) => Promise<void>;
   updateLessonPlan: (plan: LessonPlan) => Promise<void>;
@@ -63,12 +64,12 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null); 
   const [isLoading, setIsLoading] = useState(true);
-  const [logs, setLogs] = useState<MentoringLog[]>(INITIAL_LOGS);
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [logs, setLogs] = useState<MentoringLog[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
-  const [groups, setGroups] = useState<Group[]>(MOCK_GROUPS);
-  const [interventions, setInterventions] = useState<Intervention[]>(MOCK_INTERVENTIONS);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -118,7 +119,23 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           id: doc.id
         };
       }) as Batch[];
-      setBatches(fetchedBatches.length > 0 ? fetchedBatches : MOCK_BATCHES);
+      setBatches(fetchedBatches);
+    });
+    return unsubscribe;
+  }, []);
+
+  // Real-time listener for Groups
+  useEffect(() => {
+    const q = collection(db, 'groups');
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedGroups = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id
+        };
+      }) as Group[];
+      setGroups(fetchedGroups);
     });
     return unsubscribe;
   }, []);
@@ -518,12 +535,37 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return modules.filter(m => m.batchId === batchId);
   };
 
-  const addGroup = (group: Group) => {
-    setGroups(prev => [...prev, group]);
+  const addGroup = async (group: Group) => {
+    try {
+      const { id, ...data } = group;
+      await addDoc(collection(db, 'groups'), {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error adding group:', error);
+    }
   };
 
-  const updateGroup = (updatedGroup: Group) => {
-    setGroups(prev => prev.map(g => g.id === updatedGroup.id ? updatedGroup : g));
+  const updateGroup = async (group: Group) => {
+    try {
+      const { id, ...data } = group;
+      await updateDoc(doc(db, 'groups', id), {
+        ...data,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error updating group:', error);
+    }
+  };
+
+  const deleteGroup = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, 'groups', id));
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      throw error;
+    }
   };
 
   const addIntervention = (intervention: Intervention) => {
@@ -691,6 +733,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       getModulesByBatch,
       addGroup,
       updateGroup,
+      deleteGroup,
       addIntervention,
       addLessonPlan,
       updateLessonPlan,

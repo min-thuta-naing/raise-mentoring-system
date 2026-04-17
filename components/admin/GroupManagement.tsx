@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Plus, Edit, XCircle, CheckCircle } from 'lucide-react';
+import { Users, Plus, Edit, XCircle, CheckCircle, Trash2 } from 'lucide-react';
 import { Group, Module, User, Role } from '../../types';
 
 interface GroupManagementProps {
@@ -7,11 +7,15 @@ interface GroupManagementProps {
   modules: Module[];
   users: User[];
   onSave: (group: Group) => void;
+  onDelete: (id: string) => void;
 }
 
-export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, modules, users, onSave }) => {
+export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, modules, users, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [groupToDelete, setGroupToDelete] = useState<{ id: string, name: string } | null>(null);
+  const [deleteConfirmationName, setDeleteConfirmationName] = useState('');
 
   // Form State
   const [name, setName] = useState('');
@@ -50,6 +54,21 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
     };
     onSave(group);
     setIsModalOpen(false);
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    setGroupToDelete({ id, name });
+    setDeleteConfirmationName('');
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (groupToDelete && deleteConfirmationName === groupToDelete.name) {
+      onDelete(groupToDelete.id);
+      setIsDeleteModalOpen(false);
+      setGroupToDelete(null);
+      setDeleteConfirmationName('');
+    }
   };
 
   const selectedModule = modules.find(m => m.id === moduleId);
@@ -116,12 +135,22 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                     </div>
                   </td>
                   <td className="p-3 text-right">
-                    <button
-                      onClick={() => openModal(g)}
-                      className="text-gray-500 hover:text-indigo-600 p-1.5 hover:bg-gray-100 rounded transition-colors"
-                    >
-                      <Edit size={16} />
-                    </button>
+                    <div className="flex justify-end gap-1">
+                      <button
+                        onClick={() => openModal(g)}
+                        className="text-gray-500 hover:text-indigo-600 p-1.5 hover:bg-gray-100 rounded transition-colors"
+                        title="Edit Group"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(g.id, g.name)}
+                        className="text-gray-500 hover:text-red-600 p-1.5 hover:bg-red-50 rounded transition-colors"
+                        title="Delete Group"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -195,6 +224,62 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
             <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
               <button onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">Cancel</button>
               <button onClick={handleSave} className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm flex items-center gap-2"><CheckCircle size={16} /> Save Group</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && groupToDelete && (
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 mb-2">
+                <Trash2 size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Delete Group?</h3>
+              <p className="text-gray-500">
+                Are you sure you want to delete <span className="font-semibold text-gray-900">"{groupToDelete.name}"</span>? 
+                This action is permanent and cannot be reversed.
+              </p>
+              
+              <div className="w-full pt-4">
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 text-left">
+                  Type the group name to confirm
+                </label>
+                <input 
+                  type="text"
+                  value={deleteConfirmationName}
+                  onChange={(e) => setDeleteConfirmationName(e.target.value)}
+                  onPaste={(e) => e.preventDefault()}
+                  onContextMenu={(e) => e.preventDefault()}
+                  placeholder={groupToDelete.name}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-center font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <button 
+                onClick={() => {
+                  setIsDeleteModalOpen(false);
+                  setDeleteConfirmationName('');
+                }} 
+                className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all border border-gray-200"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmDelete}
+                disabled={deleteConfirmationName !== groupToDelete.name}
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all shadow-lg ${
+                  deleteConfirmationName === groupToDelete.name 
+                    ? 'bg-red-600 text-white shadow-red-200 hover:bg-red-700' 
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                }`}
+              >
+                Yes, Delete
+              </button>
             </div>
           </div>
         </div>

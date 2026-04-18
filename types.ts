@@ -52,6 +52,8 @@ export interface User {
   mentorType?: MentorType; 
   // Specific to students
   batchId?: string;
+  // Metadata for notifications
+  lastReadTimestamps?: Record<string, number>;
 }
 
 export interface Batch {
@@ -165,4 +167,15 @@ export interface SessionValidation {
   isValid: boolean;
   message: string;
   duration: number;
+}
+
+export interface Message {
+  id: string;
+  groupId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar?: string;
+  senderRole?: Role;
+  content: string;
+  timestamp: number;
 }

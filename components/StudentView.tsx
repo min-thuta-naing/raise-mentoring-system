@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { StudentProfile } from './profile/StudentProfile';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useData } from '../services/DataContext';
-import { Trophy, FileText, Map } from 'lucide-react';
+import { Trophy, FileText, Map, Users } from 'lucide-react';
 import { LogStatus, AttendanceStatus } from '../types';
 
 import { Layout } from './Layout';
@@ -10,9 +10,10 @@ import { CurriculumRoadmap } from './CurriculumRoadmap';
 import { DashboardHome } from './student/DashboardHome';
 import { StudentLogsView } from './student/StudentLogsView';
 import { SubmissionModal } from './student/SubmissionModal';
+import { MyGroupView } from './student/MyGroupView';
 
 export const StudentView: React.FC = () => {
-  const { currentUser, logs, modules, users, updateStudentSubmission } = useData();
+  const { currentUser, logs, modules, users, updateStudentSubmission, totalUnreadCount } = useData();
   
   // State for Modal
   const [selectedLog, setSelectedLog] = useState<any>(null);
@@ -22,6 +23,7 @@ export const StudentView: React.FC = () => {
   const navItems = [
       { id: 'dashboard', label: 'Dashboard', icon: <Trophy size={18} />, path: '/student/dashboard' },
       { id: 'roadmap', label: 'Curriculum Roadmap', icon: <Map size={18} />, path: '/student/roadmap' },
+      { id: 'group', label: 'My Group', icon: <Users size={18} />, path: '/student/group', badge: totalUnreadCount },
       { id: 'logs', label: 'My Logs', icon: <FileText size={18} />, path: '/student/logs' }
   ];
 
@@ -119,6 +121,7 @@ export const StudentView: React.FC = () => {
         } />
 
         <Route path="roadmap" element={<CurriculumRoadmap />} />
+        <Route path="group" element={<MyGroupView />} />
 
         <Route 
           path="logs" element={

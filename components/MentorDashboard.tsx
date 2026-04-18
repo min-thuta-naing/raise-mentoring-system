@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useData } from '../services/DataContext';
 import { LogStatus, MentoringLog, LessonPlan, User, Group, Module, PlanStatus, AttendanceStatus } from '../types';
 import { 
-  Calendar, History, LayoutDashboard, Users, FolderOpen
+  Calendar, History, LayoutDashboard, Users, FolderOpen, MessageSquare
 } from 'lucide-react';
 import { MentorProfile } from './profile/MentorProfile';
 import { Layout } from './Layout';
@@ -16,9 +16,10 @@ import { DashboardHome } from './mentor/DashboardHome';
 import { ScheduleView } from './mentor/ScheduleView';
 import { MaterialsView } from './mentor/MaterialsView';
 import { HistoryView } from './mentor/HistoryView';
+import { MentorGroupsView } from './mentor/MentorGroupsView';
 
 export const MentorDashboard: React.FC = () => {
-    const { currentUser, lessonPlans, logs, modules, users, groups } = useData();
+    const { currentUser, lessonPlans, logs, modules, users, groups, totalUnreadCount } = useData();
     const navigate = useNavigate();
     
     // Selection States
@@ -121,6 +122,7 @@ export const MentorDashboard: React.FC = () => {
         { id: 'schedule', label: 'Schedule', icon: <Calendar size={18} />, path: '/mentor/schedule' },
         { id: 'logs', label: 'History', icon: <History size={18} />, path: '/mentor/logs' },
         { id: 'students', label: 'Students', icon: <Users size={18} />, path: '/mentor/students' },
+        { id: 'groups', label: 'Group Chat', icon: <MessageSquare size={18} />, path: '/mentor/groups', badge: totalUnreadCount },
         { id: 'materials', label: 'Materials', icon: <FolderOpen size={18} />, path: '/mentor/materials' },
     ];
 
@@ -199,6 +201,7 @@ export const MentorDashboard: React.FC = () => {
                                         onSelectStudent={setSelectedStudent} 
                                     />
                                 } />
+                                <Route path="groups" element={<MentorGroupsView />} />
                                 <Route path="/" element={<Navigate to="dashboard" replace />} />
                             </Routes>
                         </div>

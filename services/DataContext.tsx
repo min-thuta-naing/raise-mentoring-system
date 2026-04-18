@@ -1,7 +1,7 @@
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
 import { query, where, orderBy } from 'firebase/firestore';
-import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus } from '../types';
+import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus, Message } from '../types';
 import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS } from '../constants';
 import { auth, db } from './firebase';
 import { 
@@ -58,6 +58,11 @@ interface DataContextType {
   updateProfile: (fullName: string, avatarUrl: string, coverPhotoUrl?: string) => Promise<void>;
   approveUser: (userId: string, role: Role, data: Partial<User>) => Promise<void>;
   rejectUser: (userId: string, role: Role) => Promise<void>;
+  messages: Message[];
+  sendMessage: (groupId: string, content: string) => Promise<void>;
+  unreadCounts: Record<string, number>;
+  totalUnreadCount: number;
+  markGroupAsRead: (groupId: string) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -72,8 +77,79 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [groups, setGroups] = useState<Group[]>([]);
   const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
+
+  // Notification State (Synced via Firestore)
+  const lastReadTimestamps = useMemo(() => {
+    return currentUser?.lastReadTimestamps || {};
+  }, [currentUser]);
+
+  // Real-time listener for CURRENT USER profile (for lastReadTimestamps and global updates)
+  useEffect(() => {
+    if (!auth.currentUser) return;
+    
+    // We need to know the role to find the correct collection
+    // Since currentUser might be null during first loads, we try role discovery
+    // and then stick to it.
+    const uid = auth.currentUser.uid;
+    let unsub = () => {};
+
+    const startListener = async () => {
+      // Find the role first (if not already known)
+      let currentRole = currentUser?.role;
+      if (!currentRole) {
+          const profile = await fetchUserProfile(uid);
+          currentRole = profile?.role;
+      }
+      if (!currentRole) return;
+
+      unsub = onSnapshot(doc(db, getCollectionName(currentRole), uid), (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setCurrentUser({
+            id: uid,
+            ...data,
+            role: currentRole as Role
+          } as User);
+        }
+      });
+    };
+
+    startListener();
+    return () => unsub();
+  }, [auth.currentUser?.uid]);
+
+  // Calculate unread counts
+  const unreadCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    messages.forEach(msg => {
+      const lastRead = lastReadTimestamps[msg.groupId] || 0;
+      if (msg.timestamp > lastRead && msg.senderId !== currentUser?.id) {
+        counts[msg.groupId] = (counts[msg.groupId] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [messages, lastReadTimestamps, currentUser]);
+
+  const totalUnreadCount = useMemo(() => {
+    return Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
+  }, [unreadCounts]);
+
+  const markGroupAsRead = async (groupId: string) => {
+    if (!currentUser) return;
+    try {
+      const collectionName = getCollectionName(currentUser.role);
+      const userRef = doc(db, collectionName, currentUser.id);
+      
+      await updateDoc(userRef, {
+        [`lastReadTimestamps.${groupId}`]: Date.now()
+      });
+    } catch (error) {
+      console.error("[DATA] Mark As Read failed:", error);
+    }
+  };
   
   // Real-time listener for Modules
   useEffect(() => {
@@ -104,10 +180,25 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           createdAt: data.createdAt?.toMillis?.() || data.createdAt
         };
       }) as LessonPlan[];
-      setLessonPlans(fetchedPlans);
     });
     return unsubscribe;
   }, []);
+
+  // Real-time listener for Group Messages
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    // Listen for all messages, sorted by time
+    const q = query(collection(db, 'group_messages'), orderBy('timestamp', 'asc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedMessages = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      })) as Message[];
+      setMessages(fetchedMessages);
+    });
+    return unsubscribe;
+  }, [currentUser]);
 
   // Real-time listener for Batches
   useEffect(() => {
@@ -144,7 +235,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Real-time listener for Users
   useEffect(() => {
     if (!currentUser) return;
-    if (currentUser.role !== Role.ADMIN && currentUser.role !== Role.MENTOR) return;
+    
+    // Admins, Mentors, AND Students all need to see users for group visibility and chats
+    const isAuthorized = currentUser.role === Role.ADMIN || currentUser.role === Role.MENTOR || currentUser.role === Role.STUDENT;
+    if (!isAuthorized) return;
 
     // Both Admin and Mentor can see Students
     const unsubStudents = onSnapshot(collection(db, 'students'), (snapshot) => {
@@ -160,9 +254,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
     });
 
-    // Only Admin can see other Mentors
+    // Admin, Mentors, and Students should all see mentors for group visibility
     let unsubMentors = () => {};
-    if (currentUser.role === Role.ADMIN) {
+    if (currentUser.role === Role.ADMIN || currentUser.role === Role.MENTOR || currentUser.role === Role.STUDENT) {
       unsubMentors = onSnapshot(collection(db, 'mentors'), (snapshot) => {
         const mentorList = snapshot.docs.map(doc => ({ 
           id: doc.id, 
@@ -778,6 +872,24 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const sendMessage = async (groupId: string, content: string) => {
+    if (!currentUser) return;
+    try {
+      await addDoc(collection(db, 'group_messages'), {
+        groupId,
+        senderId: currentUser.id,
+        senderName: currentUser.fullName,
+        senderAvatar: currentUser.avatarUrl || '',
+        senderRole: currentUser.role,
+        content,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      throw error;
+    }
+  };
+
   return (
     <DataContext.Provider value={{ 
       currentUser, 
@@ -794,6 +906,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       groups,
       interventions,
       lessonPlans,
+      messages,
+      sendMessage,
+      unreadCounts,
+      totalUnreadCount,
+      markGroupAsRead,
       addLog, 
       updateLogStatus,
       getStudentsByBatch,

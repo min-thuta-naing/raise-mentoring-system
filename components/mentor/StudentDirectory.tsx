@@ -3,6 +3,8 @@ import { Users, Filter, Download, MessageCircle, Edit3, Search, ArrowUpDown, Lay
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { User, Group, Module, MentoringLog, Role, AttendanceStatus } from '../../types';
 
+import { GroupChatDrawer } from './GroupChatDrawer';
+
 interface StudentDirectoryProps {
     users: User[];
     groups: Group[];
@@ -24,6 +26,9 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
     const [compareMode, setCompareMode] = useState(false);
     const [selectedForCompare, setSelectedForCompare] = useState<string[]>([]);
     const [showCompareModal, setShowCompareModal] = useState(false);
+
+    // Chat State
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     const allStudents = useMemo(() => users.filter(u => u.role === Role.STUDENT), [users]);
     const myGroups = useMemo(() => groups.filter(g => g.mentorIds.includes(currentUserId)), [groups, currentUserId]);
@@ -196,7 +201,13 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                              <button className="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors">
                                  <Download size={14} /> Report
                              </button>
-                             <button className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors">
+                             <button 
+                                onClick={() => {
+                                    if(selectedGroupId) setIsChatOpen(true);
+                                    else alert("Please select a specific group first to start chatting.");
+                                }}
+                                className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors"
+                             >
                                  <MessageCircle size={14} /> Group Chat
                              </button>
                              <button className="flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold hover:bg-orange-100 transition-colors">
@@ -384,6 +395,14 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Group Chat Drawer */}
+            {isChatOpen && selectedGroupId && (
+                <GroupChatDrawer 
+                    group={groups.find(g => g.id === selectedGroupId)!} 
+                    onClose={() => setIsChatOpen(false)} 
+                />
             )}
         </div>
     );

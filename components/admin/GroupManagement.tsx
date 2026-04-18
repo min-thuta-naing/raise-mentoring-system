@@ -177,7 +177,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                     value={name}
                     onChange={e => setName(e.target.value)}
                     placeholder="e.g. Group Alpha"
-                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
                   />
                 </div>
                 <div>
@@ -188,10 +188,10 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                       setModuleId(e.target.value);
                       setSelectedStudentIds([]);
                     }}
-                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
                   >
-                    <option value="" disabled>Select Module</option>
-                    {modules.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                    <option value="" disabled className="text-gray-500">Select Module</option>
+                    {modules.map(m => <option key={m.id} value={m.id} className="text-gray-900">{m.name}</option>)}
                   </select>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                     {availableMentors.map(m => (
                       <label key={m.id} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50">
                         <input type="checkbox" checked={selectedMentorIds.includes(m.id)} onChange={e => e.target.checked ? setSelectedMentorIds([...selectedMentorIds, m.id]) : setSelectedMentorIds(selectedMentorIds.filter(id => id !== m.id))} className="rounded text-indigo-600" />
-                        <span className="text-sm">{m.fullName}</span>
+                        <span className="text-sm text-gray-800">{m.fullName}</span>
                       </label>
                     ))}
                   </div>
@@ -213,7 +213,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                     {availableStudents.map(s => (
                       <label key={s.id} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50">
                         <input type="checkbox" checked={selectedStudentIds.includes(s.id)} onChange={e => e.target.checked ? setSelectedStudentIds([...selectedStudentIds, s.id]) : setSelectedStudentIds(selectedStudentIds.filter(id => id !== s.id))} className="rounded text-green-600" />
-                        <span className="text-sm">{s.fullName}</span>
+                        <span className="text-sm text-gray-800">{s.fullName}</span>
                       </label>
                     ))}
                   </div>

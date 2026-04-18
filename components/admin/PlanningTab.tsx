@@ -573,10 +573,10 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                           {plan.status || 'DRAFT'}
                         </span>
                       </td>
-                      <td className="p-3 whitespace-nowrap">
+                      <td className="p-3 whitespace-nowrap text-gray-700">
                         {plan.date ? plan.date : <span className="text-gray-400 italic">Unscheduled</span>}
                       </td>
-                      <td className="p-3 whitespace-nowrap text-gray-500">{plan.startTime} - {plan.endTime}</td>
+                      <td className="p-3 whitespace-nowrap text-gray-600 font-medium">{plan.startTime} - {plan.endTime}</td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded text-xs font-bold border ${plan.activityType === ActivityType.LECTURE
                             ? 'bg-blue-50 text-blue-700 border-blue-100'

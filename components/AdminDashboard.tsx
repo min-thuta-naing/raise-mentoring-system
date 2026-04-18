@@ -6,7 +6,7 @@ import { Role, UserStatus, LogStatus } from '../types';
 
 // Shared Components
 import { Layout } from './Layout';
-import { MentorLogForm } from './MentorLogForm';
+import { MentorLogForm } from './mentor/MentorLogForm';
 import { AdminProfile } from './profile/AdminProfile';
 
 // Admin Sub-components

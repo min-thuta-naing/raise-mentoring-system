@@ -146,15 +146,29 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
               </div>
               <div className="flex flex-col gap-2 justify-center md:border-l md:pl-6 border-gray-100 min-w-[150px]">
                 <button
-                  onClick={() => onUpdateStatus(log.id, LogStatus.APPROVED)}
+                  onClick={async () => {
+                    try {
+                      await onUpdateStatus(log.id, LogStatus.APPROVED);
+                      alert("Log verified successfully.");
+                    } catch (err) {
+                      alert("Failed to verify log. Please try again.");
+                    }
+                  }}
                   className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <CheckCircle size={16} /> Verify Log
                 </button>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     const reason = prompt("Reason for rejection?");
-                    if (reason) onUpdateStatus(log.id, LogStatus.REJECTED, reason);
+                    if (reason) {
+                      try {
+                        await onUpdateStatus(log.id, LogStatus.REJECTED, reason);
+                        alert("Log rejected.");
+                      } catch (err) {
+                        alert("Failed to reject log.");
+                      }
+                    }
                   }}
                   className="bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
                 >

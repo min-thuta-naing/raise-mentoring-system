@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useData } from '../services/DataContext';
-import { AttendanceStatus, CompetencyScore, LogStatus, MentoringLog, Role, LessonPlan } from '../types';
+import { useData } from '../../services/DataContext';
+import { AttendanceStatus, CompetencyScore, LogStatus, MentoringLog, Role, LessonPlan } from '../../types';
 import { Clock, Users, Save, Link as LinkIcon, Upload, AlertTriangle, CheckCircle, Shield, CalendarCheck, HelpCircle, ArrowLeft, Mic, Star, Sparkles, MessageSquare, Loader2, Send } from 'lucide-react';
-import { draftAssessmentWithAI } from '../services/aiService';
+import { draftAssessmentWithAI } from '../../services/aiService';
 
 interface MentorLogFormProps {
   initialData?: Partial<MentoringLog> & { lessonPlanId?: string };
@@ -24,27 +24,27 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
   const { batches, getModulesByBatch, currentUser, getStudentsByBatch, addLog, users, lessonPlans } = useData();
   
   // Local State
-  const [selectedBatchId, setSelectedBatchId] = useState(batches[0]?.id || '');
-  const [selectedModuleId, setSelectedModuleId] = useState('');
+  const [selectedBatchId, setSelectedBatchId] = useState(initialData?.batchId || batches[0]?.id || '');
+  const [selectedModuleId, setSelectedModuleId] = useState(initialData?.moduleId || '');
   
   // Admin Proxy State
   const isAdmin = currentUser.role === Role.ADMIN;
   const mentors = users.filter(u => u.role === Role.MENTOR);
-  const [selectedMentorId, setSelectedMentorId] = useState('');
+  const [selectedMentorId, setSelectedMentorId] = useState(initialData?.mentorId || '');
 
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [summary, setSummary] = useState('');
-  const [artifactUrl, setArtifactUrl] = useState('');
-  const [scores, setScores] = useState<CompetencyScore[]>([]);
+  const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState(initialData?.startTime || '');
+  const [endTime, setEndTime] = useState(initialData?.endTime || '');
+  const [summary, setSummary] = useState(initialData?.summaryNote || '');
+  const [artifactUrl, setArtifactUrl] = useState(initialData?.artifactUrl || '');
+  const [scores, setScores] = useState<CompetencyScore[]>(initialData?.scores || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
   // New Features State
   const [isListening, setIsListening] = useState(false);
-  const [isStarred, setIsStarred] = useState(false);
-  const [digitalSignature, setDigitalSignature] = useState(false);
+  const [isStarred, setIsStarred] = useState(initialData?.isStarred || false);
+  const [digitalSignature, setDigitalSignature] = useState(initialData?.digitalSignature || false);
   const [isDraftingAI, setIsDraftingAI] = useState<Record<string, boolean>>({});
 
   const students = getStudentsByBatch(selectedBatchId);
@@ -112,8 +112,9 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
       if (initialData.endTime) setEndTime(initialData.endTime);
       if (initialData.summaryNote) setSummary(initialData.summaryNote);
       if (initialData.artifactUrl) setArtifactUrl(initialData.artifactUrl);
-      if (initialData.scores) setScores(initialData.scores);
-      if (initialData.isStarred) setIsStarred(initialData.isStarred);
+      if (initialData.scores && initialData.scores.length > 0) setScores(initialData.scores);
+      if (initialData.isStarred !== undefined) setIsStarred(initialData.isStarred);
+      if (initialData.digitalSignature !== undefined) setDigitalSignature(initialData.digitalSignature);
       if (initialData.mentorId && isAdmin) setSelectedMentorId(initialData.mentorId);
     }
   }, [initialData, isAdmin]);
@@ -282,7 +283,7 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
       return avg < 2.5;
   });
 
-  const submitForm = (targetStatus: LogStatus) => {
+    const submitForm = async (targetStatus: LogStatus) => {
     if (isAdmin && !selectedMentorId) {
         alert("Please select a mentor to record for.");
         return;
@@ -323,8 +324,8 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
       history: []
     };
 
-    setTimeout(() => {
-        addLog(newLog, isAdmin ? selectedMentorId : undefined);
+    try {
+        await addLog(newLog, isAdmin ? selectedMentorId : undefined);
         setIsSubmitting(false);
         setSuccessMsg(targetStatus === LogStatus.DRAFT ? "Draft saved successfully!" : "Log submitted successfully!");
         setSummary('');
@@ -337,7 +338,12 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
         } else {
             setTimeout(() => setSuccessMsg(''), 3000);
         }
-    }, 800);
+    } catch (error: any) {
+        console.error("Failed to submit log:", error);
+        setIsSubmitting(false);
+        // Alert the specific error message to help identify if it's a permission issue or something else
+        alert(`Failed to save log: ${error.message || 'Unknown database error'}. Please try again.`);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

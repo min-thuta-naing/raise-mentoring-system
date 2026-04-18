@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { query, where, orderBy } from 'firebase/firestore';
 import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus } from '../types';
 import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS } from '../constants';
 import { auth, db } from './firebase';
@@ -180,6 +181,39 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       unsubStudents();
       unsubMentors();
     };
+  }, [currentUser]);
+
+  // Real-time listener for Mentoring Logs
+  useEffect(() => {
+    if (!currentUser) return;
+
+    // We remove the complex orderBy here because it requires a manual Composite Index in Firestore.
+    // Instead, we fetch the data and sort on the client to ensure it works immediately.
+    let q = query(collection(db, 'mentoring_logs'));
+    
+    if (currentUser.role !== Role.ADMIN) {
+      q = query(collection(db, 'mentoring_logs'), where('mentorId', '==', currentUser.id));
+    }
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedLogs = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      })) as MentoringLog[];
+      
+      // Sort on client: Date desc, then StartTime desc
+      const sorted = fetchedLogs.sort((a, b) => {
+        const dateCompare = (b.date || '').localeCompare(a.date || '');
+        if (dateCompare !== 0) return dateCompare;
+        return (b.startTime || '').localeCompare(a.startTime || '');
+      });
+      
+      setLogs(sorted);
+    }, (error) => {
+      console.error("[FIRESTORE] Logs Listener Error:", error);
+    });
+
+    return unsubscribe;
   }, [currentUser]);
 
   const isAuthenticated = !!currentUser && currentUser.status === UserStatus.APPROVED;
@@ -393,87 +427,120 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (user) setCurrentUser(user);
   };
 
-  const addLog = (log: MentoringLog, overrideMentorId?: string) => {
-    // If overrideMentorId is provided (Admin proxy), use it. Otherwise use currentUser.
+  const addLog = async (log: MentoringLog, overrideMentorId?: string) => {
     const mentorId = overrideMentorId || currentUser?.id || '';
     
-    setLogs(prev => {
-      const existingLogIndex = prev.findIndex(l => l.id === log.id);
+    try {
+      console.log('[LOG] Persistence: Initiating save...', { id: log.id, mentorId });
       
-      if (existingLogIndex >= 0) {
-        // Update existing log
-        const newLogs = [...prev];
-        const existingLog = newLogs[existingLogIndex];
-        newLogs[existingLogIndex] = {
-          ...log,
-          mentorId: existingLog.mentorId, // Keep original mentor
-          recordedBy: existingLog.recordedBy,
-          history: [
-            ...existingLog.history,
-            {
-              timestamp: new Date().toISOString(),
-              actorId: currentUser.id,
-              action: `Updated (Status: ${log.status})`
-            }
-          ]
-        };
-        return newLogs;
-      } else {
-        // Add new log
-        const logWithHistory = {
-          ...log,
-          mentorId,
-          recordedBy: currentUser.id, // Audit trail: who physically clicked save
-          history: [{
-            timestamp: new Date().toISOString(),
-            actorId: currentUser.id,
-            action: 'Created',
-            note: currentUser.id !== mentorId ? 'Recorded via Admin Proxy' : undefined
-          }]
-        };
-        return [logWithHistory, ...prev];
+      // 1. Generate a clean document ID
+      const docId = log.id.startsWith('log-') ? `L${Date.now()}_${Math.random().toString(36).substr(2, 5)}` : log.id;
+
+      // 2. Prepare Data & Audit
+      const { id, ...logData } = log;
+      
+      // Prepare the history entry without any undefined fields
+      const historyEntry: LogHistory = {
+        timestamp: new Date().toISOString(),
+        actorId: currentUser?.id || 'system',
+        action: 'Log Saved/Updated'
+      };
+      
+      // Only add note if we're in proxy mode
+      if (currentUser?.id && currentUser.id !== mentorId) {
+        historyEntry.note = 'Recorded via Management Portal';
       }
-    });
+
+      const logPayload = {
+        ...logData,
+        mentorId,
+        recordedBy: currentUser?.id || 'manual-entry',
+        history: [...(log.history || []), historyEntry],
+        updatedAt: serverTimestamp()
+      };
+
+      // 3. Final Sanitization: Firestore REJECTS "undefined". 
+      // We must strip all undefined values recursively.
+      const sanitize = (obj: any): any => {
+        if (Array.isArray(obj)) return obj.map(sanitize);
+        if (obj !== null && typeof obj === 'object' && !(obj instanceof Date) && obj.constructor.name !== 'FieldValueImpl') {
+          return Object.fromEntries(
+            Object.entries(obj)
+              .filter(([_, v]) => v !== undefined)
+              .map(([k, v]) => [k, sanitize(v)])
+          );
+        }
+        return obj;
+      };
+
+      const finalPayload = sanitize(logPayload);
+
+      // 4. Use setDoc for maximum compatibility
+      const logRef = doc(db, 'mentoring_logs', docId);
+      console.log(`[LOG] Writing sanitized payload to collection 'mentoring_logs' with ID: ${docId}`);
+      
+      await setDoc(logRef, finalPayload, { merge: true });
+      
+      console.log('[LOG] Save successful.');
+    } catch (error: any) {
+      console.error('CRITICAL: Firestore save failure:', error);
+      throw error;
+    }
   };
 
-  const updateLogStatus = (id: string, status: LogStatus, reason?: string) => {
-    setLogs(prev => prev.map(log => {
-      if (log.id === id) {
-        // Create history entry
-        const historyEntry: LogHistory = {
-            timestamp: new Date().toISOString(),
-            actorId: currentUser.id,
-            action: `Status changed to ${status}`,
-            note: reason
-        };
-        return { 
-            ...log, 
-            status,
-            history: [...log.history, historyEntry]
-        };
+  const updateLogStatus = async (id: string, status: LogStatus, reason?: string) => {
+    try {
+      const historyEntry: LogHistory = {
+        timestamp: new Date().toISOString(),
+        actorId: currentUser?.id || 'system',
+        action: `Status changed to ${status}`,
+        ...(reason ? { note: reason } : {})
+      };
+
+      const logRef = doc(db, 'mentoring_logs', id);
+      const logSnap = await getDoc(logRef);
+      if (logSnap.exists()) {
+        const currentData = logSnap.data();
+        await updateDoc(logRef, {
+          status,
+          history: [...(currentData.history || []), historyEntry],
+          updatedAt: serverTimestamp()
+        });
       }
-      return log;
-    }));
+    } catch (error) {
+      console.error('Error updating log status:', error);
+      throw error;
+    }
   };
 
-  const updateStudentSubmission = (logId: string, studentId: string, artifactUrl: string, reflection: string) => {
-    setLogs(prev => prev.map(log => {
-      if (log.id === logId) {
-        const updatedScores = log.scores.map(score => {
+  const updateStudentSubmission = async (logId: string, studentId: string, artifactUrl: string, reflection: string) => {
+    try {
+      const logRef = doc(db, 'mentoring_logs', logId);
+      const logSnap = await getDoc(logRef);
+      
+      if (logSnap.exists()) {
+        const currentData = logSnap.data();
+        const updatedScores = (currentData.scores || []).map((score: any) => {
           if (score.studentId === studentId) {
             return {
               ...score,
               studentArtifactUrl: artifactUrl,
               studentReflection: reflection,
-              isFeedbackAcknowledged: log.status !== LogStatus.DRAFT
+              isFeedbackAcknowledged: currentData.status !== LogStatus.DRAFT
             };
           }
           return score;
         });
-        return { ...log, scores: updatedScores };
+
+        await updateDoc(logRef, { 
+          scores: updatedScores,
+          updatedAt: serverTimestamp()
+        });
       }
-      return log;
-    }));
+    } catch (error) {
+      console.error('Error updating student submission:', error);
+      throw error;
+    }
   };
 
   const getStudentsByBatch = (batchId: string) => {

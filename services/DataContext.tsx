@@ -140,15 +140,17 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return unsubscribe;
   }, []);
 
-  // Real-time listener for ALL Users (Admin only)
+  // Real-time listener for Users
   useEffect(() => {
-    if (currentUser?.role !== Role.ADMIN) return;
+    if (!currentUser) return;
+    if (currentUser.role !== Role.ADMIN && currentUser.role !== Role.MENTOR) return;
 
+    // Both Admin and Mentor can see Students
     const unsubStudents = onSnapshot(collection(db, 'students'), (snapshot) => {
       const studentList = snapshot.docs.map(doc => ({ 
         id: doc.id, 
         ...doc.data(),
-        role: Role.STUDENT // Ensure role is set from collection context
+        role: Role.STUDENT 
       } as User));
       
       setUsers(prev => {
@@ -157,18 +159,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
     });
 
-    const unsubMentors = onSnapshot(collection(db, 'mentors'), (snapshot) => {
-      const mentorList = snapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data(),
-        role: Role.MENTOR
-      } as User));
-      
-      setUsers(prev => {
-        const filtered = prev.filter(u => u.role !== Role.MENTOR);
-        return [...filtered, ...mentorList];
+    // Only Admin can see other Mentors
+    let unsubMentors = () => {};
+    if (currentUser.role === Role.ADMIN) {
+      unsubMentors = onSnapshot(collection(db, 'mentors'), (snapshot) => {
+        const mentorList = snapshot.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data(),
+          role: Role.MENTOR
+        } as User));
+        
+        setUsers(prev => {
+          const filtered = prev.filter(u => u.role !== Role.MENTOR);
+          return [...filtered, ...mentorList];
+        });
       });
-    });
+    }
 
     return () => {
       unsubStudents();

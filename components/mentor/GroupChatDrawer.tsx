@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, User, MessageCircle, Clock, Hash, Shield, GraduationCap } from 'lucide-react';
+import { toast } from 'sonner';
 import { useData } from '../../services/DataContext';
 import { Message, Group, Role } from '../../types';
 
@@ -36,7 +37,7 @@ export const GroupChatDrawer: React.FC<GroupChatDrawerProps> = ({ group, onClose
             setNewMessage('');
         } catch (error) {
             console.error("Failed to send message:", error);
-            alert("Could not send message. Please try again.");
+            toast.error("Could not send message. Please try again.");
         } finally {
             setIsSending(false);
         }

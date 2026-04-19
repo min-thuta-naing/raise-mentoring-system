@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Users, GraduationCap, Briefcase, Shield, CheckCircle2, Search, Filter, ShieldCheck, Mail, Clock, Layers } from 'lucide-react';
+import { toast } from 'sonner';
 import { Batch, User, Role, MentorType, UserStatus } from '../../types';
 
 interface UserRegistrationTabProps {
@@ -45,11 +46,11 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
     const assignment = pendingAssignments[user.id];
     
     if (user.role === Role.STUDENT && !assignment?.batchId) {
-      alert('Please assign a batch to the student.');
+      toast.error('Please assign a batch to the student.');
       return;
     }
     if (user.role === Role.MENTOR && (!assignment?.mentorType || assignment.mentorType === MentorType.NONE)) {
-      alert('Please assign a mentor classification.');
+      toast.error('Please assign a mentor classification.');
       return;
     }
 
@@ -67,28 +68,39 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
     try {
       await onApproveUser(user.id, user.role, dataToUpdate);
       console.log(`[AUTH] Approval successful for ${user.id}`);
+      toast.success(`${user.fullName} approved successfully!`);
     } catch (err: any) {
       console.error(`[AUTH] Approval failed for ${user.id}:`, err);
-      alert(`Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     } finally {
       setIsProcessing(null);
     }
   };
 
-  const handleReject = async (user: User) => {
-    if (!confirm(`Are you sure you want to decline registration for ${user.fullName}?`)) return;
-
-    setIsProcessing(user.id);
-    console.log(`[AUTH] Attempting rejection for ${user.fullName} (${user.id})`);
-    try {
-      await onRejectUser(user.id, user.role);
-      console.log(`[AUTH] Rejection successful for ${user.id}`);
-    } catch (err: any) {
-      console.error(`[AUTH] Rejection failed for ${user.id}:`, err);
-      alert(`Error: ${err.message}`);
-    } finally {
-      setIsProcessing(null);
-    }
+  const handleReject = (user: User) => {
+    toast.warning(`Are you sure you want to decline registration for ${user.fullName}?`, {
+      action: {
+        label: 'Decline',
+        onClick: async () => {
+          setIsProcessing(user.id);
+          console.log(`[AUTH] Attempting rejection for ${user.fullName} (${user.id})`);
+          try {
+            await onRejectUser(user.id, user.role);
+            console.log(`[AUTH] Rejection successful for ${user.id}`);
+            toast.info(`Registration for ${user.fullName} declined.`);
+          } catch (err: any) {
+            console.error(`[AUTH] Rejection failed for ${user.id}:`, err);
+            toast.error(`Error: ${err.message}`);
+          } finally {
+            setIsProcessing(null);
+          }
+        }
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {}
+      }
+    });
   };
 
   return (

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo, useRef } from 'react';
 import { query, where, orderBy } from 'firebase/firestore';
 import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus, Message, Rubric, AssessmentCategory } from '../types';
+import { toast } from 'sonner';
 import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS, SYSTEM_FALLBACK_RUBRIC } from '../constants';
 import { auth, db } from './firebase';
 import { 
@@ -917,7 +918,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.log(`[MAIL] Email document successfully created in "mail" collection.`);
       }
 
-      alert('User approved and notification queued successfully!');
+      toast.success('User approved and notification queued successfully!');
     } catch (error: any) {
       console.error('Approval error:', error.message);
       throw error;
@@ -934,7 +935,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         rejectedAt: serverTimestamp()
       });
       
-      alert('User registration declined.');
+      toast.info('User registration declined.');
     } catch (error: any) {
       console.error('Rejection error:', error.message);
       throw error;

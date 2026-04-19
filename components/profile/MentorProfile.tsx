@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useData } from '../../services/DataContext';
+import { toast } from 'sonner';
 import { LogStatus } from '../../types';
 import { User, Mail, Briefcase, Clock, Users, BookOpen, Camera, Save, X, Pencil, ImageIcon, CheckCircle } from 'lucide-react';
 import { PRESET_COVERS, DEFAULT_COVER, PRESET_AVATARS, DEFAULT_AVATAR } from '../../constants';
@@ -29,8 +30,9 @@ export const MentorProfile: React.FC = () => {
         try {
             await updateProfile(newName, newAvatar);
             setIsEditing(false);
+            toast.success("Profile updated successfully!");
         } catch (error) {
-            alert("Failed to update profile.");
+            toast.error("Failed to update profile.");
         } finally {
             setIsSaving(false);
         }
@@ -222,8 +224,9 @@ export const MentorProfile: React.FC = () => {
                                         try {
                                             await updateProfile(undefined, undefined, '');
                                             setIsSelectingCover(false);
+                                            toast.success("Cover photo reset.");
                                         } catch (error) {
-                                            alert("Failed to reset cover photo.");
+                                            toast.error("Failed to reset cover photo.");
                                         }
                                     }}
                                      className="relative group rounded-2xl overflow-hidden aspect-video border-2 border-dashed border-white/20 hover:border-[#B8CFCE] transition-all flex flex-col items-center justify-center bg-white/5 active:scale-95"
@@ -251,8 +254,9 @@ export const MentorProfile: React.FC = () => {
                                             try {
                                                 await updateProfile(undefined, undefined, url);
                                                 setIsSelectingCover(false);
+                                                toast.success("Cover photo updated!");
                                             } catch (error) {
-                                                alert("Failed to update cover photo.");
+                                                toast.error("Failed to update cover photo.");
                                             }
                                         }}
                                         className="relative group rounded-2xl overflow-hidden aspect-video border-2 border-transparent hover:border-[#B8CFCE] transition-all active:scale-95"
@@ -302,8 +306,9 @@ export const MentorProfile: React.FC = () => {
                                         try {
                                             await updateProfile(undefined, '');
                                             setIsSelectingAvatar(false);
+                                            toast.success("Avatar reset.");
                                         } catch (error) {
-                                            alert("Failed to reset avatar.");
+                                            toast.error("Failed to reset avatar.");
                                         }
                                     }}
                                      className="relative group rounded-full overflow-hidden aspect-square border-2 border-dashed border-white/20 hover:border-[#B8CFCE] transition-all flex flex-col items-center justify-center bg-white/5 active:scale-95"
@@ -328,8 +333,9 @@ export const MentorProfile: React.FC = () => {
                                             try {
                                                 await updateProfile(undefined, url);
                                                 setIsSelectingAvatar(false);
+                                                toast.success("Avatar updated!");
                                             } catch (error) {
-                                                alert("Failed to update avatar.");
+                                                toast.error("Failed to update avatar.");
                                             }
                                         }}
                                          className="relative group rounded-full overflow-hidden aspect-square border-2 border-transparent hover:border-[#B8CFCE] transition-all active:scale-95"

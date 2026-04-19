@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Users, Filter, Download, MessageCircle, Edit3, Search, ArrowUpDown, Layers, XCircle, CheckCircle, AlertOctagon } from 'lucide-react';
+import { toast } from 'sonner';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { User, Group, Module, MentoringLog, Role, AttendanceStatus } from '../../types';
 
@@ -121,7 +122,7 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
             setSelectedForCompare(prev => prev.filter(s => s !== id));
         } else {
             if (selectedForCompare.length >= 3) {
-                alert("You can compare up to 3 students max.");
+                toast.error("You can compare up to 3 students max.");
                 return;
             }
             setSelectedForCompare(prev => [...prev, id]);
@@ -204,7 +205,7 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                              <button 
                                 onClick={() => {
                                     if(selectedGroupId) setIsChatOpen(true);
-                                    else alert("Please select a specific group first to start chatting.");
+                                    else toast.info("Please select a specific group first to start chatting.");
                                 }}
                                 className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors"
                              >

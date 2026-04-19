@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Users, Plus, Edit, XCircle, CheckCircle, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Group, Module, User, Role } from '../../types';
 
 interface GroupManagementProps {
@@ -42,7 +43,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
 
   const handleSave = () => {
     if (!name || !moduleId) {
-      alert("Please fill in group name and select a module.");
+      toast.error("Please fill in group name and select a module.");
       return;
     }
     const group: Group = {

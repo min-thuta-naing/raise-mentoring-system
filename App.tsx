@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { DataProvider, useData } from './services/DataContext';
+import { Toaster } from 'sonner';
 import { MentorDashboard } from './components/MentorDashboard';
 import { AdminDashboard } from './components/AdminDashboard';
 import { StudentView } from './components/StudentView';
@@ -162,6 +163,7 @@ const AppContent: React.FC = () => {
           <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]"></div>
         </div>
       )}
+      <Toaster richColors position="top-right" />
     </>
   );
 };

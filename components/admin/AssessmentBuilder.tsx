@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Scale, Plus, Edit2, Trash2, X, AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'sonner';
 import { Module, AssessmentCategory, Rubric } from '../../types';
 import { SYSTEM_FALLBACK_RUBRIC } from '../../constants';
 import { useData } from '../../services/DataContext';
@@ -23,10 +24,25 @@ export const AssessmentBuilder: React.FC = () => {
 
     // --- Handlers ---
 
-    const handleDeleteCategory = async (catId: string) => {
-        if (!confirm('Are you sure you want to delete this category?')) return;
-        const updated = categories.filter(c => c.id !== catId);
-        await updateRubric(selectedModuleId, updated);
+    const handleDeleteCategory = (catId: string) => {
+        toast.warning('Are you sure you want to delete this category?', {
+            action: {
+                label: 'Delete',
+                onClick: async () => {
+                    const updated = categories.filter(c => c.id !== catId);
+                    try {
+                        await updateRubric(selectedModuleId, updated);
+                        toast.success('Category deleted successfully');
+                    } catch (error) {
+                        toast.error('Failed to delete category');
+                    }
+                }
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => {}
+            }
+        });
     };
 
     const handleToggleExpand = (id: string) => {

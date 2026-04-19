@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { StudentProfile } from './profile/StudentProfile';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useData } from '../services/DataContext';
+import { toast } from 'sonner';
 import { Trophy, FileText, Map, Users, CheckCircle } from 'lucide-react';
 import { LogStatus, AttendanceStatus } from '../types';
 
@@ -94,14 +95,13 @@ export const StudentView: React.FC = () => {
       setIsSubmitting(true);
       try {
           await updateStudentSubmission(selectedLog.id, currentUser.id, artifactUrl, reflection);
-          setSuccessMsg('Project submitted successfully!');
+          toast.success('Project submitted successfully!');
           setSelectedLog(null);
           setArtifactUrl('');
           setReflection('');
-          setTimeout(() => setSuccessMsg(''), 3000);
       } catch (error) {
           console.error("Submission error:", error);
-          alert("Failed to submit. Please try again.");
+          toast.error("Failed to submit. Please try again.");
       } finally {
           setIsSubmitting(false);
       }

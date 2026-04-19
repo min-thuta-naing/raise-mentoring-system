@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus, Send, Repeat, AlertTriangle, BookOpen, Edit, Trash2, X, Shield, ChevronsDown, ChevronDown } from 'lucide-react';
+import { toast } from 'sonner';
 import { Module, User, LessonPlan, Role, ActivityType, PlanStatus, MentorType, Batch } from '../../types';
 
 interface PlanningTabProps {
@@ -133,51 +134,62 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
     const duration = calculateDuration();
 
     if (duration < 50) {
-      alert("Session must be at least 50 minutes.");
+      toast.error("Session must be at least 50 minutes.");
       return;
     }
 
+    const processAdd = () => {
+      const count = isRecurring ? recurrenceCount : 1;
+      let currentDate = date ? new Date(date) : null;
+
+      for (let i = 0; i < count; i++) {
+        let dateStr = '';
+        if (currentDate) {
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          dateStr = `${year}-${month}-${day}`;
+        }
+
+        const newPlan: LessonPlan = {
+          id: `plan-${Date.now()}-${i}`,
+          moduleId: selectedModuleId,
+          date: dateStr,
+          startTime,
+          endTime,
+          durationMinutes: duration,
+          activityType,
+          topic: isRecurring ? `${topic} (Session ${i + 1})` : topic,
+          mentorId,
+          status: planStatus
+        };
+        onAddPlan(newPlan);
+
+        if (currentDate) {
+          currentDate.setDate(currentDate.getDate() + recurrenceInterval);
+        }
+      }
+
+      setIsModalOpen(false);
+      setTopic(''); setStartTime(''); setEndTime(''); setMentorId('');
+      setIsRecurring(false); setRecurrenceCount(1);
+    };
+
     if (hasConflict) {
-      if (!confirm("Warning: This mentor has a conflicting session at this time. Do you want to proceed?")) return;
+      toast.warning("Warning: This mentor has a conflicting session at this time. Do you want to proceed?", {
+        action: {
+          label: 'Proceed',
+          onClick: () => processAdd()
+        },
+        cancel: {
+          label: 'Cancel',
+          onClick: () => {}
+        }
+      });
+      return;
     }
 
-    const count = isRecurring ? recurrenceCount : 1;
-    let currentDate = date ? new Date(date) : null;
-
-    for (let i = 0; i < count; i++) {
-      let dateStr = '';
-      if (currentDate) {
-        // Format date YYYY-MM-DD
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        dateStr = `${year}-${month}-${day}`;
-      }
-
-      const newPlan: LessonPlan = {
-        id: `plan-${Date.now()}-${i}`,
-        moduleId: selectedModuleId,
-        date: dateStr,
-        startTime,
-        endTime,
-        durationMinutes: duration,
-        activityType,
-        topic: isRecurring ? `${topic} (Session ${i + 1})` : topic,
-        mentorId,
-        status: planStatus
-      };
-      onAddPlan(newPlan);
-
-      if (currentDate) {
-        // Increment date
-        currentDate.setDate(currentDate.getDate() + recurrenceInterval);
-      }
-    }
-
-    setIsModalOpen(false);
-    // Reset form
-    setTopic(''); setStartTime(''); setEndTime(''); setMentorId('');
-    setIsRecurring(false); setRecurrenceCount(1);
+    processAdd();
   };
 
   const togglePlanSelection = (id: string) => {
@@ -208,10 +220,10 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         });
       }
       setSelectedPlanIds([]);
-      alert(`Successfully published ${plansToPublish.length} sessions!`);
+      toast.success(`Successfully published ${plansToPublish.length} sessions!`);
     } catch (error) {
       console.error("Error publishing plans:", error);
-      alert("Failed to publish some plans. Please try again.");
+      toast.error("Failed to publish some plans. Please try again.");
     } finally {
       setIsPublishing(false);
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle, Download, AlertTriangle, Shield, Eye, XCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { MentoringLog, User, Module, LogStatus } from '../../types';
 
 interface ApprovalsTabProps {
@@ -27,9 +28,24 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
 
   const handleBatchApprove = () => {
     const validPending = pendingLogs.filter(l => l.isValidSession && !getOverlapWarning(l));
-    if (confirm(`Approve ${validPending.length} valid logs without conflicts?`)) {
-      validPending.forEach(l => onUpdateStatus(l.id, LogStatus.APPROVED));
+    if (validPending.length === 0) {
+      toast.info("No valid logs without conflicts to approve.");
+      return;
     }
+
+    toast.warning(`Approve ${validPending.length} valid logs without conflicts?`, {
+      action: {
+        label: 'Approve All',
+        onClick: () => {
+          validPending.forEach(l => onUpdateStatus(l.id, LogStatus.APPROVED));
+          toast.success(`Successfully approved ${validPending.length} logs.`);
+        }
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {}
+      }
+    });
   };
 
   const handleExportAudit = () => {
@@ -149,9 +165,9 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                   onClick={async () => {
                     try {
                       await onUpdateStatus(log.id, LogStatus.APPROVED);
-                      alert("Log verified successfully.");
+                      toast.success("Log verified successfully.");
                     } catch (err) {
-                      alert("Failed to verify log. Please try again.");
+                      toast.error("Failed to verify log. Please try again.");
                     }
                   }}
                   className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
@@ -164,9 +180,9 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                     if (reason) {
                       try {
                         await onUpdateStatus(log.id, LogStatus.REJECTED, reason);
-                        alert("Log rejected.");
+                        toast.info("Log rejected.");
                       } catch (err) {
-                        alert("Failed to reject log.");
+                        toast.error("Failed to reject log.");
                       }
                     }
                   }}

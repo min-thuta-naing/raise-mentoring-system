@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, Plus, Layers, CheckCircle2, XCircle, Pencil, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Batch } from '../../types';
 
 interface BatchManagementTabProps {
@@ -39,7 +40,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
     e.preventDefault();
     
     if (new Date(formData.endDate) <= new Date(formData.startDate)) {
-      alert('End date must be later than the start date.');
+      toast.error('End date must be later than the start date.');
       return;
     }
 
@@ -59,10 +60,10 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
         startDate: new Date().toISOString().split('T')[0],
         endDate: new Date(new Date().setMonth(new Date().getMonth() + 6)).toISOString().split('T')[0]
       });
-      alert('Batch created successfully!');
+      toast.success('Batch created successfully!');
     } catch (error) {
       console.error('Failed to create batch:', error);
-      alert('Failed to create batch.');
+      toast.error('Failed to create batch.');
     } finally {
       setIsSubmitting(false);
     }
@@ -73,7 +74,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
     if (!editingBatch) return;
 
     if (new Date(editFormData.endDate) <= new Date(editFormData.startDate)) {
-      alert('End date must be later than the start date.');
+      toast.error('End date must be later than the start date.');
       return;
     }
 
@@ -89,10 +90,10 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
 
       await onUpdateBatch(updatedBatch);
       setEditingBatch(null);
-      alert('Batch updated successfully!');
+      toast.success('Batch updated successfully!');
     } catch (error) {
       console.error('Failed to update batch:', error);
-      alert('Failed to update batch.');
+      toast.error('Failed to update batch.');
     } finally {
       setIsSubmitting(false);
     }

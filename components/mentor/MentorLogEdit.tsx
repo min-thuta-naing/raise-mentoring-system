@@ -7,6 +7,7 @@ import {
     Loader2, Send, ArrowLeft, Mic, CheckCircle, AlertTriangle, Shield 
 } from 'lucide-react';
 import { draftAssessmentWithAI } from '../../services/aiService';
+import { toast } from 'sonner';
 import { SYSTEM_FALLBACK_RUBRIC } from '../../constants';
 
 // SFIA Level Definitions (Synchronized with Form)
@@ -82,7 +83,7 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
         const reflection = studentScore.studentReflection || '';
 
         if (!artifact && !reflection) {
-            alert("Student has not submitted an artifact or reflection to evaluate.");
+            toast.error("Student has not submitted an artifact or reflection to evaluate.");
             return;
         }
 
@@ -100,7 +101,7 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
             }));
         } catch (error) {
             console.error("AI Drafting error:", error);
-            alert("Failed to draft AI assessment.");
+            toast.error("Failed to draft AI assessment.");
         } finally {
             setIsDraftingAI(prev => ({ ...prev, [studentId]: false }));
         }
@@ -150,11 +151,11 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
     const submitForm = async (targetStatus: LogStatus) => {
         if (!logId) return;
         if (targetStatus === LogStatus.PENDING && !artifactUrl) {
-            alert("Artifact link required for submission.");
+            toast.error("Artifact link required for submission.");
             return;
         }
         if (targetStatus === LogStatus.PENDING && !digitalSignature) {
-            alert("Digital signature required.");
+            toast.error("Digital signature required.");
             return;
         }
 
@@ -179,14 +180,14 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
 
         try {
             await addLog(updatedLog, isAdmin ? selectedMentorId : undefined);
-            setSuccessMsg("Changes saved successfully!");
+            toast.success("Changes saved successfully!");
             setTimeout(() => {
                 onSuccess();
                 navigate('/mentor/logs');
             }, 1000);
         } catch (error) {
             console.error("Failed to update log:", error);
-            alert("Failed to save changes.");
+            toast.error("Failed to save changes.");
         } finally {
             setIsSubmitting(false);
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../services/DataContext';
 import { AttendanceStatus, CompetencyScore, LogStatus, MentoringLog, Role, LessonPlan } from '../../types';
+import { toast } from 'sonner';
 import { Clock, Users, Save, Link as LinkIcon, Upload, AlertTriangle, CheckCircle, Shield, CalendarCheck, HelpCircle, ArrowLeft, Mic, Star, Sparkles, MessageSquare, Loader2, Send } from 'lucide-react';
 import { SYSTEM_FALLBACK_RUBRIC } from '../../constants';
 import { draftAssessmentWithAI } from '../../services/aiService';
@@ -60,13 +61,13 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
       const reflection = studentScore.studentReflection || '';
 
       if (!artifact && !reflection) {
-          alert("Student has not submitted an artifact or reflection to evaluate.");
+          toast.error("Student has not submitted an artifact or reflection to evaluate.");
           return;
       }
 
       const activeCategories = selectedModule?.assessmentConfig?.filter(c => c.isEnabled) || [];
       if (activeCategories.length === 0) {
-          alert("No active rubric categories found for this module.");
+          toast.error("No active rubric categories found for this module.");
           return;
       }
 
@@ -94,7 +95,7 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
           }));
       } catch (error) {
           console.error("Failed to draft assessment with AI:", error);
-          alert("Failed to generate AI assessment. Please check your API key and try again.");
+          toast.error("Failed to generate AI assessment. Please check your API key and try again.");
       } finally {
           setIsDraftingAI(prev => ({ ...prev, [studentId]: false }));
       }
@@ -283,20 +284,20 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
 
     const submitForm = async (targetStatus: LogStatus) => {
     if (isAdmin && !selectedMentorId) {
-        alert("Please select a mentor to record for.");
+        toast.error("Please select a mentor to record for.");
         return;
     }
     if (!selectedModuleId) {
-        alert("Please select a teaching module.");
+        toast.error("Please select a teaching module.");
         return;
     }
     // Artifact is not strictly required for DRAFT, but let's keep it required for PENDING
     if (targetStatus === LogStatus.PENDING && !artifactUrl) {
-      alert("Please provide an artifact link (Proof of work) before submitting for approval.");
+      toast.error("Please provide an artifact link (Proof of work) before submitting for approval.");
       return;
     }
     if (targetStatus === LogStatus.PENDING && !digitalSignature) {
-        alert("Please check the digital signature box to certify this session before submitting.");
+        toast.error("Please check the digital signature box to certify this session before submitting.");
         return;
     }
 
@@ -339,8 +340,7 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
     } catch (error: any) {
         console.error("Failed to submit log:", error);
         setIsSubmitting(false);
-        // Alert the specific error message to help identify if it's a permission issue or something else
-        alert(`Failed to save log: ${error.message || 'Unknown database error'}. Please try again.`);
+        toast.error(`Failed to save log: ${error.message || 'Unknown database error'}. Please try again.`);
     }
   };
 

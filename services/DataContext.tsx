@@ -134,7 +134,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [messages, lastReadTimestamps, currentUser]);
 
   const totalUnreadCount = useMemo(() => {
-    return Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
+    return Object.values(unreadCounts).reduce((sum: number, count: number) => sum + count, 0);
   }, [unreadCounts]);
 
   const markGroupAsRead = async (groupId: string) => {
@@ -180,6 +180,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           createdAt: data.createdAt?.toMillis?.() || data.createdAt
         };
       }) as LessonPlan[];
+      setLessonPlans(fetchedPlans);
     });
     return unsubscribe;
   }, []);
@@ -281,19 +282,34 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (!currentUser) return;
 
-    // We remove the complex orderBy here because it requires a manual Composite Index in Firestore.
-    // Instead, we fetch the data and sort on the client to ensure it works immediately.
     let q = query(collection(db, 'mentoring_logs'));
     
-    if (currentUser.role !== Role.ADMIN) {
+    // Role-based filtering at the query level where possible
+    if (currentUser.role === Role.MENTOR) {
       q = query(collection(db, 'mentoring_logs'), where('mentorId', '==', currentUser.id));
+    } else if (currentUser.role === Role.STUDENT) {
+      // Students fetch logs for their batch
+      if (currentUser.batchId) {
+        q = query(collection(db, 'mentoring_logs'), where('batchId', '==', currentUser.batchId));
+      } else {
+        // If no batch, they see nothing
+        setLogs([]);
+        return;
+      }
     }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedLogs = snapshot.docs.map(doc => ({
+      let fetchedLogs = snapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id
       })) as MentoringLog[];
+      
+      // Privacy Guard: For students, filter logs to only those where they are participants
+      if (currentUser.role === Role.STUDENT) {
+        fetchedLogs = fetchedLogs.filter(log => 
+          log.scores?.some(s => s.studentId === currentUser.id)
+        );
+      }
       
       // Sort on client: Date desc, then StartTime desc
       const sorted = fetchedLogs.sort((a, b) => {
@@ -308,7 +324,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
 
     return unsubscribe;
-  }, [currentUser]);
+  }, [currentUser, currentUser?.batchId]);
 
   const isAuthenticated = !!currentUser && currentUser.status === UserStatus.APPROVED;
 

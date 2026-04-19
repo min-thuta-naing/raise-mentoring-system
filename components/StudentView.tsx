@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { StudentProfile } from './profile/StudentProfile';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useData } from '../services/DataContext';
-import { Trophy, FileText, Map, Users } from 'lucide-react';
+import { Trophy, FileText, Map, Users, CheckCircle } from 'lucide-react';
 import { LogStatus, AttendanceStatus } from '../types';
 
 import { Layout } from './Layout';
@@ -19,6 +19,8 @@ export const StudentView: React.FC = () => {
   const [selectedLog, setSelectedLog] = useState<any>(null);
   const [artifactUrl, setArtifactUrl] = useState('');
   const [reflection, setReflection] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const navItems = [
       { id: 'dashboard', label: 'Dashboard', icon: <Trophy size={18} />, path: '/student/dashboard' },
@@ -85,13 +87,24 @@ export const StudentView: React.FC = () => {
     return { radarData: data };
   }, [radarSessions]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!selectedLog) return;
-      updateStudentSubmission(selectedLog.id, currentUser.id, artifactUrl, reflection);
-      setSelectedLog(null);
-      setArtifactUrl('');
-      setReflection('');
+      
+      setIsSubmitting(true);
+      try {
+          await updateStudentSubmission(selectedLog.id, currentUser.id, artifactUrl, reflection);
+          setSuccessMsg('Project submitted successfully!');
+          setSelectedLog(null);
+          setArtifactUrl('');
+          setReflection('');
+          setTimeout(() => setSuccessMsg(''), 3000);
+      } catch (error) {
+          console.error("Submission error:", error);
+          alert("Failed to submit. Please try again.");
+      } finally {
+          setIsSubmitting(false);
+      }
   };
 
   const openModal = (logId: string) => {
@@ -149,8 +162,16 @@ export const StudentView: React.FC = () => {
             reflection={reflection}
             setReflection={setReflection}
             onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
             onClose={() => setSelectedLog(null)}
           />
+      )}
+
+      {successMsg && (
+          <div className="fixed bottom-12 left-1/2 -translate-x-1/2 bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-[0.2em] flex items-center gap-3 animate-slide-up z-50">
+              <CheckCircle size={18} />
+              {successMsg}
+          </div>
       )}
     </Layout>
   );

@@ -1,5 +1,4 @@
-import React from 'react';
-import { XCircle, Trophy, Send } from 'lucide-react';
+import { XCircle, Trophy, Send, Loader2, CheckCircle } from 'lucide-react';
 import { LogStatus, MentoringLog, Module, User } from '../../types';
 
 interface SubmissionModalProps {
@@ -12,6 +11,7 @@ interface SubmissionModalProps {
     setReflection: (text: string) => void;
     onSubmit: (e: React.FormEvent) => void;
     onClose: () => void;
+    isSubmitting?: boolean;
 }
 
 export const SubmissionModal: React.FC<SubmissionModalProps> = ({
@@ -23,10 +23,13 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({
     reflection,
     setReflection,
     onSubmit,
-    onClose
+    onClose,
+    isSubmitting = false
 }) => {
     const module = modules.find(m => m.id === selectedLog.moduleId);
     const myScore = selectedLog.scores.find(s => s.studentId === currentUser.id);
+
+    const isAlreadySubmitted = myScore?.isFeedbackAcknowledged || (myScore?.studentArtifactUrl && myScore?.studentReflection);
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
@@ -77,12 +80,13 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({
                         <input 
                             type="url" 
                             required
+                            disabled={isAlreadySubmitted || isSubmitting}
                             placeholder={
                                 module?.expectedArtifactType === 'GITHUB' ? "https://github.com/..." :
                                 module?.expectedArtifactType === 'FIGMA' ? "https://figma.com/..." :
                                 "https://..."
                             }
-                            className="w-full rounded-lg border-gray-300 p-3 border focus:ring-2 focus:ring-indigo-500 text-sm"
+                            className={`w-full rounded-lg border-gray-300 p-3 border focus:ring-2 focus:ring-indigo-500 text-sm ${isAlreadySubmitted ? 'bg-gray-50 cursor-not-allowed text-gray-500' : ''}`}
                             value={artifactUrl}
                             onChange={e => setArtifactUrl(e.target.value)}
                         />
@@ -94,17 +98,37 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({
                         <textarea 
                             required
                             rows={4}
+                            disabled={isAlreadySubmitted || isSubmitting}
                             placeholder="I learned how to..." 
-                            className="w-full rounded-lg border-gray-300 p-3 border focus:ring-2 focus:ring-indigo-500 text-sm"
+                            className={`w-full rounded-lg border-gray-300 p-3 border focus:ring-2 focus:ring-indigo-500 text-sm ${isAlreadySubmitted ? 'bg-gray-50 cursor-not-allowed text-gray-500' : ''}`}
                             value={reflection}
                             onChange={e => setReflection(e.target.value)}
                         />
                     </div>
 
                     <div className="pt-4 border-t border-gray-100 flex justify-end gap-3">
-                        <button type="button" onClick={onClose} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">Cancel</button>
-                        <button type="submit" className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-bold flex items-center gap-2">
-                            <Send size={16} /> {selectedLog.status === LogStatus.DRAFT ? 'Submit Work' : 'Acknowledge & Submit'}
+                        <button type="button" onClick={onClose} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">Close</button>
+                        <button 
+                            type="submit" 
+                            disabled={isAlreadySubmitted || isSubmitting} 
+                            className={`px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors ${
+                                isAlreadySubmitted 
+                                    ? 'bg-green-100 text-green-700 cursor-not-allowed' 
+                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50'
+                            }`}
+                        >
+                            {isSubmitting ? (
+                                <Loader2 size={16} className="animate-spin" />
+                            ) : isAlreadySubmitted ? (
+                                <CheckCircle size={16} />
+                            ) : (
+                                <Send size={16} />
+                            )} 
+                            {isSubmitting 
+                                ? (selectedLog.status === LogStatus.DRAFT ? 'Submitting...' : 'Saving...') 
+                                : isAlreadySubmitted 
+                                    ? 'Submitted' 
+                                    : (selectedLog.status === LogStatus.DRAFT ? 'Submit Work' : 'Acknowledge & Submit')}
                         </button>
                     </div>
                 </form>

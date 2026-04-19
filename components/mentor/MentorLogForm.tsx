@@ -137,18 +137,15 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
   // Initialize scores
   useEffect(() => {
     if (students.length > 0 && scores.length === 0) {
-      const activeCategories = selectedModule?.assessmentConfig?.filter(c => c.isEnabled) || [];
+      // Find dynamic rubric for this module
+      const customRubric = rubrics.find(r => r.moduleId === selectedModuleId);
+      const activeCategories = customRubric?.categories || SYSTEM_FALLBACK_RUBRIC;
       
       const initialScores: CompetencyScore[] = students.map(s => {
           const metrics: Record<string, number> = {};
-          if (activeCategories.length > 0) {
-              activeCategories.forEach(cat => metrics[cat.name] = 3);
-          } else {
-              // Fallback default
-              metrics['Technical Product'] = 3;
-              metrics['Process & Agile'] = 3;
-              metrics['Presentation & Pitching'] = 3;
-          }
+          activeCategories.forEach(cat => {
+              if (cat.isEnabled) metrics[cat.name] = 3;
+          });
 
           return {
             studentId: s.id,
@@ -160,7 +157,7 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
       });
       setScores(initialScores);
     }
-  }, [selectedBatchId, students.length, selectedModuleId, selectedModule, scores.length]); 
+  }, [selectedBatchId, students.length, selectedModuleId, selectedModule, scores.length, rubrics]); 
 
   // Check for Lesson Plans
   const availablePlan = lessonPlans.find(p => p.moduleId === selectedModuleId && p.date === date);

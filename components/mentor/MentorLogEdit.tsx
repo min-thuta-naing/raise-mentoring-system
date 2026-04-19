@@ -25,7 +25,7 @@ interface MentorLogEditProps {
 export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
     const navigate = useNavigate();
     const { logId } = useParams<{ logId: string }>();
-    const { logs, batches, getModulesByBatch, currentUser, getStudentsByBatch, addLog, users } = useData();
+    const { logs, batches, getModulesByBatch, currentUser, getStudentsByBatch, addLog, users, rubrics } = useData();
 
     // Find the log in our global data context
     const log = logs.find(l => l.id === logId);
@@ -204,11 +204,8 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
     }
 
     const duration = calculateDuration();
-    const activeCategories = selectedModule?.assessmentConfig?.filter(c => c.isEnabled) || [
-        { id: 'def-1', name: 'Business Acumen', description: '', weight: 0, isEnabled: true },
-        { id: 'def-2', name: 'Creativity', description: '', weight: 0, isEnabled: true },
-        { id: 'def-3', name: 'Discipline', description: '', weight: 0, isEnabled: true }
-    ];
+    const customRubric = rubrics.find(r => r.moduleId === selectedModuleId);
+    const activeCategories = customRubric?.categories?.filter(c => c.isEnabled) || SYSTEM_FALLBACK_RUBRIC;
 
     return (
         <div className="animate-fade-in max-w-6xl mx-auto pb-20">

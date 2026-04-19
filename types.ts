@@ -87,9 +87,15 @@ export interface Module {
   id: string;
   batchId: string;
   name: string; // e.g. "Data Science"
-  assessmentConfig?: AssessmentCategory[]; // Custom rubrics for this module
   expectedArtifactType?: ArtifactType;
   createdAt?: number; // Timestamp for tracking recent creations
+}
+
+export interface Rubric {
+  id: string; // Same as moduleId for easier lookup
+  moduleId: string;
+  categories: AssessmentCategory[];
+  updatedAt?: any;
 }
 
 export interface Group {

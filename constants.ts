@@ -1,5 +1,49 @@
-
 import { Batch, Module, Role, User, LogStatus, AttendanceStatus, MentoringLog, Group, Intervention, MentorType, AssessmentCategory, ArtifactType, LessonPlan, PlanStatus, ActivityType, UserStatus } from './types';
+
+export const SYSTEM_FALLBACK_RUBRIC: AssessmentCategory[] = [
+    { 
+        id: 'def-1', 
+        name: 'Business Acumen', 
+        description: 'Business understanding, market awareness, and product impact.', 
+        weight: 34, 
+        isEnabled: true,
+        levels: {
+            1: "Little to no understanding of the project's business value.",
+            2: "Basic grasp of the product but misses market context.",
+            3: "Can explain why the product is valuable to users.",
+            4: "Strong awareness of business goals and user impact.",
+            5: "Strategic thinker; understands complex business requirements and ROI."
+        }
+    },
+    { 
+        id: 'def-2', 
+        name: 'Creativity', 
+        description: 'Innovation capability, logic, and problem-solving skills.', 
+        weight: 33, 
+        isEnabled: true,
+        levels: {
+            1: "Struggles with basic logic or simple problem solving.",
+            2: "Can solve standard problems with guidance.",
+            3: "Functional problem solver; can think of alternative solutions.",
+            4: "Proactive innovator; suggests improvements and unique ideas.",
+            5: "Exceptional creativity; solves complex logic with elegant, novel approaches."
+        }
+    },
+    { 
+        id: 'def-3', 
+        name: 'Discipline', 
+        description: 'Professionalism, reliability, and communication.', 
+        weight: 33, 
+        isEnabled: true,
+        levels: {
+            1: "Often late; poor communication; lacks documentation.",
+            2: "Generally reliable but lacks consistency in professional behavior.",
+            3: "Consistent and professional; communicates status clearly.",
+            4: "Role model for discipline; thorough documentation and proactive updates.",
+            5: "Leadership quality; manages time perfectly and sets communication standards."
+        }
+    }
+];
 
 export const MOCK_BATCHES: Batch[] = [
   { id: 'b1', name: 'Batch 5', startDate: '2023-08-01', endDate: '2023-12-31', status: 'ACTIVE' },
@@ -94,11 +138,11 @@ const DEFAULT_RUBRIC: AssessmentCategory[] = [
 ];
 
 export const MOCK_MODULES: Module[] = [
-  { id: 'm1', batchId: 'b1', name: 'Foundation & AI-Driven Design', assessmentConfig: DEFAULT_RUBRIC, expectedArtifactType: ArtifactType.FIGMA },
-  { id: 'm2', batchId: 'b1', name: 'Full-Stack Development', assessmentConfig: DEFAULT_RUBRIC, expectedArtifactType: ArtifactType.GITHUB },
-  { id: 'm3', batchId: 'b1', name: 'AI and Data Analytics', assessmentConfig: DEFAULT_RUBRIC, expectedArtifactType: ArtifactType.URL },
-  { id: 'm4', batchId: 'b1', name: 'IoT & System Integration', assessmentConfig: DEFAULT_RUBRIC, expectedArtifactType: ArtifactType.GITHUB },
-  { id: 'm5', batchId: 'b1', name: 'Deployment & Final Launch', assessmentConfig: DEFAULT_RUBRIC, expectedArtifactType: ArtifactType.URL },
+  { id: 'm1', batchId: 'b1', name: 'Foundation & AI-Driven Design', expectedArtifactType: ArtifactType.FIGMA },
+  { id: 'm2', batchId: 'b1', name: 'Full-Stack Development', expectedArtifactType: ArtifactType.GITHUB },
+  { id: 'm3', batchId: 'b1', name: 'AI and Data Analytics', expectedArtifactType: ArtifactType.URL },
+  { id: 'm4', batchId: 'b1', name: 'IoT & System Integration', expectedArtifactType: ArtifactType.GITHUB },
+  { id: 'm5', batchId: 'b1', name: 'Deployment & Final Launch', expectedArtifactType: ArtifactType.URL },
 ];
 
 export const MOCK_LESSON_PLANS: LessonPlan[] = [

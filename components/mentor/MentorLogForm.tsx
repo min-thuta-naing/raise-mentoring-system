@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../../services/DataContext';
 import { AttendanceStatus, CompetencyScore, LogStatus, MentoringLog, Role, LessonPlan } from '../../types';
 import { Clock, Users, Save, Link as LinkIcon, Upload, AlertTriangle, CheckCircle, Shield, CalendarCheck, HelpCircle, ArrowLeft, Mic, Star, Sparkles, MessageSquare, Loader2, Send } from 'lucide-react';
+import { SYSTEM_FALLBACK_RUBRIC } from '../../constants';
 import { draftAssessmentWithAI } from '../../services/aiService';
 
 interface MentorLogFormProps {
@@ -21,7 +22,7 @@ const SFIA_LEVELS = [
 ];
 
 export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuccess, onCancel }) => {
-  const { batches, getModulesByBatch, currentUser, getStudentsByBatch, addLog, users, lessonPlans } = useData();
+  const { batches, getModulesByBatch, currentUser, getStudentsByBatch, addLog, users, lessonPlans, rubrics } = useData();
   
   // Local State
   const [selectedBatchId, setSelectedBatchId] = useState(initialData?.batchId || batches[0]?.id || '');
@@ -352,11 +353,8 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
   };
 
   // Determine which categories to render
-  const activeCategories = selectedModule?.assessmentConfig?.filter(c => c.isEnabled) || [
-      { id: 'def-1', name: 'Business Acumen', description: 'Business understanding', weight: 0, isEnabled: true },
-      { id: 'def-2', name: 'Creativity', description: 'Innovation capability', weight: 0, isEnabled: true },
-      { id: 'def-3', name: 'Discipline', description: 'Professionalism', weight: 0, isEnabled: true }
-  ];
+  const currentRubric = rubrics.find(r => r.moduleId === selectedModule?.id);
+  const activeCategories = currentRubric?.categories?.filter(c => c.isEnabled) || SYSTEM_FALLBACK_RUBRIC;
 
   return (
     <div className={`bg-white rounded-xl shadow-sm border overflow-hidden ${isAdmin ? 'border-indigo-200' : 'border-gray-100'}`}>

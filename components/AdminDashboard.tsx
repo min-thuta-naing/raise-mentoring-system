@@ -13,10 +13,10 @@ import { AdminProfile } from './profile/AdminProfile';
 import { OverviewTab } from './admin/OverviewTab';
 import { PlanningTab } from './admin/PlanningTab';
 import { ApprovalsTab } from './admin/ApprovalsTab';
-import { SetupTab } from './admin/SetupTab';
 import { UserRegistrationTab } from './admin/UserRegistrationTab';
 import { BatchManagementTab } from './admin/BatchManagementTab';
 import { GroupMatchingTab } from './admin/GroupMatchingTab';
+import { AssessmentBuilder } from './admin/AssessmentBuilder';
 
 /**
  * Main Admin Dashboard Entry Point
@@ -44,12 +44,12 @@ export const AdminDashboard: React.FC = () => {
                 { id: 'planning', label: 'Planning', icon: <Calendar size={18} />, path: '/admin/planning' },
                 { id: 'batches', label: 'Batch Management', icon: <Layers size={18} />, path: '/admin/batches' },
                 { id: 'groups', label: 'Group Matching', icon: <Users size={18} />, path: '/admin/groups' },
+                { id: 'rubrics', label: 'Rubric Criteria', icon: <Settings size={18} />, path: '/admin/rubrics' },
             ]
         },
         { id: 'approvals', label: 'Verification', icon: <CheckSquare size={18} />, path: '/admin/approvals', badge: pendingLogs },
         { id: 'registration', label: 'User Registration', icon: <UserPlus size={18} />, path: '/admin/registration', badge: pendingRegistrations },
         { id: 'entry', label: 'New Entry', icon: <PenTool size={18} />, path: '/admin/entry' },
-        { id: 'setup', label: 'Configuration', icon: <Settings size={18} />, path: '/admin/setup' },
     ];
 
     // Page Title Mapping
@@ -69,8 +69,8 @@ export const AdminDashboard: React.FC = () => {
                 return { title: 'Group Matching', subtitle: 'Assign students to groups and match them with mentors for a module.' };
             case '/admin/entry':
                 return { title: 'Manual Entry', subtitle: 'Add new mentoring sessions or historical data to the system.' };
-            case '/admin/setup':
-                return { title: 'System Settings', subtitle: 'Configure batches, manage user roles, and update global parameters.' };
+            case '/admin/rubrics':
+                return { title: 'Rubric Criteria', subtitle: 'Define scoring standards and weighting for competency assessments.' };
             case '/admin/profile':
                 return { title: 'Admin Profile', subtitle: 'Manage your personal account settings and preferences.' };
             default:
@@ -139,17 +139,7 @@ export const AdminDashboard: React.FC = () => {
                         } />
                         <Route path="groups" element={<GroupMatchingTab />} />
                         <Route path="entry" element={<MentorLogForm />} />
-                        <Route path="setup" element={
-                            <SetupTab 
-                                batches={batches}
-                                modules={modules}
-                                groups={groups}
-                                users={users}
-                                onAddBatch={addBatch}
-                                onAddGroup={addGroup}
-                                onUpdateGroup={updateGroup}
-                            />
-                        } />
+                        <Route path="rubrics" element={<AssessmentBuilder />} />
                         <Route path="profile" element={<AdminProfile />} />
                         <Route path="/" element={<Navigate to="overview" replace />} />
                     </Routes>

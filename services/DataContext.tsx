@@ -1,8 +1,7 @@
-
-import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo, useRef } from 'react';
 import { query, where, orderBy } from 'firebase/firestore';
-import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus, Message } from '../types';
-import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS } from '../constants';
+import { MentoringLog, User, Batch, Module, Role, LogStatus, Group, LogHistory, Intervention, LessonPlan, UserStatus, Message, Rubric, AssessmentCategory } from '../types';
+import { MOCK_USERS, MOCK_BATCHES, MOCK_MODULES, MOCK_GROUPS, INITIAL_LOGS, MOCK_INTERVENTIONS, MOCK_LESSON_PLANS, SYSTEM_FALLBACK_RUBRIC } from '../constants';
 import { auth, db } from './firebase';
 import { 
   createUserWithEmailAndPassword, 
@@ -38,6 +37,7 @@ interface DataContextType {
   groups: Group[];
   interventions: Intervention[];
   lessonPlans: LessonPlan[];
+  rubrics: Rubric[];
   addLog: (log: MentoringLog, overrideMentorId?: string) => void;
   updateLogStatus: (id: string, status: LogStatus, reason?: string) => void;
   getStudentsByBatch: (batchId: string) => User[];
@@ -46,6 +46,7 @@ interface DataContextType {
   updateBatch: (batch: Batch) => Promise<void>;
   addModule: (module: Module) => Promise<void>;
   updateModule: (module: Module) => Promise<void>;
+  updateRubric: (moduleId: string, categories: AssessmentCategory[]) => Promise<void>;
   deleteModule: (id: string) => Promise<void>;
   getModulesByBatch: (batchId: string) => Module[];
   addGroup: (group: Group) => void;
@@ -77,8 +78,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [groups, setGroups] = useState<Group[]>([]);
   const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
+  const [rubrics, setRubrics] = useState<Rubric[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
+  const pendingRoleRef = useRef<Role | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
 
   // Notification State (Synced via Firestore)
@@ -155,11 +158,29 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const q = collection(db, 'modules');
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedModules = snapshot.docs.map(doc => {
-        const data = doc.data();
+      const fetchedModules = snapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        
+        // --- Migration Logic ---
+        // If we find the old assessmentConfig, we migrate it to the rubrics collection
+        if (data.assessmentConfig && data.assessmentConfig.length > 0) {
+            console.log(`[MIGRATION] Moving rubric for module: ${docSnap.id}`);
+            setDoc(doc(db, 'rubrics', docSnap.id), {
+                id: docSnap.id,
+                moduleId: docSnap.id,
+                categories: data.assessmentConfig,
+                updatedAt: serverTimestamp()
+            }, { merge: true }).then(() => {
+                // Remove it from module after successful migration
+                updateDoc(doc(db, 'modules', docSnap.id), {
+                    assessmentConfig: null // or use fieldValue.delete() if available
+                });
+            });
+        }
+
         return {
           ...data,
-          id: doc.id,
+          id: docSnap.id,
           createdAt: data.createdAt?.toMillis?.() || data.createdAt
         };
       }) as Module[];
@@ -168,15 +189,28 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return unsubscribe;
   }, []);
 
+  // Real-time listener for Rubrics
+  useEffect(() => {
+    const q = collection(db, 'rubrics');
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedRubrics = snapshot.docs.map(docSnap => ({
+        ...docSnap.data(),
+        id: docSnap.id
+      })) as Rubric[];
+      setRubrics(fetchedRubrics);
+    });
+    return unsubscribe;
+  }, []);
+
   // Real-time listener for Lesson Plans
   useEffect(() => {
     const q = collection(db, 'lessonPlans');
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedPlans = snapshot.docs.map(doc => {
-        const data = doc.data();
+      const fetchedPlans = snapshot.docs.map(docSnap => {
+        const data = docSnap.data();
         return {
           ...data,
-          id: doc.id,
+          id: docSnap.id,
           createdAt: data.createdAt?.toMillis?.() || data.createdAt
         };
       }) as LessonPlan[];
@@ -192,9 +226,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Listen for all messages, sorted by time
     const q = query(collection(db, 'group_messages'), orderBy('timestamp', 'asc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedMessages = snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
+      const fetchedMessages = snapshot.docs.map(docSnap => ({
+        ...docSnap.data(),
+        id: docSnap.id
       })) as Message[];
       setMessages(fetchedMessages);
     });
@@ -205,11 +239,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const q = collection(db, 'batches');
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedBatches = snapshot.docs.map(doc => {
-        const data = doc.data();
+      const fetchedBatches = snapshot.docs.map(docSnap => {
+        const data = docSnap.data();
         return {
           ...data,
-          id: doc.id
+          id: docSnap.id
         };
       }) as Batch[];
       setBatches(fetchedBatches);
@@ -326,7 +360,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return unsubscribe;
   }, [currentUser, currentUser?.batchId]);
 
-  const isAuthenticated = !!currentUser && currentUser.status === UserStatus.APPROVED;
+  const isAuthenticated = !!currentUser && (
+    currentUser.role === Role.ADMIN || 
+    currentUser.status === UserStatus.APPROVED
+  );
 
   // Collection Mapper
   const getCollectionName = (role: Role) => {
@@ -341,50 +378,61 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /**
    * Helper to fetch a user profile from its dedicated role-specific table
    */
-  const fetchUserProfile = async (uid: string): Promise<User | null> => {
-    console.log(`[DATA] Fetching profile for UID: ${uid}...`);
-    // Attempt role discovery across all 3 tables
+  const fetchUserProfile = async (uid: string, preferredRole?: Role | null): Promise<User | null> => {
+    console.log(`[DATA] Querying profile for UID: ${uid} (Priority: ${preferredRole || 'NONE'})...`);
+    
+    // We check all potential roles in PARALLEL for maximum speed
     const roles = [Role.STUDENT, Role.MENTOR, Role.ADMIN];
     
-    // Timeout-protected discovery: If Firestore takes > 5s, let's stop waiting
-    const discoveryPromise = (async () => {
-      for (const role of roles) {
-        try {
-          const docRef = doc(db, getCollectionName(role), uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
+    try {
+      const results = await Promise.all(roles.map(async (role) => {
+        const docRef = doc(db, getCollectionName(role), uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
             const data = docSnap.data();
+            const role = data.role as Role;
+            
+            // Admins don't have a 'status' field in DB, so we default it to APPROVED
+            // For others, we assume APPROVED if field is missing, or normalize to uppercase
+            let status = UserStatus.APPROVED;
+            if (role !== Role.ADMIN && data.status) {
+              status = (data.status.toString().toUpperCase() as UserStatus);
+            }
+
             return {
               id: uid,
               email: data.email,
               fullName: data.fullName,
-              role: data.role as Role,
+              role: role,
               avatarUrl: data.avatarUrl,
               coverPhotoUrl: data.coverPhotoUrl,
               mentorType: data.mentorType,
               batchId: data.batchId,
-              status: (data.status as UserStatus) || UserStatus.APPROVED
-            };
-          }
-        } catch (err) {
-          console.warn(`[DATA] Permission denied/error checking role ${role} for ${uid}`);
+              status: status
+            } as User;
         }
+        return null;
+      }));
+
+      // Find the first valid profile from the parallel results
+      const profile = results.find(p => p !== null);
+      
+      if (profile) {
+        console.log(`[DATA] Profile discovered! Role: ${profile.role}`);
+        return profile;
       }
+      
+      console.warn(`[DATA] No profile record found for UID: ${uid}`);
       return null;
-    })();
-
-    const timeoutPromise = new Promise<null>((resolve) => 
-      setTimeout(() => {
-        console.warn(`[DATA] Profile fetch timed out for UID: ${uid}`);
-        resolve(null);
-      }, 5000)
-    );
-
-    return Promise.race([discoveryPromise, timeoutPromise]);
+    } catch (error) {
+      console.error("[DATA] Parallel discovery failed:", error);
+      return null;
+    }
   };
 
-  // Auth Listener
+// Auth Listener: The Single Authority for Authentication State
   useEffect(() => {
+    console.log('[AUTH] Initialization: Mounting Auth Listener.');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (isRegistering) {
         console.log('[AUTH_LOCK] Ignoring auth change during registration lock.');
@@ -392,10 +440,28 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       if (firebaseUser) {
-        const profile = await fetchUserProfile(firebaseUser.uid);
+        // --- Discovery Phase ---
+        // 1. Check intent (from URL or pending login)
+        let priorityRole = pendingRoleRef.current;
+        if (!priorityRole) {
+            const path = window.location.pathname;
+            if (path.includes('/admin')) priorityRole = Role.ADMIN;
+            else if (path.includes('/mentor')) priorityRole = Role.MENTOR;
+            else if (path.includes('/student')) priorityRole = Role.STUDENT;
+        }
+
+        const profile = await fetchUserProfile(firebaseUser.uid, priorityRole);
         
+        if (!profile) {
+            console.warn('[AUTH] No database profile found. Signing out for security.');
+            await signOut(auth);
+            setCurrentUser(null);
+            setIsLoading(false);
+            return;
+        }
+
         // Approval Guard: If user is pending, sign out immediately
-        if (profile?.status === UserStatus.PENDING) {
+        if (profile.status === UserStatus.PENDING) {
           console.log('[AUTH] User is pending approval. Signing out.');
           await signOut(auth);
           setCurrentUser(null);
@@ -403,70 +469,38 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           return;
         }
 
-        // Strict Role Check: If a specific portal login is in progress, 
-        // prevent setting the user if roles don't match.
-        if (pendingRole && profile && profile.role !== pendingRole) {
-          console.log(`[AUTH] Role mismatch: expected ${pendingRole}, got ${profile.role}. Signing out.`);
-          await signOut(auth);
-          setCurrentUser(null);
-        } else if (profile) {
-          setCurrentUser(profile);
-        } else {
-          setCurrentUser(null);
-        }
+        // Finalize session
+        console.log('[AUTH] Hydrating session for:', profile.email);
+        setCurrentUser(profile);
       } else {
+        console.log('[AUTH] No Firebase user detected.');
         setCurrentUser(null);
       }
       setIsLoading(false);
     });
     return unsubscribe;
-  }, [pendingRole]);
+  }, []); 
 
   const login = async (email: string, password: string, role: Role) => {
     try {
+      console.log(`[AUTH_LOGIN] Phase 1: Sign-in intent for role: ${role}`);
       setPendingRole(role);
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const { user } = userCredential;
+      pendingRoleRef.current = role; 
       
-      // Verification Guard: Check if the user exists in the specific role-table
-      const collectionName = getCollectionName(role);
-      const docRef = doc(db, collectionName, user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()) {
-        await signOut(auth);
-        throw new Error(`Account not found in the ${role.toLowerCase()} portal.`);
-      }
-
-      const data = docSnap.data();
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('[AUTH_LOGIN] Phase 2: Firebase Sign-in success. Waiting for listener verification.');
       
-      // Approval Guard
-      if (data.status === UserStatus.PENDING) {
-        await signOut(auth);
-        throw new Error('Your account is pending approval by an administrator.');
-      }
-
-      if (data.status === UserStatus.REJECTED) {
-        await signOut(auth);
-        throw new Error('Your account registration has been declined.');
-      }
-
-      const profile = {
-        id: user.uid,
-        email: user.email || '',
-        fullName: data.fullName,
-        role: data.role as Role,
-        mentorType: data.mentorType,
-        batchId: data.batchId,
-        status: data.status as UserStatus
-      };
-      
-      setCurrentUser(profile);
+      // Note: We don't call setCurrentUser here anymore; the listener is the authority.
+      // It will fetch the profile, check the role, and hydrate the session.
     } catch (error: any) {
       console.error('Login error:', error.message);
       throw error;
     } finally {
-      setPendingRole(null);
+      // We keep the intent ref alive for a brief moment to allow the listener to catch it
+      setTimeout(() => {
+        setPendingRole(null);
+        pendingRoleRef.current = null;
+      }, 2000);
     }
   };
 
@@ -520,10 +554,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       }
 
-      console.log(`[AUTH_SIGNUP] Phase 3: Finalizing and signing out...`);
-      await signOut(auth);
-      
-      console.log(`[AUTH_SIGNUP] Registration sequence complete.`);
+      console.log(`[AUTH_SIGNUP] Phase 3: Registration successful. Waiting for listener to hydrate session...`);
+      // We don't set setCurrentUser here; the listener will pick up the new user and fetch their profile.
     } catch (error: any) {
       console.error('[AUTH_SIGNUP] Registration Chain Failed:', error);
       throw error;
@@ -687,12 +719,33 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addModule = async (module: Module) => {
     try {
-      await addDoc(collection(db, 'modules'), {
+      const docRef = await addDoc(collection(db, 'modules'), {
         ...module,
         createdAt: serverTimestamp()
       });
+
+      // Create associated rubric document automatically
+      await setDoc(doc(db, 'rubrics', docRef.id), {
+          id: docRef.id,
+          moduleId: docRef.id,
+          categories: SYSTEM_FALLBACK_RUBRIC, // Initialize with system default
+          updatedAt: serverTimestamp()
+      });
     } catch (error) {
       console.error('Error adding module:', error);
+    }
+  };
+
+  const updateRubric = async (moduleId: string, categories: AssessmentCategory[]) => {
+    try {
+        await setDoc(doc(db, 'rubrics', moduleId), {
+            id: moduleId,
+            moduleId,
+            categories,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+    } catch (error) {
+        console.error('Error updating rubric:', error);
     }
   };
 
@@ -923,12 +976,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       interventions,
       lessonPlans,
       messages,
+      rubrics,
       sendMessage,
       unreadCounts,
       totalUnreadCount,
       markGroupAsRead,
       addLog, 
       updateLogStatus,
+      updateRubric,
       getStudentsByBatch,
       addUser,
       approveUser,

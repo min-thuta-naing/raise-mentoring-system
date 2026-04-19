@@ -7,6 +7,7 @@ import {
     Loader2, Send, ArrowLeft, Mic, CheckCircle, AlertTriangle, Shield 
 } from 'lucide-react';
 import { draftAssessmentWithAI } from '../../services/aiService';
+import { SYSTEM_FALLBACK_RUBRIC } from '../../constants';
 
 // SFIA Level Definitions (Synchronized with Form)
 const SFIA_LEVELS = [

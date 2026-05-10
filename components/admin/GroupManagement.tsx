@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Users, Plus, Edit, XCircle, CheckCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Group, Module, User, Role } from '../../types';
@@ -164,8 +165,8 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
       </div>
 
       {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-2xl w-full p-8 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-900">{editingGroup ? 'Edit Student Group' : 'Create New Group'}</h3>
@@ -230,12 +231,13 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
               <button onClick={handleSave} className="px-5 py-2 bg-[#454040] text-white rounded-[1.5rem] hover:bg-[#353030] text-sm font-black flex items-center gap-2 shadow-lg shadow-[#454040]/20 transition-all active:scale-95"><CheckCircle size={16} /> Save Group</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
-      {isDeleteModalOpen && groupToDelete && (
-        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
+      {isDeleteModalOpen && groupToDelete && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-md w-full p-8 animate-scale-in">
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 mb-2">
@@ -286,7 +288,8 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

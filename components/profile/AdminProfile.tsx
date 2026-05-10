@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useData } from '../../services/DataContext';
 import { toast } from 'sonner';
 import { LogStatus } from '../../types';
@@ -172,8 +173,8 @@ export const AdminProfile: React.FC = () => {
             </div>
 
             {/* Cover Selection Modal */}
-            {isSelectingCover && (
-                <div className="fixed inset-0 bg-[#131010]/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            {isSelectingCover && createPortal(
+                <div className="fixed inset-0 bg-[#0a0a0f]/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-300">
                     <div className="bg-[#131010] border border-white/10 rounded-[1.5rem] shadow-2xl max-w-2xl w-full overflow-hidden animate-in fade-in zoom-in duration-300">
                         <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                             <h3 className="text-xl font-bold text-white flex items-center gap-3">
@@ -251,11 +252,12 @@ export const AdminProfile: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
             {/* Avatar Selection Modal */}
-            {isSelectingAvatar && (
-                <div className="fixed inset-0 bg-[#131010]/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            {isSelectingAvatar && createPortal(
+                <div className="fixed inset-0 bg-[#0a0a0f]/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-300">
                     <div className="bg-[#131010] border border-white/10 rounded-[1.5rem] shadow-2xl max-w-2xl w-full overflow-hidden animate-in fade-in zoom-in duration-300">
                         <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                             <h3 className="text-xl font-bold text-white flex items-center gap-3">
@@ -330,7 +332,8 @@ export const AdminProfile: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

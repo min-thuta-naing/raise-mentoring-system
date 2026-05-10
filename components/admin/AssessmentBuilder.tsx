@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Scale, Plus, Edit2, Trash2, X, AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { Module, AssessmentCategory, Rubric } from '../../types';
@@ -260,8 +261,8 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
         });
     };
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0f]/60 backdrop-blur-md animate-in fade-in duration-300">
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0a0a0f]/60 backdrop-blur-md animate-in fade-in duration-300">
             <div className="bg-white rounded-[1.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
                 {/* Modal Header */}
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
@@ -390,6 +391,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

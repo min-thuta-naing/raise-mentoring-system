@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Calendar, Plus, Send, Repeat, AlertTriangle, BookOpen, Edit, Trash2, X, Shield, ChevronsDown, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { Module, User, LessonPlan, Role, ActivityType, PlanStatus, MentorType, Batch } from '../../types';
@@ -612,8 +613,8 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       </div>
 
       {/* Add Session Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-lg w-full p-6 animate-fade-in flex flex-col max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Add Planned Session</h3>
             <p className="text-sm text-gray-500 mb-6">Module: <span className="font-semibold text-[#454040]">{selectedModule?.name}</span></p>
@@ -734,12 +735,13 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Module Creation/Edit Modal */}
-      {isModuleModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-in fade-in duration-200">
+      {isModuleModalOpen && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200 border border-gray-100">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
@@ -800,19 +802,20 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-#454040 text-white font-bold rounded-[1.5rem] hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-[#454040] text-white font-bold rounded-[1.5rem] hover:bg-[#353030] shadow-lg shadow-[#454040]/10 transition-all flex items-center justify-center gap-2"
                 >
                   {editingModule ? 'Save Changes' : 'Create Module'}
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirm.isOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4 animate-in fade-in duration-200">
+      {deleteConfirm.isOpen && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-sm w-full p-6 animate-in zoom-in-95 duration-200 border border-red-50">
             <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mb-4 mx-auto">
               <Trash2 className="text-red-600" size={24} />
@@ -839,12 +842,13 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* All Modules Full List Modal */}
-      {isViewAllModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] flex items-center justify-center p-4 animate-in fade-in duration-200">
+      {isViewAllModalOpen && createPortal(
+        <div className="fixed inset-0 bg-[#0a0a0f]/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200 border border-gray-100">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
               <div>
@@ -899,7 +903,8 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -60,15 +60,18 @@ export const AssessmentBuilder: React.FC = () => {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-200 overflow-hidden">
             {/* Header / Module Selector */}
             <div className="p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                 <div className="flex-1 space-y-1">
-                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-2 uppercase italic tracking-tight">
-                        <Scale className="text-indigo-600 w-5 h-5" /> Module Configuration
+                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-3 uppercase italic tracking-tight">
+                        <div className="p-2 bg-[#454040]/10 rounded-[1.5rem]">
+                            <Scale className="text-[#454040] w-5 h-5" />
+                        </div>
+                        Assessment Rubric
                     </h3>
-                    <p className="text-xs text-slate-500 font-bold tracking-widest uppercase">
-                        Current Scope: <span className="text-indigo-600 font-black italic">"{selectedModule?.name || 'No Module Selected'}"</span>
+                    <p className="text-[10px] text-slate-500 font-black tracking-[0.2em] uppercase">
+                        Current Scope: <span className="text-[#454040] font-black italic">"{selectedModule?.name || 'No Module Selected'}"</span>
                     </p>
                 </div>
                 
@@ -81,13 +84,13 @@ export const AssessmentBuilder: React.FC = () => {
                             <select 
                                 value={selectedModuleId}
                                 onChange={(e) => setSelectedModuleId(e.target.value)}
-                                className="w-full pl-5 pr-12 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-black text-slate-700 appearance-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none shadow-xl shadow-slate-200/50 transition-all cursor-pointer hover:border-indigo-300"
+                                className="w-full pl-5 pr-12 py-3.5 bg-white border-2 border-slate-200 rounded-[1.5rem] text-sm font-black text-slate-700 appearance-none focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none shadow-xl shadow-slate-200/50 transition-all cursor-pointer hover:border-[#454040]/30"
                             >
                                 <option value="" disabled>--- Choose a Module ---</option>
                                 {modules.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                             </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none p-1.5 bg-slate-50 rounded-lg border border-slate-200 group-hover:bg-indigo-50 group-hover:border-indigo-200 transition-colors">
-                                <ChevronDown className="text-slate-400 w-4 h-4 group-hover:text-indigo-600" />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none p-1.5 bg-slate-50 rounded-[1.5rem] border border-slate-200 group-hover:bg-[#454040]/10 group-hover:border-[#454040]/20 transition-colors">
+                                <ChevronDown className="text-slate-400 w-4 h-4 group-hover:text-[#454040]" />
                             </div>
                         </div>
                     </div>
@@ -97,7 +100,7 @@ export const AssessmentBuilder: React.FC = () => {
             {/* Content Area */}
             <div className="p-6">
                 {!currentRubric && (
-                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 mb-6">
+                    <div className="bg-amber-50 border border-amber-100 rounded-[1.5rem] p-6 mb-6">
                         <div className="flex gap-3">
                             <AlertCircle className="text-amber-600 shrink-0" />
                             <div>
@@ -113,12 +116,12 @@ export const AssessmentBuilder: React.FC = () => {
                 {/* Categories List */}
                 <div className="space-y-4">
                     {categories.map((cat) => (
-                        <div key={cat.id} className="group bg-white border border-slate-200 rounded-xl p-5 hover:border-indigo-300 hover:shadow-md transition-all">
+                        <div key={cat.id} className="group bg-white border border-slate-200 rounded-[1.5rem] p-6 hover:border-[#454040]/30 hover:shadow-md transition-all">
                             <div className="flex justify-between items-start">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3">
                                         <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">{cat.name}</h4>
-                                        <div className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-black rounded-full border border-indigo-100">
+                                        <div className="px-3 py-1 bg-[#454040]/10 text-[#454040] text-[10px] font-black rounded-[1.5rem] border border-[#454040]/10">
                                             {cat.weight}% WEIGHT
                                         </div>
                                     </div>
@@ -130,14 +133,14 @@ export const AssessmentBuilder: React.FC = () => {
                                 <div className="flex gap-2">
                                     <button 
                                         onClick={() => openEditModal(cat)}
-                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        className="p-2.5 text-slate-400 hover:text-[#454040] hover:bg-[#454040]/10 rounded-[1.5rem] transition-all"
                                         title="Edit Category"
                                     >
                                         <Edit2 size={16} />
                                     </button>
                                     <button 
                                         onClick={() => handleDeleteCategory(cat.id)}
-                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-[1.5rem] transition-all"
                                         title="Delete Category"
                                     >
                                         <Trash2 size={16} />
@@ -149,7 +152,7 @@ export const AssessmentBuilder: React.FC = () => {
                             <div className="mt-4 pt-4 border-t border-slate-100">
                                 <button 
                                     onClick={() => handleToggleExpand(cat.id)}
-                                    className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition-colors"
+                                    className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-[#454040] uppercase tracking-widest transition-colors"
                                 >
                                     {expandedLevels[cat.id] ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                                     {expandedLevels[cat.id] ? 'Hide' : 'Show'} Level Details
@@ -158,7 +161,7 @@ export const AssessmentBuilder: React.FC = () => {
                                 {expandedLevels[cat.id] && cat.levels && (
                                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-5 gap-3">
                                         {[1, 2, 3, 4, 5].map(lvl => (
-                                            <div key={lvl} className={`p-3 rounded-lg border flex flex-col gap-1.5 ${lvl === 5 ? 'bg-indigo-50/30 border-indigo-100' : 'bg-slate-50/50 border-slate-100'}`}>
+                                            <div key={lvl} className={`p-4 rounded-[1.5rem] border flex flex-col gap-2 ${lvl === 5 ? 'bg-[#454040]/5 border-[#454040]/10 shadow-inner' : 'bg-slate-50/50 border-slate-100'}`}>
                                                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Level {lvl}</div>
                                                 <p className="text-[10px] text-slate-600 leading-snug font-medium italic">
                                                     {cat.levels![lvl] || 'No description set.'}
@@ -174,28 +177,28 @@ export const AssessmentBuilder: React.FC = () => {
                     {/* Add Button */}
                     <button 
                         onClick={openAddModal}
-                        className="w-full py-6 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center gap-2 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all group"
+                        className="w-full py-10 border-2 border-dashed border-slate-200 rounded-[1.5rem] flex flex-col items-center justify-center gap-3 text-slate-400 hover:border-[#454040]/30 hover:text-[#454040] hover:bg-[#454040]/5 transition-all group"
                     >
-                        <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-indigo-100 transition-colors">
+                        <div className="p-3 bg-slate-100 rounded-[1.5rem] group-hover:bg-[#454040]/10 transition-colors">
                             <Plus size={24} />
                         </div>
-                        <span className="text-xs font-bold uppercase tracking-widest">Add New Category</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Add New Category</span>
                     </button>
                 </div>
 
                 {/* Validation Footer */}
-                <div className={`mt-8 p-4 rounded-xl flex items-center justify-between ${isWeightValid ? 'bg-emerald-50 border border-emerald-100' : 'bg-red-50 border border-red-100'}`}>
-                    <div className="flex items-center gap-3">
+                <div className={`mt-8 p-6 rounded-[1.5rem] flex items-center justify-between ${isWeightValid ? 'bg-emerald-50 border border-emerald-100' : 'bg-red-50 border border-red-100'}`}>
+                    <div className="flex items-center gap-4">
                         {isWeightValid ? (
-                            <CheckCircle2 className="text-emerald-500" />
+                            <CheckCircle2 className="text-emerald-500 w-6 h-6" />
                         ) : (
-                            <AlertCircle className="text-red-500" />
+                            <AlertCircle className="text-red-500 w-6 h-6" />
                         )}
                         <div>
-                            <p className={`text-sm font-bold ${isWeightValid ? 'text-emerald-900' : 'text-red-900'}`}>
+                            <p className={`text-sm font-black uppercase tracking-wide ${isWeightValid ? 'text-emerald-900' : 'text-red-900'}`}>
                                 Total Weight: {totalWeight}%
                             </p>
-                            <p className={`text-xs ${isWeightValid ? 'text-emerald-700' : 'text-red-700'}`}>
+                            <p className={`text-xs font-medium mt-0.5 ${isWeightValid ? 'text-emerald-700' : 'text-red-700'}`}>
                                 {isWeightValid ? 'Rubric is balanced and active.' : 'Weight must equal exactly 100% to be valid.'}
                             </p>
                         </div>
@@ -258,15 +261,15 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0f]/60 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-white rounded-[1.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
                 {/* Modal Header */}
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <div>
                         <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">
                             {initialData ? 'Edit Metric' : 'Add New Metric'}
                         </h3>
-                        <p className="text-xs text-slate-500 font-bold tracking-widest uppercase">Configuration Panel</p>
+                        <p className="text-[10px] text-slate-500 font-black tracking-[0.2em] uppercase">Configuration Panel</p>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
                         <X className="text-slate-500" />
@@ -278,7 +281,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                         {/* Primary Information */}
                         <div className="space-y-6">
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-[#454040] uppercase tracking-widest flex items-center gap-2">
                                     <Scale size={14} /> Basic Information
                                 </h4>
                                 <div className="space-y-4">
@@ -289,7 +292,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                                             value={name}
                                             onChange={e => setName(e.target.value)}
                                             placeholder="e.g. Code Stability"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-[1.5rem] text-sm focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none transition-all"
                                         />
                                     </div>
                                     <div>
@@ -300,7 +303,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                                             value={description}
                                             onChange={e => setDescription(e.target.value)}
                                             placeholder="What does professional excellence look like?"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-[1.5rem] text-sm focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none transition-all"
                                         />
                                     </div>
                                 </div>
@@ -308,19 +311,19 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
 
                             {/* Weight Analysis */}
                             <div className="space-y-4 pt-6 border-t border-slate-100">
-                                <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-[#454040] uppercase tracking-widest flex items-center gap-2">
                                     <Scale size={14} /> Weight Balancing
                                 </h4>
-                                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                                <div className="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-6">
                                     <div className="mb-4">
-                                        <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-tighter">Current Weight: <span className="text-indigo-600">{weight}%</span></label>
+                                        <label className="block text-xs font-black text-slate-700 mb-2 uppercase tracking-tighter">Current Weight: <span className="text-[#454040]">{weight}%</span></label>
                                         <input 
                                             type="range"
                                             min="0"
                                             max="100"
                                             value={weight}
                                             onChange={e => setWeight(parseInt(e.target.value))}
-                                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                            className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-[#454040]"
                                         />
                                     </div>
                                     
@@ -339,7 +342,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                                     </div>
                                 </div>
                                 {isWeightOverflow && (
-                                    <div className="flex gap-2 p-3 bg-red-50 rounded-lg border border-red-100 italic">
+                                    <div className="flex gap-2 p-3 bg-red-50 rounded-[1.5rem] border border-red-100 italic">
                                         <AlertCircle className="text-red-500 shrink-0 w-4 h-4" />
                                         <p className="text-[10px] text-red-700 leading-tight">Weight overflow! Total cannot exceed 100%.</p>
                                     </div>
@@ -349,10 +352,10 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
 
                         {/* Level Definitions */}
                         <div className="space-y-4">
-                            <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                            <h4 className="text-[10px] font-black text-[#454040] uppercase tracking-widest flex items-center gap-2">
                                 <Scale size={14} /> Level Definitions (Optional)
                             </h4>
-                            <div className="space-y-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                            <div className="space-y-4 bg-slate-50/50 p-6 rounded-[1.5rem] border border-slate-100">
                                 {[1, 2, 3, 4, 5].map(lvl => (
                                     <div key={lvl}>
                                         <label className="block text-[10px] font-black text-slate-400 mb-1 uppercase tracking-tighter">Level {lvl}</label>
@@ -360,7 +363,7 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                                             value={levels[lvl]}
                                             onChange={e => setLevels({ ...levels, [lvl]: e.target.value })}
                                             placeholder={`Outcome for score ${lvl}`}
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm font-medium"
+                                            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-[1.5rem] text-xs focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none shadow-sm font-medium transition-all"
                                         />
                                     </div>
                                 ))}
@@ -374,14 +377,14 @@ const RubricModal: React.FC<RubricModalProps> = ({ onClose, onSave, initialData,
                     <button 
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 text-sm font-black text-slate-500 hover:text-slate-700 uppercase tracking-widest bg-white border border-slate-200 rounded-xl hover:shadow-md transition-all"
+                        className="px-8 py-3 text-[10px] font-black text-slate-500 hover:text-slate-700 uppercase tracking-widest bg-white border border-slate-200 rounded-[1.5rem] hover:shadow-md transition-all active:scale-95"
                     >
                         Cancel
                     </button>
                     <button 
                         form="rubric-form"
                         disabled={isWeightOverflow}
-                        className={`px-8 py-2.5 text-sm font-black text-white uppercase tracking-widest rounded-xl shadow-lg transition-all ${isWeightOverflow ? 'bg-slate-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-200'}`}
+                        className={`px-10 py-3 text-[10px] font-black text-white uppercase tracking-widest rounded-[1.5rem] shadow-lg transition-all active:scale-95 ${isWeightOverflow ? 'bg-slate-300 cursor-not-allowed' : 'bg-[#454040] hover:bg-[#353030] shadow-[#454040]/20'}`}
                     >
                         {initialData ? 'Update Metric' : 'Add Metric'}
                     </button>

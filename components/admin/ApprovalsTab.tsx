@@ -84,14 +84,14 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
       <div className="flex justify-end mb-4 gap-2">
         <button
           onClick={handleExportAudit}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 flex items-center gap-2"
+          className="bg-[#454040] text-white px-6 py-2.5 rounded-[1.5rem] text-sm font-black shadow-lg shadow-[#454040]/20 hover:bg-[#353030] transition-all active:scale-95 flex items-center gap-2"
         >
           <Download size={16} /> Export for Audit (CSV)
         </button>
         {pendingLogs.length > 0 && (
           <button
             onClick={handleBatchApprove}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-green-700 flex items-center gap-2"
+            className="bg-emerald-600 text-white px-6 py-2.5 rounded-[1.5rem] text-sm font-black shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all active:scale-95 flex items-center gap-2"
           >
             <CheckCircle size={16} /> Approve All Valid
           </button>
@@ -99,10 +99,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
       </div>
 
       {pendingLogs.length === 0 ? (
-        <div className="text-center p-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-          <CheckCircle size={48} className="mx-auto text-green-500 mb-4 opacity-50" />
-          <h3 className="text-lg font-medium text-gray-900">All Caught Up!</h3>
-          <p className="text-gray-500">No pending logs to review.</p>
+        <div className="text-center p-12 bg-white/50 rounded-[1.5rem] border border-dashed border-slate-200">
+          <CheckCircle size={48} className="mx-auto text-emerald-500 mb-4 opacity-50" />
+          <h3 className="text-xl font-black text-slate-800">All Caught Up!</h3>
+          <p className="text-slate-500">No pending logs to review.</p>
         </div>
       ) : (
         pendingLogs.map(log => {
@@ -112,10 +112,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
           const isProxy = log.recordedBy !== log.mentorId;
 
           return (
-            <div key={log.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 relative">
+            <div key={log.id} className="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 relative overflow-hidden group">
               {hasOverlap && (
-                <div className="absolute top-0 right-0 bg-red-100 text-red-700 px-3 py-1 text-xs font-bold rounded-bl-lg rounded-tr-lg border-l border-b border-red-200 flex items-center gap-1">
-                  <AlertTriangle size={12} /> Time Overlap Detected
+                <div className="absolute top-0 right-0 bg-red-50 text-red-700 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-bl-[1.5rem] border-l border-b border-red-100 flex items-center gap-2">
+                  <AlertTriangle size={12} /> Overlap Warning
                 </div>
               )}
               <div className="flex-1">
@@ -134,7 +134,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                   </div>
                 </div>
                 <div className="ml-13 pl-13">
-                  <p className="text-sm font-medium text-indigo-900 bg-indigo-50 inline-block px-2 py-1 rounded mb-2">
+                  <p className="text-[10px] font-black uppercase tracking-[0.1em] text-[#454040] bg-[#454040]/10 inline-block px-3 py-1 rounded-[1.5rem] mb-3">
                     {module?.name}
                   </p>
                   <p className="text-gray-600 text-sm mb-3">"{log.summaryNote}"</p>
@@ -143,7 +143,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                       href={log.artifactUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 hover:bg-blue-100 transition-colors font-medium"
+                      className="flex items-center gap-1 bg-slate-50 text-slate-600 px-4 py-2 rounded-[1.5rem] border border-slate-100 hover:bg-slate-100 transition-all font-bold text-xs"
                     >
                       <Eye size={14} /> View Evidence
                     </a>
@@ -170,7 +170,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                       toast.error("Failed to verify log. Please try again.");
                     }
                   }}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                  className="bg-emerald-600 text-white px-6 py-2.5 rounded-[1.5rem] text-sm font-black hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/10 flex items-center justify-center gap-2 active:scale-95"
                 >
                   <CheckCircle size={16} /> Verify Log
                 </button>
@@ -186,7 +186,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ logs, users, modules
                       }
                     }
                   }}
-                  className="bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                  className="bg-white border border-red-100 text-red-600 px-6 py-2.5 rounded-[1.5rem] text-sm font-black hover:bg-red-50 transition-all flex items-center justify-center gap-2 active:scale-95"
                 >
                   <XCircle size={16} /> Reject
                 </button>

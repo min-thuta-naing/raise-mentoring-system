@@ -16,7 +16,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
   subtitle, 
   backgroundImage = "/auth-bg.png",
   align = 'center',
-  theme = 'dark',
+  theme = 'light',
   sideContent
 }) => {
   return (
@@ -49,8 +49,8 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
           }`}>
             <span className={`text-2xl font-bold bg-clip-text text-transparent ${
               theme === 'light' 
-                ? 'bg-gradient-to-r from-[#482121] to-[#6b3a3a]' 
-                : 'bg-gradient-to-r from-indigo-400 to-emerald-400'
+                ? 'bg-gradient-to-r from-[#1e3a8a] to-[#0891b2]' 
+                : 'bg-gradient-to-r from-cyan-400 to-emerald-400'
             }`}>
               RAISE
             </span>

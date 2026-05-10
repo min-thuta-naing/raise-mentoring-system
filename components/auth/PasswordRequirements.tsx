@@ -3,14 +3,14 @@ import { Check, Circle } from 'lucide-react';
 
 interface PasswordRequirementsProps {
   password: string;
-  activeColor?: 'indigo' | 'emerald' | 'rose' | 'brand';
+  activeColor?: 'cyan' | 'emerald' | 'rose' | 'brand';
   theme?: 'light' | 'dark';
 }
 
 export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ 
   password, 
-  activeColor = 'indigo',
-  theme = 'dark'
+  activeColor = 'cyan',
+  theme = 'light'
 }) => {
   const requirements = [
     { label: 'Upper Case Character', regex: /[A-Z]/ },
@@ -21,16 +21,16 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
   ];
 
   const colorMap = {
-    indigo: 'text-indigo-400',
-    emerald: 'text-emerald-400',
-    rose: 'text-rose-400',
+    cyan: 'text-cyan-600',
+    emerald: 'text-emerald-600',
+    rose: 'text-rose-600',
     brand: 'text-[#482121]'
   };
 
   const bgMap = {
-    indigo: 'bg-indigo-500/10',
-    emerald: 'bg-emerald-500/10',
-    rose: 'bg-rose-500/10',
+    cyan: 'bg-cyan-100',
+    emerald: 'bg-emerald-100',
+    rose: 'bg-rose-100',
     brand: 'bg-[#482121]/10'
   };
 

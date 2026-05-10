@@ -287,20 +287,20 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         setSelectedModuleId(m.id);
         if (isViewAllModalOpen) setIsViewAllModalOpen(false);
       }}
-      className={`p-3 rounded-lg text-sm flex justify-between items-center cursor-pointer transition-all border w-full ${selectedModuleId === m.id
-          ? 'bg-indigo-50 border-indigo-200 ring-1 ring-indigo-200 shadow-sm'
+      className={`p-3 rounded-[1.5rem] text-sm flex justify-between items-center cursor-pointer transition-all border w-full ${selectedModuleId === m.id
+          ? 'bg-[#454040]/10 border-[#454040]/20 ring-1 ring-[#454040]/20 shadow-sm'
           : isRecent
-            ? 'bg-indigo-50/30 border-indigo-100/50 hover:bg-indigo-50/50'
+            ? 'bg-[#454040]/5 border-[#454040]/10 hover:bg-[#454040]/10'
             : 'bg-gray-50 border-transparent hover:bg-gray-100'
         }`}
     >
       <div className="flex items-center gap-3">
-        <div className={`w-1.5 h-6 rounded-full ${selectedModuleId === m.id ? 'bg-indigo-600' : isRecent ? 'bg-indigo-300' : 'bg-gray-300'}`} />
-        <span className={`font-medium ${selectedModuleId === m.id ? 'text-indigo-900' : 'text-gray-700'}`}>
+        <div className={`w-1.5 h-6 rounded-full ${selectedModuleId === m.id ? 'bg-[#454040]' : isRecent ? 'bg-[#454040]/40' : 'bg-gray-300'}`} />
+        <span className={`font-medium ${selectedModuleId === m.id ? 'text-[#454040]' : 'text-gray-700'}`}>
           {m.name}
         </span>
         {isRecent && (
-          <span className="text-[10px] bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">New</span>
+          <span className="text-[10px] bg-[#454040]/10 text-[#454040] px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">New</span>
         )}
       </div>
       <div className="flex gap-1 flex-shrink-0">
@@ -330,21 +330,21 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         <nav className="flex items-center gap-4">
           <button
             onClick={() => document.getElementById('modules-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hover:text-indigo-600 transition-colors"
+            className="hover:text-[#454040] transition-colors"
           >
             Modules
           </button>
           <span className="text-gray-200">|</span>
           <button
             onClick={() => document.getElementById('summary-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hover:text-indigo-600 transition-colors"
+            className="hover:text-[#454040] transition-colors"
           >
             Summary
           </button>
           <span className="text-gray-200">|</span>
           <button
             onClick={() => document.getElementById('planning-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hover:text-indigo-600 transition-colors"
+            className="hover:text-[#454040] transition-colors"
           >
             Planning
           </button>
@@ -352,14 +352,14 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       </div>
 
       {/* 1. Modules Top Section (Flexible Height) */}
-      <div id="modules-section" className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-auto min-h-[160px] scroll-mt-24">
+      <div id="modules-section" className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col h-auto min-h-[160px] scroll-mt-24">
         <div className="flex justify-between items-center mb-4 flex-shrink-0">
           <h3 className="font-bold text-gray-800 flex items-center gap-2">
-            <BookOpen size={18} className="text-indigo-600" /> Modules
+            <BookOpen size={18} className="text-[#454040]" /> Modules
           </h3>
           <button
             onClick={() => openModuleModal()}
-            className="flex items-center gap-1 bg-indigo-50 text-[#1A3263] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-all border border-indigo-100"
+            className="flex items-center gap-1 bg-[#454040]/10 text-[#454040] px-3 py-1.5 rounded-[1.5rem] text-xs font-bold hover:bg-[#454040]/20 transition-all border border-[#454040]/20"
           >
             <Plus size={14} /> Add New Module
           </button>
@@ -383,8 +383,8 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               <div className="space-y-6">
                 {recentModules.length > 0 && (
                   <div>
-                    <h4 className="text-[10px] font-bold uppercase text-indigo-400 mb-3 tracking-widest flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse" /> Recently Created
+                    <h4 className="text-[10px] font-bold uppercase text-[#454040]/60 mb-3 tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#454040]/40 rounded-full animate-pulse" /> Recently Created
                     </h4>
                     <div className="space-y-2">
                       {recentModules.map(m => renderModuleCard(m, true))}
@@ -402,7 +402,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                     {allSortedModules.length > 3 && (
                       <button
                         onClick={() => setIsViewAllModalOpen(true)}
-                        className="w-full py-2 px-4 border border-dashed border-gray-200 rounded-lg text-xs font-bold text-gray-500 hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2"
+                        className="w-full py-2 px-4 border border-dashed border-gray-200 rounded-[1.5rem] text-xs font-bold text-gray-500 hover:border-[#454040]/40 hover:text-[#454040] hover:bg-[#454040]/5 transition-all flex items-center justify-center gap-2"
                       >
                         Show More (+{remainingCount})
                       </button>
@@ -431,12 +431,12 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         className="fixed right-6 bottom-1/3 flex flex-col items-center gap-1 cursor-pointer group z-50 transition-all hover:scale-110 active:scale-95"
       >
         <div className="flex flex-col items-center transition-all">
-          <span className="text-[10px] font-bold text-gray-400 group-hover:text-indigo-600 transition-colors lowercase tracking-[0.1em] vertical-text flex items-center justify-center py-4">
+          <span className="text-[10px] font-bold text-gray-400 group-hover:text-[#454040] transition-colors lowercase tracking-[0.1em] vertical-text flex items-center justify-center py-4">
             {showScrollUp ? 'scroll to modules' : 'scroll to planning'}
           </span>
           {/* High-Fidelity Triple-Chevron Stack */}
           <div className={`transition-transform duration-50 ${showScrollUp ? 'rotate-180' : 'rotate-0'}`}>
-            <div className={`flex flex-col items-center leading-none text-indigo-500 group-hover:text-indigo-600 transition-all ${showScrollUp ? '' : 'animate-bounce'}`}>
+            <div className={`flex flex-col items-center leading-none text-[#454040]/60 group-hover:text-[#454040] transition-all ${showScrollUp ? '' : 'animate-bounce'}`}>
               <div className="opacity-30"><ChevronDown size={22} strokeWidth={3} /></div>
               <div className="opacity-60 -mt-3"><ChevronDown size={22} strokeWidth={3} /></div>
               <div className="opacity-100 -mt-3"><ChevronDown size={22} strokeWidth={3} /></div>
@@ -460,8 +460,8 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
             Currently Selected Module for Planning
           </span>
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></div>
-            <h2 className="text-2xl font-black text-indigo-900 uppercase tracking-tight">
+            <div className="w-2 h-2 rounded-full bg-[#454040] animate-pulse"></div>
+            <h2 className="text-2xl font-black text-[#454040] uppercase tracking-tight">
               {selectedModule?.name || 'Select a Module'}
             </h2>
           </div>
@@ -472,26 +472,26 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* 2. Summary (Left Column) */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+          <div className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 h-full">
             <h4 className="text-xs font-bold uppercase text-gray-400 mb-4 tracking-wider flex items-center gap-2">
-              Summary: <span className="text-indigo-600 truncate">{selectedModule?.name || 'No Module Selected'}</span>
+              Summary: <span className="text-[#454040] truncate">{selectedModule?.name || 'No Module Selected'}</span>
             </h4>
             <div className="space-y-4">
-              <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                <h4 className="text-xs font-bold uppercase text-indigo-500 mb-1">Planned Content</h4>
+              <div className="p-4 bg-[#454040]/10 rounded-[1.5rem] border border-[#454040]/20">
+                <h4 className="text-xs font-bold uppercase text-[#454040] mb-1">Planned Content</h4>
                 <div className="flex justify-between items-end">
-                  <span className="text-2xl font-bold text-indigo-900">{(lectureHours + practiceHours).toFixed(1)} h</span>
-                  <span className="text-[10px] text-indigo-400 font-bold uppercase">Total</span>
+                  <span className="text-2xl font-bold text-[#454040]">{(lectureHours + practiceHours).toFixed(1)} h</span>
+                  <span className="text-[10px] text-[#454040]/40 font-bold uppercase">Total</span>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4">
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                  <div className="text-xs text-blue-500 uppercase font-bold">Lecture</div>
-                  <div className="text-lg font-bold text-blue-900">{lectureHours.toFixed(1)} h</div>
+                <div className="p-3 bg-slate-50 rounded-[1.5rem] border border-slate-100">
+                  <div className="text-xs text-slate-500 uppercase font-bold">Lecture</div>
+                  <div className="text-lg font-bold text-slate-900">{lectureHours.toFixed(1)} h</div>
                 </div>
-                <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-                  <div className="text-xs text-green-500 uppercase font-bold">Practice</div>
-                  <div className="text-lg font-bold text-green-900">{practiceHours.toFixed(1)} h</div>
+                <div className="p-3 bg-slate-50 rounded-[1.5rem] border border-slate-100">
+                  <div className="text-xs text-slate-500 uppercase font-bold">Practice</div>
+                  <div className="text-lg font-bold text-slate-900">{practiceHours.toFixed(1)} h</div>
                 </div>
               </div>
             </div>
@@ -499,18 +499,18 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
         </div>
 
         {/* 3. Lesson Plan Table (Right Column) */}
-        <div className="lg:col-span-3 bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[500px]">
+        <div className="lg:col-span-3 bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col min-h-[500px]">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Calendar size={20} className="text-indigo-600" /> Lesson Plan
+              <Calendar size={20} className="text-[#454040]" /> Lesson Plan
             </h3>
             <div className="flex gap-2">
               <button 
                 onClick={handlePublishSelected}
                 disabled={selectedPlanIds.length === 0 || isPublishing}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-[1.5rem] text-xs font-bold transition-all shadow-sm ${
                   selectedPlanIds.length > 0 
-                  ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+                  ? 'bg-[#454040] text-white hover:bg-[#353030]' 
                   : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -519,7 +519,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               </button>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
+                className="flex items-center gap-2 bg-[#454040] text-white px-4 py-2 rounded-[1.5rem] text-sm font-medium hover:bg-[#353030]"
               >
                 <Plus size={16} /> Add Session
               </button>
@@ -533,7 +533,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                   <th className="p-3 w-10">
                     <input 
                       type="checkbox" 
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      className="rounded text-[#454040] focus:ring-[#454040]"
                       checked={selectedPlanIds.length > 0 && selectedPlanIds.length === filteredPlans.filter(p => p.status === PlanStatus.DRAFT).length}
                       onChange={() => handleSelectAll(filteredPlans)}
                     />
@@ -570,7 +570,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                         {isDraft ? (
                           <input 
                             type="checkbox" 
-                            className="rounded text-indigo-600 focus:ring-indigo-500"
+                            className="rounded text-[#454040] focus:ring-[#454040]"
                             checked={isSelected}
                             onChange={() => togglePlanSelection(plan.id)}
                           />
@@ -614,13 +614,13 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       {/* Add Session Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 animate-fade-in flex flex-col max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-lg w-full p-6 animate-fade-in flex flex-col max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Add Planned Session</h3>
-            <p className="text-sm text-gray-500 mb-6">Module: <span className="font-semibold text-indigo-600">{selectedModule?.name}</span></p>
+            <p className="text-sm text-gray-500 mb-6">Module: <span className="font-semibold text-[#454040]">{selectedModule?.name}</span></p>
 
             <form onSubmit={handleAddPlan} className="space-y-4">
               <div className="flex justify-end">
-                <div className="bg-gray-100 p-1 rounded-lg flex text-xs font-bold">
+                <div className="bg-gray-100 p-1 rounded-[1.5rem] flex text-xs font-bold">
                   <button type="button" onClick={() => setPlanStatus(PlanStatus.DRAFT)} className={`px-3 py-1 rounded ${planStatus === PlanStatus.DRAFT ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}>Draft</button>
                   <button type="button" onClick={() => setPlanStatus(PlanStatus.PUBLISHED)} className={`px-3 py-1 rounded ${planStatus === PlanStatus.PUBLISHED ? 'bg-green-500 shadow text-white' : 'text-gray-500'}`}>Publish</button>
                 </div>
@@ -628,39 +628,39 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date (Optional)</label>
-                <input type="date" className="w-full rounded-lg border-gray-300 p-2 border" value={date} onChange={e => setDate(e.target.value)} />
+                <input type="date" className="w-full rounded-[1.5rem] border-gray-300 p-2 border focus:ring-[#454040] focus:border-[#454040]" value={date} onChange={e => setDate(e.target.value)} />
                 <p className="text-xs text-gray-500 mt-1">Leave blank to schedule later.</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                  <input required type="time" className="w-full rounded-lg border-gray-300 p-2 border" value={startTime} onChange={e => setStartTime(e.target.value)} />
+                  <input required type="time" className="w-full rounded-[1.5rem] border-gray-300 p-2 border focus:ring-[#454040] focus:border-[#454040]" value={startTime} onChange={e => setStartTime(e.target.value)} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                  <input required type="time" className="w-full rounded-lg border-gray-300 p-2 border" value={endTime} onChange={e => setEndTime(e.target.value)} />
+                  <input required type="time" className="w-full rounded-[1.5rem] border-gray-300 p-2 border focus:ring-[#454040] focus:border-[#454040]" value={endTime} onChange={e => setEndTime(e.target.value)} />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Activity Type</label>
                 <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-2 rounded flex-1">
-                    <input type="radio" name="type" className="text-indigo-600" checked={activityType === ActivityType.LECTURE} onChange={() => setActivityType(ActivityType.LECTURE)} />
+                  <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-2 rounded-[1.5rem] flex-1 border border-transparent hover:border-[#454040]/10">
+                    <input type="radio" name="type" className="text-[#454040]" checked={activityType === ActivityType.LECTURE} onChange={() => setActivityType(ActivityType.LECTURE)} />
                     <span className="text-sm font-medium">Lecture</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-2 rounded flex-1">
-                    <input type="radio" name="type" className="text-indigo-600" checked={activityType === ActivityType.PRACTICE} onChange={() => setActivityType(ActivityType.PRACTICE)} />
+                  <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-2 rounded-[1.5rem] flex-1 border border-transparent hover:border-[#454040]/10">
+                    <input type="radio" name="type" className="text-[#454040]" checked={activityType === ActivityType.PRACTICE} onChange={() => setActivityType(ActivityType.PRACTICE)} />
                     <span className="text-sm font-medium">Practice</span>
                   </label>
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Topic</label>
-                <input required type="text" placeholder="e.g. Intro to Data Models" className="w-full rounded-lg border-gray-300 p-2 border" value={topic} onChange={e => setTopic(e.target.value)} />
+                <input required type="text" placeholder="e.g. Intro to Data Models" className="w-full rounded-[1.5rem] border-gray-300 p-2 border focus:ring-[#454040] focus:border-[#454040]" value={topic} onChange={e => setTopic(e.target.value)} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Mentor</label>
-                <select required className="w-full rounded-lg border-gray-300 p-2 border" value={mentorId} onChange={e => setMentorId(e.target.value)}>
+                <select required className="w-full rounded-[1.5rem] border-gray-300 p-2 border focus:ring-[#454040] focus:border-[#454040]" value={mentorId} onChange={e => setMentorId(e.target.value)}>
                   <option value="">Select Mentor...</option>
                   {mentors.map(m => {
                     const load = getMentorLoad(m.id);
@@ -678,7 +678,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
 
               {/* Conflict Warning */}
               {hasConflict && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm flex items-start gap-2">
+                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-[1.5rem] text-sm flex items-start gap-2">
                   <AlertTriangle size={18} className="mt-0.5" />
                   <div>
                     <p className="font-bold">Schedule Conflict Detected</p>
@@ -688,11 +688,11 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               )}
 
               {/* Recurring Options */}
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+              <div className="bg-gray-50 p-3 rounded-[1.5rem] border border-gray-200">
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded text-indigo-600"
+                    className="rounded text-[#454040] focus:ring-[#454040]"
                     checked={isRecurring}
                     onChange={e => setIsRecurring(e.target.checked)}
                   />
@@ -727,8 +727,8 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-[1.5rem] text-sm">Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-[#454040] text-white rounded-[1.5rem] hover:bg-[#353030] text-sm font-medium shadow-lg shadow-[#454040]/10">
                   {isRecurring ? `Add ${recurrenceCount} Sessions` : 'Add Session'}
                 </button>
               </div>
@@ -740,10 +740,10 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       {/* Module Creation/Edit Modal */}
       {isModuleModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200 border border-gray-100">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200 border border-gray-100">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <BookOpen className="text-indigo-600" /> {editingModule ? 'Edit Module' : 'New Module'}
+                <BookOpen className="text-[#454040]" /> {editingModule ? 'Edit Module' : 'New Module'}
               </h3>
               <button
                 onClick={() => {
@@ -765,7 +765,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                   autoFocus
                   type="text"
                   placeholder="e.g. Advanced AI Integration"
-                  className="w-full rounded-xl border-gray-200 p-3 border focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+                  className="w-full rounded-[1.5rem] border-gray-200 p-3 border focus:ring-2 focus:ring-[#454040]/20 focus:border-[#454040] outline-none transition-all"
                   value={newModuleName}
                   onChange={e => setNewModuleName(e.target.value)}
                 />
@@ -775,7 +775,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Assign to Batch</label>
                 <select
                   required
-                  className="w-full rounded-xl border-gray-200 p-3 border focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none bg-no-repeat bg-[right_1rem_center]"
+                  className="w-full rounded-[1.5rem] border-gray-200 p-3 border focus:ring-2 focus:ring-[#454040]/20 focus:border-[#454040] outline-none transition-all appearance-none bg-no-repeat bg-[right_1rem_center]"
                   value={selectedBatchId}
                   onChange={e => setSelectedBatchId(e.target.value)}
                 >
@@ -794,13 +794,13 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                     setEditingModule(null);
                     setNewModuleName('');
                   }}
-                  className="flex-1 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-all"
+                  className="flex-1 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-[1.5rem] transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-#454040 text-white font-bold rounded-[1.5rem] hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
                 >
                   {editingModule ? 'Save Changes' : 'Create Module'}
                 </button>
@@ -813,7 +813,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       {/* Delete Confirmation Modal */}
       {deleteConfirm.isOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-in zoom-in-95 duration-200 border border-red-50">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-sm w-full p-6 animate-in zoom-in-95 duration-200 border border-red-50">
             <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mb-4 mx-auto">
               <Trash2 className="text-red-600" size={24} />
             </div>
@@ -827,13 +827,13 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteConfirm({ isOpen: false, id: '', name: '' })}
-                className="flex-1 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-all"
+                className="flex-1 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-[1.5rem] transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="flex-1 py-2.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 shadow-lg shadow-red-100 transition-all"
+                className="flex-1 py-2.5 bg-red-600 text-white font-bold rounded-[1.5rem] hover:bg-red-700 shadow-lg shadow-red-100 transition-all"
               >
                 Delete
               </button>
@@ -845,17 +845,17 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
       {/* All Modules Full List Modal */}
       {isViewAllModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200 border border-gray-100">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200 border border-gray-100">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
               <div>
                 <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                  <Shield className="text-indigo-600" /> Full Curriculum
+                  <Shield className="text-#454040" /> Full Curriculum
                 </h3>
                 <p className="text-xs text-gray-500 font-medium">Browse and manage all available modules</p>
               </div>
               <button
                 onClick={() => setIsViewAllModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 p-2 hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-gray-200"
+                className="text-gray-400 hover:text-gray-600 p-2 hover:bg-white rounded-[1.5rem] transition-all shadow-sm border border-transparent hover:border-gray-200"
               >
                 <X size={20} />
               </button>
@@ -866,7 +866,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
                 <input
                   type="text"
                   placeholder="Search modules..."
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border-gray-100 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border-gray-100 border rounded-[1.5rem] text-sm focus:ring-2 focus:ring-#454040/20 focus:border-#454040 outline-none transition-all font-medium"
                   value={moduleSearchTerm}
                   onChange={(e) => setModuleSearchTerm(e.target.value)}
                 />
@@ -893,7 +893,7 @@ export const PlanningTab: React.FC<PlanningTabProps> = ({
               <span>Total Modules: {modules.length}</span>
               <button
                 onClick={() => setIsViewAllModalOpen(false)}
-                className="text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="text-#454040 hover:text-indigo-700 transition-colors"
               >
                 Close List
               </button>

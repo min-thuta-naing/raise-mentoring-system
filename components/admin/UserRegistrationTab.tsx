@@ -109,19 +109,19 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
       <section>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-black text-slate-800 flex items-center gap-3">
-            <div className="p-2 bg-amber-50 rounded-xl">
-              <Clock className="w-6 h-6 text-amber-600" />
+            <div className="p-2 bg-[#454040]/10 rounded-[1.5rem]">
+              <Clock className="w-6 h-6 text-[#454040]" />
             </div>
             Pending Approvals
-            <span className="ml-2 px-2.5 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full">
+            <span className="ml-2 px-2.5 py-0.5 bg-[#454040]/10 text-[#454040] text-xs rounded-full">
               {pendingUsers.length}
             </span>
           </h3>
         </div>
 
         {pendingUsers.length === 0 ? (
-          <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+          <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[1.5rem] p-12 text-center">
+            <div className="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-4 shadow-sm">
               <CheckCircle2 className="w-8 h-8 text-slate-300" />
             </div>
             <h4 className="text-slate-800 font-bold mb-1">Queue is clear!</h4>
@@ -130,15 +130,15 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {pendingUsers.map(user => (
-              <div key={user.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center gap-6">
+              <div key={user.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center gap-6">
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-xl font-black text-slate-400">
+                  <div className="w-14 h-14 rounded-[1.5rem] bg-slate-100 flex items-center justify-center text-xl font-black text-slate-400">
                     {user.fullName.charAt(0)}
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 leading-tight">{user.fullName}</h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${user.role === Role.STUDENT ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${user.role === Role.STUDENT ? 'bg-[#454040]/10 text-[#454040]' : 'bg-emerald-100 text-emerald-700'}`}>
                         {user.role}
                       </span>
                       <span className="text-slate-400 text-xs flex items-center gap-1">
@@ -153,7 +153,7 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
                     <div className="sm:col-span-2">
                        <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5 ml-1">Assign Batch</label>
                        <select 
-                        className="w-full bg-slate-50 border-slate-100 rounded-xl p-2.5 text-sm focus:ring-4 focus:ring-indigo-500/10 focus:bg-white transition-all outline-none"
+                        className="w-full bg-slate-50 border-slate-100 rounded-[1.5rem] p-2.5 text-sm focus:ring-4 focus:ring-[#454040]/10 focus:bg-white transition-all outline-none"
                         value={pendingAssignments[user.id]?.batchId || ''}
                         onChange={e => handleAssignmentChange(user.id, 'batchId', e.target.value)}
                        >
@@ -165,7 +165,7 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
                     <div className="sm:col-span-2">
                       <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5 ml-1">Classification</label>
                       <select 
-                        className="w-full bg-slate-50 border-slate-100 rounded-xl p-2.5 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none"
+                        className="w-full bg-slate-50 border-slate-100 rounded-[1.5rem] p-2.5 text-sm focus:ring-4 focus:ring-[#454040]/10 focus:bg-white transition-all outline-none"
                         value={pendingAssignments[user.id]?.mentorType || ''}
                         onChange={e => handleAssignmentChange(user.id, 'mentorType', e.target.value)}
                        >
@@ -186,7 +186,7 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
                       handleApprove(user);
                     }}
                     disabled={isProcessing === user.id}
-                    className={`relative z-50 cursor-pointer px-6 py-3 rounded-2xl font-black text-xs transition-all shadow-lg active:scale-95 ${user.role === Role.STUDENT ? 'bg-indigo-600 text-white shadow-indigo-600/20 hover:bg-indigo-700' : 'bg-emerald-600 text-white shadow-emerald-600/20 hover:bg-emerald-700'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`relative z-50 cursor-pointer px-6 py-3 rounded-[1.5rem] font-black text-xs transition-all shadow-lg active:scale-95 ${user.role === Role.STUDENT ? 'bg-[#454040] text-white shadow-[#454040]/20 hover:bg-[#353030]' : 'bg-emerald-600 text-white shadow-emerald-600/20 hover:bg-emerald-700'} disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {isProcessing === user.id ? 'Processing...' : 'Approve Access'}
                   </button>
@@ -199,7 +199,7 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
                       handleReject(user);
                     }}
                     disabled={isProcessing === user.id}
-                    className="relative z-50 cursor-pointer px-6 py-3 rounded-2xl font-black text-xs transition-all border-2 border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative z-50 cursor-pointer px-6 py-3 rounded-[1.5rem] font-black text-xs transition-all border-2 border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Decline
                   </button>
@@ -211,10 +211,10 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
       </section>
 
       {/* Active Users Directory Section */}
-      <section className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
+      <section className="bg-white rounded-[1.5rem] p-8 border border-slate-100 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-600/20">
+            <div className="p-3 bg-[#454040] rounded-[1.5rem] shadow-lg shadow-[#454040]/20">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -229,17 +229,17 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
               <input 
                 type="text" 
                 placeholder="Search by name or email..." 
-                className="pl-11 pr-4 py-2.5 bg-slate-50 border-slate-100 rounded-xl text-sm w-full md:w-64 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                className="pl-11 pr-4 py-2.5 bg-slate-50 border-slate-100 rounded-[1.5rem] text-sm w-full md:w-64 focus:bg-white focus:ring-4 focus:ring-[#454040]/10 transition-all outline-none"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex bg-slate-50 p-1 rounded-xl">
+            <div className="flex bg-slate-50 p-1 rounded-[1.5rem]">
               {(['ALL', Role.STUDENT, Role.MENTOR] as const).map(role => (
                 <button
                   key={role}
                   onClick={() => setRoleFilter(role)}
-                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all ${roleFilter === role ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-[1.5rem] transition-all ${roleFilter === role ? 'bg-white shadow-sm text-[#454040]' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   {role === 'ALL' ? 'Everyone' : role === Role.STUDENT ? 'Students' : 'Mentors'}
                 </button>
@@ -263,18 +263,18 @@ export const UserRegistrationTab: React.FC<UserRegistrationTabProps> = ({
                 <tr key={user.id} className="group hover:bg-slate-50/50 transition-colors">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500">
+                      <div className="w-10 h-10 rounded-[1.5rem] bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500">
                         {user.fullName.charAt(0)}
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{user.fullName}</div>
+                        <div className="font-bold text-slate-900 group-hover:text-[#454040] transition-colors">{user.fullName}</div>
                         <div className="text-[11px] text-slate-400 font-medium">{user.email}</div>
                       </div>
                     </div>
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex flex-col gap-1">
-                      <span className={`text-[9px] w-fit font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${user.role === Role.STUDENT ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                      <span className={`text-[9px] w-fit font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${user.role === Role.STUDENT ? 'bg-[#454040]/10 text-[#454040]' : 'bg-emerald-50 text-emerald-600'}`}>
                         {user.role}
                       </span>
                       {user.mentorType && (

@@ -77,15 +77,18 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
   const availableMentors = users.filter(u => u.role === Role.MENTOR);
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 col-span-1 md:col-span-2">
+    <div className="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100 col-span-1 md:col-span-2">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="font-bold text-gray-800 flex items-center gap-2">
-            <Users size={20} className="text-indigo-600" /> Student Groups & Mentor Matching
+          <h3 className="text-xl font-black text-gray-800 flex items-center gap-3">
+            <div className="p-2 bg-[#454040]/10 rounded-[1.5rem]">
+              <Users size={20} className="text-[#454040]" />
+            </div>
+            Student Groups & Mentor Matching
           </h3>
           <p className="text-sm text-gray-500 mt-1">Assign students to groups and match them with mentors for a module.</p>
         </div>
-        <button onClick={() => openModal()} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+        <button onClick={() => openModal()} className="flex items-center gap-2 bg-[#454040] text-white px-6 py-2.5 rounded-[1.5rem] text-sm font-black shadow-lg shadow-[#454040]/20 hover:bg-[#353030] transition-all active:scale-95">
           <Plus size={16} /> Create Group
         </button>
       </div>
@@ -108,7 +111,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                 <tr key={g.id} className="hover:bg-gray-50 transition-colors">
                   <td className="p-3 font-medium text-gray-900">{g.name}</td>
                   <td className="p-3 text-gray-500">
-                    <span className={`px-2 py-0.5 rounded text-xs border ${mod ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-gray-100 text-gray-400 border-gray-200 italic'}`}>
+                    <span className={`px-2.5 py-1 rounded-[1.5rem] text-[10px] font-black uppercase tracking-wider border ${mod ? 'bg-[#454040]/10 text-[#454040] border-[#454040]/20' : 'bg-gray-100 text-gray-400 border-gray-200 italic'}`}>
                       {mod ? mod.name : (g.moduleId ? `Module Deleted (${g.moduleId.substring(0, 8)}...)` : 'No Module')}
                     </span>
                   </td>
@@ -137,20 +140,20 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                   </td>
                   <td className="p-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => openModal(g)}
-                        className="text-gray-500 hover:text-indigo-600 p-1.5 hover:bg-gray-100 rounded transition-colors"
-                        title="Edit Group"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(g.id, g.name)}
-                        className="text-gray-500 hover:text-red-600 p-1.5 hover:bg-red-50 rounded transition-colors"
-                        title="Delete Group"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                        <button
+                          onClick={() => openModal(g)}
+                          className="text-gray-400 hover:text-[#454040] p-2 hover:bg-[#454040]/10 rounded-[1.5rem] transition-all"
+                          title="Edit Group"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(g.id, g.name)}
+                          className="text-gray-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-[1.5rem] transition-all"
+                          title="Delete Group"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                     </div>
                   </td>
                 </tr>
@@ -163,7 +166,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 animate-fade-in max-h-[90vh] overflow-y-auto flex flex-col">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-2xl w-full p-8 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-900">{editingGroup ? 'Edit Student Group' : 'Create New Group'}</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><XCircle size={24} /></button>
@@ -178,7 +181,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                     value={name}
                     onChange={e => setName(e.target.value)}
                     placeholder="e.g. Group Alpha"
-                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
+                    className="w-full border-slate-200 rounded-[1.5rem] p-3 text-sm focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] text-gray-900 bg-slate-50 transition-all outline-none"
                   />
                 </div>
                 <div>
@@ -189,7 +192,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                       setModuleId(e.target.value);
                       setSelectedStudentIds([]);
                     }}
-                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
+                    className="w-full border-slate-200 rounded-[1.5rem] p-3 text-sm focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] text-gray-900 bg-slate-50 transition-all outline-none"
                   >
                     <option value="" disabled className="text-gray-500">Select Module</option>
                     {modules.map(m => <option key={m.id} value={m.id} className="text-gray-900">{m.name}</option>)}
@@ -197,22 +200,22 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border border-gray-200 rounded-xl overflow-hidden flex flex-col h-64">
+                <div className="border border-gray-200 rounded-[1.5rem] overflow-hidden flex flex-col h-64">
                   <div className="bg-gray-50 p-3 border-b border-gray-200 font-semibold text-gray-700 text-sm">Assign Mentors</div>
                   <div className="overflow-y-auto p-2 space-y-1 bg-white flex-1">
                     {availableMentors.map(m => (
-                      <label key={m.id} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50">
-                        <input type="checkbox" checked={selectedMentorIds.includes(m.id)} onChange={e => e.target.checked ? setSelectedMentorIds([...selectedMentorIds, m.id]) : setSelectedMentorIds(selectedMentorIds.filter(id => id !== m.id))} className="rounded text-indigo-600" />
+                      <label key={m.id} className="flex items-center gap-3 p-2 rounded-[1.5rem] cursor-pointer hover:bg-gray-50">
+                        <input type="checkbox" checked={selectedMentorIds.includes(m.id)} onChange={e => e.target.checked ? setSelectedMentorIds([...selectedMentorIds, m.id]) : setSelectedMentorIds(selectedMentorIds.filter(id => id !== m.id))} className="rounded text-[#454040]" />
                         <span className="text-sm text-gray-800">{m.fullName}</span>
                       </label>
                     ))}
                   </div>
                 </div>
-                <div className="border border-gray-200 rounded-xl overflow-hidden flex flex-col h-64">
+                <div className="border border-gray-200 rounded-[1.5rem] overflow-hidden flex flex-col h-64">
                   <div className="bg-gray-50 p-3 border-b border-gray-200 font-semibold text-gray-700 text-sm">Assign Students</div>
                   <div className="overflow-y-auto p-2 space-y-1 bg-white flex-1">
                     {availableStudents.map(s => (
-                      <label key={s.id} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50">
+                      <label key={s.id} className="flex items-center gap-3 p-2 rounded-[1.5rem] cursor-pointer hover:bg-gray-50">
                         <input type="checkbox" checked={selectedStudentIds.includes(s.id)} onChange={e => e.target.checked ? setSelectedStudentIds([...selectedStudentIds, s.id]) : setSelectedStudentIds(selectedStudentIds.filter(id => id !== s.id))} className="rounded text-green-600" />
                         <span className="text-sm text-gray-800">{s.fullName}</span>
                       </label>
@@ -223,8 +226,8 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
             </div>
 
             <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
-              <button onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">Cancel</button>
-              <button onClick={handleSave} className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm flex items-center gap-2"><CheckCircle size={16} /> Save Group</button>
+              <button onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-[1.5rem] text-sm">Cancel</button>
+              <button onClick={handleSave} className="px-5 py-2 bg-[#454040] text-white rounded-[1.5rem] hover:bg-[#353030] text-sm font-black flex items-center gap-2 shadow-lg shadow-[#454040]/20 transition-all active:scale-95"><CheckCircle size={16} /> Save Group</button>
             </div>
           </div>
         </div>
@@ -233,7 +236,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && groupToDelete && (
         <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
+          <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-md w-full p-8 animate-scale-in">
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 mb-2">
                 <Trash2 size={32} />
@@ -255,7 +258,7 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                   onPaste={(e) => e.preventDefault()}
                   onContextMenu={(e) => e.preventDefault()}
                   placeholder={groupToDelete.name}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-center font-medium"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[1.5rem] focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-center font-medium"
                 />
               </div>
             </div>
@@ -266,14 +269,14 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                   setIsDeleteModalOpen(false);
                   setDeleteConfirmationName('');
                 }} 
-                className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all border border-gray-200"
+                className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-[1.5rem] font-semibold hover:bg-gray-200 transition-all border border-gray-200"
               >
                 Cancel
               </button>
               <button 
                 onClick={confirmDelete}
                 disabled={deleteConfirmationName !== groupToDelete.name}
-                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all shadow-lg ${
+                className={`flex-1 py-3 px-4 rounded-[1.5rem] font-semibold transition-all shadow-lg ${
                   deleteConfirmationName === groupToDelete.name 
                     ? 'bg-red-600 text-white shadow-red-200 hover:bg-red-700' 
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'

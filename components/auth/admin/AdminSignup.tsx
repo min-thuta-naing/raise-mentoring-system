@@ -55,37 +55,37 @@ export const AdminSignup: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">
           <div className="relative group">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-rose-400 transition-colors" />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-rose-600 transition-colors" />
             <input
               type="text"
               placeholder="Full Name"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40 focus:border-rose-500/50 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500/50 transition-all shadow-sm"
             />
           </div>
           <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-rose-400 transition-colors" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-rose-600 transition-colors" />
             <input
               type="email"
               placeholder="Admin Email address"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40 focus:border-rose-500/50 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500/50 transition-all shadow-sm"
             />
           </div>
           <div className="space-y-2">
             <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-rose-400 transition-colors" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-rose-600 transition-colors" />
               <input
                 type="password"
                 placeholder="Create Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40 focus:border-rose-500/50 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500/50 transition-all shadow-sm"
               />
             </div>
             <PasswordRequirements password={password} activeColor="rose" />
@@ -93,7 +93,7 @@ export const AdminSignup: React.FC = () => {
         </div>
 
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm animate-shake">
+          <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-sm animate-shake">
             {error}
           </div>
         )}
@@ -101,7 +101,7 @@ export const AdminSignup: React.FC = () => {
         <button
           type="submit"
           disabled={!isPasswordValid(password) || isSubmitting}
-          className="w-full group relative flex items-center justify-center p-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold shadow-xl hover:shadow-rose-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+          className="w-full group relative flex items-center justify-center p-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold shadow-lg hover:shadow-rose-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
         >
           <span className="relative z-10">
             {isSubmitting ? 'Accessing Secure Core...' : 'Initialize Administrator'}
@@ -110,9 +110,9 @@ export const AdminSignup: React.FC = () => {
         </button>
       </form>
 
-      <div className="mt-6 text-center text-slate-400 text-sm">
+      <div className="mt-6 text-center text-slate-500 text-sm font-medium">
         Already have an admin account?{' '}
-        <Link to="/auth/portal-secure-v8821-admin/login" className="text-rose-400 font-semibold hover:text-rose-300 transition-colors">
+        <Link to="/auth/portal-secure-v8821-admin/login" className="text-rose-600 font-bold hover:text-rose-500 transition-colors">
           Sign in
         </Link>
       </div>

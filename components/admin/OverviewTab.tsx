@@ -40,7 +40,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ logs, users, onNavigat
     <div className="space-y-6 animate-fade-in">
       {/* Early Warning Widget */}
       {atRiskStudents.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 relative overflow-hidden">
+        <div className="bg-red-50 border border-red-200 rounded-[1.5rem] p-6 relative overflow-hidden">
           <div className="flex items-start justify-between z-10 relative">
             <div>
               <h3 className="text-red-800 font-bold text-lg flex items-center gap-2">
@@ -48,13 +48,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ logs, users, onNavigat
               </h3>
               <p className="text-red-600 text-sm mt-1">Students requiring immediate attention (Avg &lt; 2.5 or Low Attendance)</p>
             </div>
-            <button onClick={onNavigateToRedFlags} className="bg-white text-red-600 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-red-50 border border-red-100">
+            <button onClick={onNavigateToRedFlags} className="bg-white text-red-600 px-4 py-2 rounded-[1.5rem] text-sm font-bold shadow-sm hover:bg-red-50 border border-red-100">
               View Details
             </button>
           </div>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 relative z-10">
             {atRiskStudents.map(s => (
-              <div key={s.id} className="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3 border border-red-100">
+              <div key={s.id} className="bg-white p-3 rounded-[1.5rem] shadow-sm flex items-center gap-3 border border-red-100">
                 <img src={s.avatarUrl} className="w-10 h-10 rounded-full" alt="" />
                 <div>
                   <p className="font-bold text-gray-900 text-sm">{s.fullName}</p>
@@ -67,30 +67,30 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ logs, users, onNavigat
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-blue-50 p-3 rounded-lg text-blue-600"><Clock size={24} /></div>
+            <div className="bg-[#454040]/10 p-3 rounded-[1.5rem] text-[#454040]"><Clock size={24} /></div>
             <span className="text-2xl font-bold text-gray-900">{pendingCount}</span>
           </div>
           <h3 className="text-gray-500 font-medium text-sm">Pending Verification</h3>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-green-50 p-3 rounded-lg text-green-600"><CheckCircle size={24} /></div>
+            <div className="bg-emerald-50 p-3 rounded-[1.5rem] text-emerald-600"><CheckCircle size={24} /></div>
             <span className="text-2xl font-bold text-gray-900">{approvedCount}</span>
           </div>
           <h3 className="text-gray-500 font-medium text-sm">Total Sessions</h3>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-purple-50 p-3 rounded-lg text-purple-600"><Briefcase size={24} /></div>
+            <div className="bg-[#454040]/10 p-3 rounded-[1.5rem] text-[#454040]"><Briefcase size={24} /></div>
             <span className="text-2xl font-bold text-gray-900">{internalHours} hrs</span>
           </div>
           <h3 className="text-gray-500 font-medium text-sm">Internal Hrs (Staff)</h3>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-orange-50 p-3 rounded-lg text-orange-600"><Briefcase size={24} /></div>
+            <div className="bg-orange-50 p-3 rounded-[1.5rem] text-orange-600"><Briefcase size={24} /></div>
             <span className="text-2xl font-bold text-gray-900">{externalHours} hrs</span>
           </div>
           <h3 className="text-gray-500 font-medium text-sm">External Hrs (Industry)</h3>
@@ -98,7 +98,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ logs, users, onNavigat
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 p-6">
         <h3 className="font-bold text-gray-800 mb-4">Recent Audit Log</h3>
         <div className="space-y-4">
           {logs.slice(0, 5).map(log => {
@@ -110,7 +110,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ logs, users, onNavigat
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-gray-900">{users.find(u => u.id === log.mentorId)?.fullName || 'Unknown'}</p>
-                      {isProxy && <span className="text-[10px] bg-indigo-50 text-indigo-700 px-1.5 rounded border border-indigo-100 flex items-center gap-1"><Shield size={8} /> Admin Proxy</span>}
+                      {isProxy && <span className="text-[10px] bg-[#454040]/10 text-[#454040] px-1.5 rounded-[1.5rem] border border-[#454040]/20 flex items-center gap-1"><Shield size={8} /> Admin Proxy</span>}
                     </div>
                     <p className="text-xs text-gray-500">{log.summaryNote}</p>
                   </div>

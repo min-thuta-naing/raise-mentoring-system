@@ -102,10 +102,10 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
   return (
     <div className="space-y-8 animate-fade-in px-1">
       {/* Creation Form */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-          <div className="p-2 bg-indigo-50 rounded-lg">
-            <Plus className="w-6 h-6 text-indigo-600" />
+      <div className="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100">
+        <h3 className="text-xl font-black text-gray-800 mb-6 flex items-center gap-3">
+          <div className="p-2 bg-[#454040]/10 rounded-[1.5rem]">
+            <Plus className="w-6 h-6 text-[#454040]" />
           </div>
           Create New Batch
         </h3>
@@ -118,7 +118,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                 required
                 type="text"
                 placeholder="e.g. Batch X"
-                className="w-full rounded-xl border-gray-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                className="w-full rounded-[1.5rem] border-gray-200 p-3 border focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none transition-all bg-slate-50 focus:bg-white"
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
               />
@@ -129,7 +129,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
               <input
                 required
                 type="date"
-                className="w-full rounded-xl border-gray-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none"
+                className="w-full rounded-[1.5rem] border-gray-200 p-3 border focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none transition-all appearance-none bg-slate-50 focus:bg-white"
                 value={formData.startDate}
                 onChange={e => setFormData({ ...formData, startDate: e.target.value })}
               />
@@ -141,7 +141,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                 required
                 type="date"
                 min={formData.startDate}
-                className="w-full rounded-xl border-gray-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none"
+                className="w-full rounded-[1.5rem] border-gray-200 p-3 border focus:ring-4 focus:ring-[#454040]/10 focus:border-[#454040] outline-none transition-all appearance-none bg-slate-50 focus:bg-white"
                 value={formData.endDate}
                 onChange={e => setFormData({ ...formData, endDate: e.target.value })}
               />
@@ -152,7 +152,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-12 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98] disabled:opacity-50"
+              className="w-full md:w-auto px-12 py-3 bg-[#454040] text-white rounded-[1.5rem] font-black shadow-lg shadow-[#454040]/20 hover:bg-[#353030] transition-all active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? 'Creating...' : 'Register Batch'}
             </button>
@@ -161,9 +161,9 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
       </div>
 
       {/* Batch List */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100">
         <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-          <div className="p-2 bg-slate-50 rounded-lg">
+          <div className="p-2 bg-slate-50 rounded-[1.5rem]">
             <Layers className="w-6 h-6 text-slate-600" />
           </div>
           Existing Batches
@@ -171,16 +171,16 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {batches.map(batch => (
-            <div key={batch.id} className="p-6 rounded-2xl border border-gray-100 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all group relative">
+            <div key={batch.id} className="p-6 rounded-[1.5rem] border border-gray-100 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all group relative">
               <button 
                 onClick={() => handleEditOpen(batch)}
-                className="absolute top-4 right-4 p-2 bg-white rounded-lg text-slate-400 hover:text-indigo-600 hover:shadow-sm transition-all border border-transparent hover:border-indigo-100"
+                className="absolute top-4 right-4 p-2 bg-white rounded-[1.5rem] text-slate-400 hover:text-[#454040] hover:shadow-sm transition-all border border-transparent hover:border-[#454040]/10"
               >
                 <Pencil size={14} />
               </button>
 
               <div className="flex justify-between items-start mb-4 pr-8">
-                <h4 className="font-bold text-lg text-gray-800 group-hover:text-indigo-600 transition-colors">{batch.name}</h4>
+                <h4 className="font-bold text-lg text-gray-800 group-hover:text-#454040 transition-colors">{batch.name}</h4>
               </div>
               
               <div className="flex items-center gap-2 mb-4">
@@ -207,14 +207,14 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
 
       {/* Edit Modal - Rendered via Portal */}
       {editingBatch && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0a0a0f]/60 backdrop-blur-md animate-in fade-in duration-300">
           <div 
-            className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200"
+            className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-2xl border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-300"
             onClick={e => e.stopPropagation()}
           >
             <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 rounded-xl text-indigo-600">
+                <div className="p-2 bg-indigo-100 rounded-[1.5rem] text-#454040">
                   <Pencil size={20} />
                 </div>
                 <div>
@@ -238,7 +238,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                   <input
                     required
                     type="text"
-                    className="w-full rounded-xl border-slate-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full rounded-[1.5rem] border-slate-200 p-3 border focus:ring-4 focus:ring-#454040/10 focus:border-#454040 outline-none transition-all"
                     value={editFormData.name}
                     onChange={e => setEditFormData({ ...editFormData, name: e.target.value })}
                   />
@@ -249,7 +249,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                   <input
                     required
                     type="date"
-                    className="w-full rounded-xl border-slate-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full rounded-[1.5rem] border-slate-200 p-3 border focus:ring-4 focus:ring-#454040/10 focus:border-#454040 outline-none transition-all"
                     value={editFormData.startDate}
                     onChange={e => setEditFormData({ ...editFormData, startDate: e.target.value })}
                   />
@@ -261,7 +261,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                     required
                     type="date"
                     min={editFormData.startDate}
-                    className="w-full rounded-xl border-slate-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full rounded-[1.5rem] border-slate-200 p-3 border focus:ring-4 focus:ring-#454040/10 focus:border-#454040 outline-none transition-all"
                     value={editFormData.endDate}
                     onChange={e => setEditFormData({ ...editFormData, endDate: e.target.value })}
                   />
@@ -270,7 +270,7 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                 <div className="space-y-2 md:col-span-2">
                   <label className="block text-sm font-bold text-slate-700">Status</label>
                   <select
-                    className="w-full rounded-xl border-slate-200 p-3 border focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full rounded-[1.5rem] border-slate-200 p-3 border focus:ring-4 focus:ring-#454040/10 focus:border-#454040 outline-none transition-all"
                     value={editFormData.status}
                     onChange={e => setEditFormData({ ...editFormData, status: e.target.value as 'ACTIVE' | 'CLOSED' })}
                   >
@@ -284,14 +284,14 @@ export const BatchManagementTab: React.FC<BatchManagementTabProps> = ({ batches,
                 <button
                   type="button"
                   onClick={() => setEditingBatch(null)}
-                  className="flex-1 px-8 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all active:scale-[0.98]"
+                  className="flex-1 px-8 py-3 bg-slate-100 text-slate-600 rounded-[1.5rem] font-bold hover:bg-slate-200 transition-all active:scale-[0.98]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98] disabled:opacity-50"
+                  className="flex-1 px-8 py-3 bg-#454040 text-white rounded-[1.5rem] font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-#454040/20 active:scale-[0.98] disabled:opacity-50"
                 >
                   {isSubmitting ? 'Updating...' : 'Save Changes'}
                 </button>

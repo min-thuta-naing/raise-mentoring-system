@@ -696,8 +696,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addBatch = async (batch: Batch) => {
     try {
-      await addDoc(collection(db, 'batches'), {
-        ...batch,
+      const { id, ...data } = batch;
+      await setDoc(doc(db, 'batches', id), {
+        ...data,
         createdAt: serverTimestamp()
       });
     } catch (error) {
@@ -720,15 +721,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addModule = async (module: Module) => {
     try {
-      const docRef = await addDoc(collection(db, 'modules'), {
+      await setDoc(doc(db, 'modules', module.id), {
         ...module,
         createdAt: serverTimestamp()
       });
 
       // Create associated rubric document automatically
-      await setDoc(doc(db, 'rubrics', docRef.id), {
-          id: docRef.id,
-          moduleId: docRef.id,
+      await setDoc(doc(db, 'rubrics', module.id), {
+          id: module.id,
+          moduleId: module.id,
           categories: SYSTEM_FALLBACK_RUBRIC, // Initialize with system default
           updatedAt: serverTimestamp()
       });
@@ -777,7 +778,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const addGroup = async (group: Group) => {
     try {
       const { id, ...data } = group;
-      await addDoc(collection(db, 'groups'), {
+      await setDoc(doc(db, 'groups', id), {
         ...data,
         createdAt: serverTimestamp()
       });

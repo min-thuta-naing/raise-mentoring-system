@@ -108,8 +108,8 @@ export const GroupManagement: React.FC<GroupManagementProps> = ({ groups, module
                 <tr key={g.id} className="hover:bg-gray-50 transition-colors">
                   <td className="p-3 font-medium text-gray-900">{g.name}</td>
                   <td className="p-3 text-gray-500">
-                    <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-xs border border-indigo-100">
-                      {mod?.name}
+                    <span className={`px-2 py-0.5 rounded text-xs border ${mod ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-gray-100 text-gray-400 border-gray-200 italic'}`}>
+                      {mod ? mod.name : (g.moduleId ? `Module Deleted (${g.moduleId.substring(0, 8)}...)` : 'No Module')}
                     </span>
                   </td>
                   <td className="p-3">

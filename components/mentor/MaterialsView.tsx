@@ -9,20 +9,20 @@ interface MaterialsViewProps {
 export const MaterialsView: React.FC<MaterialsViewProps> = ({ myLogs }) => (
     <div className="animate-fade-in space-y-8 pb-20">
         <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-indigo-600 rounded-xl text-white shadow-xl shadow-indigo-600/20">
-                <FolderOpen size={24} />
+            <div className="p-2.5 bg-[#454040] rounded-[1.2rem] text-white shadow-xl shadow-[#454040]/10">
+                <FolderOpen size={20} />
             </div>
-            <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">Teaching Materials</h2>
+            <h2 className="text-xl font-black text-[#454040] uppercase tracking-tighter italic">Teaching Materials</h2>
         </div>
 
-        <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-gray-100 text-center shadow-xl shadow-gray-900/5 group hover:border-indigo-200 transition-all">
-             <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-300 group-hover:scale-110 transition-transform">
-                 <Upload size={40} />
+        <div className="bg-white p-10 rounded-[1.5rem] border-2 border-dashed border-gray-100 text-center shadow-sm group hover:border-[#454040]/30 transition-all">
+             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-200 group-hover:scale-110 group-hover:text-[#454040]/20 transition-all duration-500">
+                 <Upload size={32} />
              </div>
-             <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">My Material Library</h3>
-             <p className="text-sm font-medium text-gray-500 mt-2 mb-8 max-w-sm mx-auto">Upload slides, PDFs, or link external resources for your classes here for quick access during sessions.</p>
-             <button className="bg-indigo-600 text-white px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-2xl shadow-indigo-600/30 transition-all active:scale-95">
-                 Upload New File
+             <h3 className="text-lg font-black text-[#454040] uppercase tracking-tighter italic">My Material Library</h3>
+             <p className="text-[10px] font-black text-gray-300 mt-2 mb-8 max-w-sm mx-auto uppercase tracking-widest leading-relaxed">Upload slides, PDFs, or link external resources for your classes here.</p>
+             <button className="bg-[#454040] text-white px-8 py-3 rounded-[1.5rem] text-[9px] font-black uppercase tracking-[0.2em] hover:bg-[#353030] shadow-xl shadow-[#454040]/10 transition-all active:scale-95">
+                 Upload New Resource
              </button>
         </div>
         
@@ -41,21 +41,21 @@ export const MaterialsView: React.FC<MaterialsViewProps> = ({ myLogs }) => (
                         href={l.artifactUrl} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="block bg-white p-5 rounded-3xl border border-gray-100 shadow-xl shadow-gray-900/5 hover:border-indigo-300 hover:shadow-indigo-900/10 hover:-translate-y-1.5 transition-all group"
+                        className="block bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm hover:border-[#454040]/30 hover:shadow-xl hover:shadow-[#454040]/5 hover:-translate-y-2 transition-all group"
                     >
-                        <div className="flex items-start justify-between mb-4">
-                             <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-indigo-50 transition-colors">
-                                <FileText className="text-gray-400 group-hover:text-indigo-600" />
+                        <div className="flex items-start justify-between mb-5">
+                             <div className="p-2.5 bg-gray-50 rounded-xl group-hover:bg-[#454040] transition-all duration-500">
+                                <FileText size={18} className="text-gray-400 group-hover:text-white transition-colors" />
                              </div>
-                             <span className="text-[10px] font-black bg-gray-100 text-gray-500 px-3 py-1 rounded-full uppercase tracking-tighter">{l.date}</span>
+                             <span className="text-[9px] font-black bg-gray-100 text-gray-400 px-3 py-1 rounded-full uppercase tracking-widest">{l.date}</span>
                         </div>
-                        <p className="text-sm font-black text-gray-900 truncate group-hover:text-indigo-600 transition-colors uppercase tracking-tight mb-1">{l.summaryNote || 'Record of session data'}</p>
-                        <p className="text-[10px] font-bold text-gray-400 truncate opacity-60 group-hover:opacity-100 transition-opacity lowercase">{l.artifactUrl}</p>
+                        <p className="text-xs font-black text-[#454040] truncate group-hover:italic transition-all uppercase tracking-tighter mb-1.5">{l.summaryNote || 'Record of session data'}</p>
+                        <p className="text-[9px] font-black text-gray-300 truncate opacity-60 group-hover:opacity-100 transition-opacity lowercase italic tracking-tight">{l.artifactUrl}</p>
                     </a>
                 ))}
                 {myLogs.filter(l => l.artifactUrl).length === 0 && (
-                    <div className="col-span-full py-12 text-center bg-gray-50/50 rounded-3xl border border-gray-100">
-                        <p className="text-xs font-black text-gray-400 uppercase tracking-widest">No artifacts found in your recent logs</p>
+                    <div className="col-span-full py-16 text-center bg-gray-50/50 rounded-[1.5rem] border border-gray-100">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">No artifacts found in your recent logs</p>
                     </div>
                 )}
             </div>

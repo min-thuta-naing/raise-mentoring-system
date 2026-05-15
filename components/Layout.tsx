@@ -101,29 +101,29 @@ export const Layout: React.FC<LayoutProps> = ({ children, navItems = [] }) => {
         fixed md:sticky top-4 h-[calc(100vh-2rem)] w-80 bg-black/40 backdrop-blur-[120px] saturate-150 shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform transition-transform duration-500 ease-in-out z-50 flex flex-col border border-white/10 rounded-[1.5rem] ml-4 my-4
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-[calc(100%+2rem)]'} md:translate-x-0
       `}>
-        <div className="p-8 border-b border-white/10">
-          <h2 className="text-2xl font-black bg-gradient-to-br from-white via-slate-200 to-[#454040] bg-clip-text text-transparent tracking-tighter">RAISE</h2>
-          <p className="text-[9px] text-white/40 mt-0.5 uppercase tracking-[0.3em] font-bold">Mentoring Platform</p>
+        <div className="p-6 border-b border-white/10">
+          <h2 className="text-xl font-black bg-gradient-to-br from-white via-slate-200 to-[#454040] bg-clip-text text-transparent tracking-tighter">RAISE</h2>
+          <p className="text-[8px] text-white/40 mt-0.5 uppercase tracking-[0.3em] font-black">Mentoring Platform</p>
         </div>
 
-        <div className="p-4 border-b border-white/10">
+        <div className="p-3 border-b border-white/10">
           {/* User Profile */}
           <div 
             onClick={() => {
                 navigate(`/${currentUser.role.toLowerCase()}/profile`);
                 setIsSidebarOpen(false);
             }}
-            className="w-full flex items-center space-x-3 p-3 rounded-[1.5rem] bg-white/[0.08] border border-white/10 shadow-2xl group hover:border-white/20 hover:bg-white/10 transition-all cursor-pointer active:scale-[0.98] backdrop-blur-2xl"
+            className="w-full flex items-center space-x-3 p-2.5 rounded-[1.2rem] bg-white/[0.08] border border-white/10 shadow-2xl group hover:border-white/20 hover:bg-white/10 transition-all cursor-pointer active:scale-[0.98] backdrop-blur-2xl"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-white/10 rounded-full blur-md group-hover:bg-white/20 transition-all"></div>
-              <img src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName)}&background=1e293b&color=ffffff`} alt="Avatar" className="relative w-10 h-10 rounded-full border border-white/20 group-hover:border-white/40 transition-colors shadow-sm" />
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-white border-2 border-slate-900 rounded-full shadow-sm animate-pulse"></div>
+              <img src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName)}&background=1e293b&color=ffffff`} alt="Avatar" className="relative w-8 h-8 rounded-full border border-white/20 group-hover:border-white/40 transition-colors shadow-sm" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-white border-2 border-slate-900 rounded-full shadow-sm"></div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-white truncate group-hover:text-white transition-colors">{currentUser.fullName}</p>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-[11px] font-black text-white truncate group-hover:text-white transition-colors">{currentUser.fullName}</p>
               <div className={`inline-flex items-center mt-0.5 px-2 py-0.5 rounded-full bg-white/10 border-white/10 border backdrop-blur-md`}>
-                <span className={`text-[8px] font-black uppercase tracking-widest text-white/80`}>{currentUser.role}</span>
+                <span className={`text-[7px] font-black uppercase tracking-widest text-white/60`}>{currentUser.role}</span>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, navItems = [] }) => {
                           setIsSidebarOpen(false);
                         }
                       }}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden ${
+                      className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-[1.2rem] transition-all duration-300 group relative overflow-hidden ${
                         active
                           ? 'bg-[#454040] text-white shadow-xl border border-white/10' 
                           : 'text-white/60 hover:bg-white/5 hover:text-white border border-transparent'
@@ -273,8 +273,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, navItems = [] }) => {
 
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto h-screen">
-        <div className="max-w-5xl mx-auto">
+      <main className="flex-1 p-4 md:p-6 overflow-y-auto h-screen">
+        <div className="max-w-6xl mx-auto">
           {children}
         </div>
       </main>

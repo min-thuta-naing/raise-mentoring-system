@@ -354,28 +354,28 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
   const activeCategories = currentRubric?.categories?.filter(c => c.isEnabled) || SYSTEM_FALLBACK_RUBRIC;
 
   return (
-    <div className={`bg-white rounded-xl shadow-sm border overflow-hidden ${isAdmin ? 'border-indigo-200' : 'border-gray-100'}`}>
-      <div className={`p-6 border-b ${isAdmin ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-900'}`}>
+    <div className={`bg-white rounded-[1.5rem] shadow-sm border overflow-hidden ${isAdmin ? 'border-[#454040]/30' : 'border-gray-100'}`}>
+      <div className={`p-5 border-b ${isAdmin ? 'bg-[#454040] text-white' : 'bg-gray-50 text-[#454040]'}`}>
         <div className="flex justify-between items-start">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-5">
                 {onCancel && (
-                    <button onClick={onCancel} className={`p-1.5 rounded-full ${isAdmin ? 'bg-indigo-700 hover:bg-indigo-800' : 'bg-white hover:bg-gray-100 text-gray-600'}`}>
-                        <ArrowLeft size={20} />
+                    <button onClick={onCancel} className={`p-2 rounded-full transition-all ${isAdmin ? 'bg-white/10 hover:bg-white/20' : 'bg-white hover:bg-gray-100 text-gray-600 shadow-sm'}`}>
+                        <ArrowLeft size={18} />
                     </button>
                 )}
                 <div>
-                    <h2 className="text-xl font-bold flex items-center gap-2">
-                        <Clock className="w-5 h-5" /> 
+                    <h2 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter italic">
+                        <Clock className="w-6 h-6" /> 
                         {isAdmin ? "Admin Proxy Entry" : initialData ? "Complete Session Log" : "New Session Log"}
                     </h2>
-                    <p className={`text-sm mt-1 ${isAdmin ? 'text-indigo-100' : 'text-indigo-600'}`}>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${isAdmin ? 'opacity-50' : 'text-gray-400'}`}>
                         {isAdmin 
-                            ? "You are recording a session on behalf of a mentor." 
-                            : "Record your mentoring activity. Sessions must be 50+ minutes."}
+                            ? "Recording session on behalf of a mentor" 
+                            : "Sessions must be 50+ minutes for valid credit"}
                     </p>
                 </div>
             </div>
-            {isAdmin && <Shield className="w-8 h-8 text-indigo-300 opacity-50" />}
+            {isAdmin && <Shield className="w-8 h-8 text-white opacity-20" />}
         </div>
       </div>
 
@@ -383,16 +383,16 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
         
         {/* Admin Proxy Selection */}
         {isAdmin && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex items-center gap-4">
-                <div className="flex-shrink-0">
-                    <Shield className="w-6 h-6 text-yellow-600" />
+            <div className="bg-[#454040]/5 border border-[#454040]/10 p-4 rounded-[1.5rem] flex items-center gap-5">
+                <div className="w-10 h-10 bg-[#454040] rounded-2xl flex items-center justify-center text-white shrink-0">
+                    <Shield size={20} />
                 </div>
                 <div className="flex-1">
-                    <label className="block text-sm font-bold text-yellow-800 mb-1">Log on behalf of Mentor:</label>
+                    <label className="block text-[9px] font-black text-[#454040] uppercase tracking-widest mb-1.5">Log on behalf of Mentor</label>
                     <select
                         value={selectedMentorId}
                         onChange={(e) => setSelectedMentorId(e.target.value)}
-                        className="w-full rounded border-yellow-300 p-2 text-sm focus:ring-yellow-500 focus:border-yellow-500"
+                        className="w-full rounded-[1.2rem] border-gray-100 p-2.5 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-white"
                     >
                         <option value="">-- Select Mentor --</option>
                         {mentors.map(m => (
@@ -408,22 +408,22 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
         {/* Section 1: Session Details */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Batch (Cohort)</label>
+            <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2.5 ml-1">Batch (Cohort)</label>
             <select 
               value={selectedBatchId}
               onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+              className="w-full rounded-[1.5rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 font-bold"
               disabled={!!initialData}
             >
               {batches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Teaching Module</label>
+            <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2.5 ml-1">Teaching Module</label>
             <select 
               value={selectedModuleId}
               onChange={(e) => setSelectedModuleId(e.target.value)}
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+              className="w-full rounded-[1.5rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 font-bold"
               disabled={modules.length === 0 || !!initialData}
             >
               {modules.length === 0 && <option>No modules found</option>}
@@ -432,36 +432,36 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+            <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2.5 ml-1">Date</label>
             <input 
               type="date" 
               value={date}
               min={minDate}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+              className="w-full rounded-[1.5rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 font-bold"
               disabled={!!initialData?.date}
             />
-             {!isAdmin && <p className="text-[10px] text-gray-500 mt-1">Mentors can only log up to 3 days prior.</p>}
+             {!isAdmin && <p className="text-[9px] font-black text-gray-200 uppercase tracking-widest mt-2 ml-4">Backdating limit: 3 days</p>}
           </div>
           
           <div className="grid grid-cols-2 gap-4">
              <div>
-                <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Start Time</label>
+                <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2.5 ml-1">Start Time</label>
                 <input 
                     type="time" 
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full rounded-lg border-gray-300 p-2 border"
+                    className="w-full rounded-[1.5rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 font-bold"
                     required
                 />
              </div>
              <div>
-                <label className="block text-xs font-medium text-gray-500 uppercase mb-1">End Time</label>
+                <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2.5 ml-1">End Time</label>
                 <input 
                     type="time" 
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full rounded-lg border-gray-300 p-2 border"
+                    className="w-full rounded-[1.5rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 font-bold"
                     required
                 />
              </div>
@@ -469,18 +469,20 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
           
           {/* Plan Auto-fill Notification */}
           {availablePlan && !initialData && (
-              <div className="col-span-1 md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                      <CalendarCheck className="text-blue-600 w-5 h-5" />
+              <div className="col-span-1 md:col-span-2 bg-[#454040]/5 border border-[#454040]/10 rounded-[1.5rem] p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                      <div className="p-2 bg-[#454040] rounded-xl text-white">
+                          <CalendarCheck size={20} />
+                      </div>
                       <div>
-                          <p className="text-sm font-bold text-blue-900">Planned Session Found!</p>
-                          <p className="text-xs text-blue-700">Topic: {availablePlan.topic} ({availablePlan.startTime} - {availablePlan.endTime})</p>
+                          <p className="text-sm font-black text-[#454040] uppercase tracking-widest">Planned Session Found</p>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mt-1">{availablePlan.topic} ({availablePlan.startTime} - {availablePlan.endTime})</p>
                       </div>
                   </div>
                   <button 
                     type="button" 
                     onClick={applyLessonPlan}
-                    className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-blue-700"
+                    className="bg-[#454040] text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-[1.5rem] hover:bg-[#353030] shadow-lg shadow-[#454040]/10 transition-all active:scale-95"
                   >
                       Apply Plan
                   </button>
@@ -488,23 +490,23 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
           )}
 
           <div className="col-span-1 md:col-span-2">
-             <div className={`rounded-lg border p-4 flex flex-col items-center justify-center transition-colors ${isValidSession ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+             <div className={`rounded-[1.5rem] border p-5 flex flex-col items-center justify-center transition-all ${isValidSession ? 'bg-emerald-50/50 border-emerald-100 shadow-lg shadow-emerald-900/5' : 'bg-red-50 border-red-100'}`}>
                  <div className="text-center">
-                     <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Net Duration</p>
-                     <p className={`text-3xl font-bold ${isValidSession ? 'text-green-700' : 'text-red-600'}`}>
-                         {duration} min
+                     <p className="text-[9px] text-gray-300 uppercase font-black tracking-[0.25em] mb-1.5">Net Duration</p>
+                     <p className={`text-3xl font-black italic tracking-tighter ${isValidSession ? 'text-emerald-600' : 'text-red-600'}`}>
+                         {duration} MIN
                      </p>
                  </div>
-                 <div className="mt-2 flex items-center gap-2">
+                 <div className="mt-4 flex items-center gap-3">
                      {isValidSession ? (
                         <>
-                            <CheckCircle size={18} className="text-green-600" />
-                            <span className="text-sm font-medium text-green-800">Valid Working Hour (1 Credit)</span>
+                            <CheckCircle size={22} className="text-emerald-500" />
+                            <span className="text-xs font-black text-emerald-800 uppercase tracking-widest">Valid Working Hour (1 Credit)</span>
                         </>
                      ) : (
                         <>
-                            <AlertTriangle size={18} className="text-red-600" />
-                            <span className="text-sm font-medium text-red-800">Duration too short (Min. 50 mins required)</span>
+                            <AlertTriangle size={22} className="text-red-500" />
+                            <span className="text-xs font-black text-red-800 uppercase tracking-widest">Duration too short (Min. 50 mins)</span>
                         </>
                      )}
                  </div>
@@ -512,29 +514,27 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
           </div>
         </section>
 
-        {/* Section 2: Artifacts (Moved Up for Logic Check) */}
-        <section className="bg-blue-50 p-6 rounded-lg border border-blue-100">
-             <div className="flex flex-col md:flex-row gap-4">
+        {/* Section 2: Artifacts */}
+        <section className="bg-gray-50/50 p-5 rounded-[1.5rem] border border-gray-50">
+             <div className="flex flex-col md:flex-row gap-6">
                  <div className="flex-1">
-                    <label className="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
-                        <LinkIcon className="w-4 h-4" /> Session Artifact / Evidence (Required)
+                    <label className="block text-[9px] font-black text-[#454040] uppercase tracking-[0.2em] mb-2.5 flex items-center gap-3">
+                        <LinkIcon className="w-4 h-4 opacity-40" /> Artifact Link (Required)
                     </label>
-                    <p className="text-xs text-blue-700 mb-2">
-                        Please provide a link to GitHub, Figma, or Drive. 
-                        <span className="font-bold text-red-500 ml-1">Warning: If no artifact is attached, scores may be limited to Level 2.</span>
+                    <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest mb-3">
+                        Proof of work (GitHub, Drive, etc)
+                        <span className="text-red-500/50 ml-2">※ Scores &gt; 2 require artifact</span>
                     </p>
-                    <div className="flex gap-2">
-                        <input 
-                            type="url" 
-                            value={artifactUrl}
-                            onChange={(e) => setArtifactUrl(e.target.value)}
-                            placeholder="https://..."
-                            className="flex-1 rounded-lg border-blue-200 shadow-sm focus:border-blue-500 p-2 border"
-                        />
-                    </div>
+                    <input 
+                        type="url" 
+                        value={artifactUrl}
+                        onChange={(e) => setArtifactUrl(e.target.value)}
+                        placeholder="https://..."
+                        className="w-full rounded-[1.2rem] border-gray-50 p-3 text-xs focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-white font-bold"
+                    />
                  </div>
                  <div className="flex items-end">
-                    <label className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border cursor-pointer transition-all ${isStarred ? 'bg-yellow-50 border-yellow-300 text-yellow-700' : 'bg-white border-blue-200 text-gray-500 hover:bg-gray-50'}`}>
+                    <label className={`flex items-center gap-3 px-6 py-3 rounded-[1.5rem] border cursor-pointer transition-all ${isStarred ? 'bg-[#454040] border-[#454040] text-white shadow-xl shadow-[#454040]/20' : 'bg-white border-gray-100 text-gray-300 hover:border-[#454040]/30 hover:text-[#454040]'}`}>
                         <input 
                             type="checkbox" 
                             checked={isStarred} 
@@ -542,26 +542,26 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
                             className="hidden"
                         />
                         <Star size={18} fill={isStarred ? "currentColor" : "none"} />
-                        <span className="text-sm font-medium">Showcase Work</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest">Showcase</span>
                     </label>
                  </div>
              </div>
         </section>
 
         {/* Section 3: Student Assessment (SFIA) */}
-        <section>
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-indigo-500" /> Competency Assessment (SFIA Standard)
+        <section className="space-y-6">
+            <div className="flex justify-between items-center mb-6 px-2">
+                <h3 className="text-lg font-black text-[#454040] flex items-center gap-3 uppercase tracking-tighter italic">
+                    <Users className="w-5 h-5" /> Assessment (SFIA)
                 </h3>
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    Using Rubric: {selectedModule?.assessmentConfig ? 'Custom' : 'Default'}
+                <span className="text-[8px] font-black text-gray-300 uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-full border border-gray-50">
+                    Rubric: {selectedModule?.assessmentConfig ? 'CUSTOM' : 'SYSTEM'}
                 </span>
             </div>
             
             {students.length === 0 ? (
-                <div className="text-center p-6 bg-gray-50 rounded-lg text-gray-500">
-                    No students found in this batch.
+                <div className="text-center p-12 bg-gray-50/30 rounded-[1.5rem] border border-dashed border-gray-100">
+                    <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest">No students in batch</p>
                 </div>
             ) : (
                 <div className="space-y-6">
@@ -569,17 +569,20 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
                     const score = scores.find(s => s.studentId === student.id);
                     if (!score) return null;
                     const qualifiers = score.sfiaQualifiers || [];
-
+ 
                     return (
-                        <div key={student.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
-                                <div className="flex items-center gap-3">
-                                    <img src={student.avatarUrl} alt={student.fullName} className="w-12 h-12 rounded-full border border-gray-200" />
+                        <div key={student.id} className="bg-white border border-gray-50 rounded-[1.5rem] p-5 shadow-sm hover:shadow-lg transition-all group/student">
+                            <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4 pb-4 border-b border-gray-50">
+                                <div className="flex items-center gap-5">
+                                    <div className="relative">
+                                        <img src={student.avatarUrl} alt={student.fullName} className="w-12 h-12 rounded-full border-2 border-gray-50 shadow-sm object-cover group-hover/student:scale-105 transition-transform duration-500" />
+                                        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
+                                    </div>
                                     <div>
-                                        <p className="font-bold text-gray-900 text-lg">{student.fullName}</p>
-                                        <div className="flex gap-2 mt-1">
+                                        <p className="font-black text-[#454040] text-lg uppercase tracking-tighter italic">{student.fullName}</p>
+                                        <div className="flex gap-1.5 mt-2">
                                             {['Autonomy', 'Complexity', 'Knowledge'].map(q => (
-                                                <label key={q} className={`text-[10px] px-2 py-0.5 rounded border cursor-pointer select-none transition-colors ${qualifiers.includes(q) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100'}`}>
+                                                <label key={q} className={`text-[8px] px-2 py-0.5 rounded-full border cursor-pointer select-none transition-all font-black uppercase tracking-widest ${qualifiers.includes(q) ? 'bg-[#454040] text-white border-[#454040]' : 'bg-gray-50/50 text-gray-300 border-gray-100 hover:bg-gray-100'}`}>
                                                     <input type="checkbox" className="hidden" checked={qualifiers.includes(q)} onChange={() => toggleSfiaQualifier(student.id, q)} />
                                                     {q}
                                                 </label>
@@ -587,18 +590,18 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex bg-gray-100 rounded-lg p-1">
+                                <div className="flex bg-gray-50 p-1 rounded-full border border-gray-100">
                                     {[AttendanceStatus.PRESENT, AttendanceStatus.LATE, AttendanceStatus.ABSENT].map((status) => (
                                         <button
                                             type="button"
                                             key={status}
                                             onClick={() => handleAttendanceChange(student.id, status)}
-                                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
+                                            className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${
                                                 score.attendance === status 
-                                                ? status === AttendanceStatus.PRESENT ? 'bg-green-500 text-white' 
-                                                : status === AttendanceStatus.LATE ? 'bg-yellow-500 text-white' 
-                                                : 'bg-red-500 text-white'
-                                                : 'text-gray-500 hover:text-gray-900'
+                                                ? status === AttendanceStatus.PRESENT ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/10' 
+                                                : status === AttendanceStatus.LATE ? 'bg-orange-500 text-white shadow-md shadow-orange-500/10' 
+                                                : 'bg-red-500 text-white shadow-md shadow-red-500/10'
+                                                : 'text-gray-300 hover:text-gray-500'
                                             }`}
                                         >
                                             {status}
@@ -632,21 +635,21 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
 
                             {/* Rubrics - Only show if present or late */}
                             {score.attendance !== AttendanceStatus.ABSENT && (
-                                <div className="space-y-4 pt-4 border-t border-gray-100">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h4 className="text-sm font-bold text-gray-700">Competency Assessment</h4>
+                             <div className="space-y-5 pt-5">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h4 className="text-[9px] font-black text-gray-300 uppercase tracking-[0.25em]">Assessment Metrics</h4>
                                         <button
                                             type="button"
                                             onClick={() => handleDraftAssessmentWithAI(student.id)}
                                             disabled={isDraftingAI[student.id]}
-                                            className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-indigo-100 disabled:opacity-50 transition-colors font-medium border border-indigo-100"
+                                            className="text-[9px] bg-[#454040]/5 text-[#454040] px-4 py-2 rounded-full flex items-center gap-2 hover:bg-[#454040]/10 disabled:opacity-50 transition-all font-black uppercase tracking-widest border border-[#454040]/10 shadow-sm"
                                         >
                                             {isDraftingAI[student.id] ? (
-                                                <Loader2 size={14} className="animate-spin" />
+                                                <Loader2 size={12} className="animate-spin" />
                                             ) : (
-                                                <Sparkles size={14} />
+                                                <Sparkles size={12} />
                                             )}
-                                            {isDraftingAI[student.id] ? 'AI is drafting...' : 'AI Draft Assessment'}
+                                            {isDraftingAI[student.id] ? 'AI DRAFTING...' : 'AI ASSISTANT'}
                                         </button>
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -654,27 +657,27 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
                                             const val = score.metrics[cat.name] || 0;
                                             const sfiaInfo = SFIA_LEVELS.find(l => l.score === val);
                                             const levelDescription = cat.levels && cat.levels[val] ? cat.levels[val] : sfiaInfo?.label;
-
+ 
                                             return (
                                                 <div key={cat.id} className="group relative">
-                                                    <div className="flex justify-between mb-1">
-                                                        <label className="text-xs font-medium text-gray-500 uppercase flex items-center gap-1">
+                                                    <div className="flex justify-between mb-3">
+                                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                                                             {cat.name}
                                                         </label>
-                                                        <span className={`text-xs font-bold ${sfiaInfo?.color}`}>{val}/5</span>
+                                                        <span className={`text-[11px] font-black ${sfiaInfo?.color}`}>{val}/5</span>
                                                     </div>
                                                     <input 
                                                         type="range" 
                                                         min="0" max="5" step="1"
                                                         value={val}
                                                         onChange={(e) => handleScoreChange(student.id, cat.name, parseInt(e.target.value))}
-                                                        className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 ${!artifactUrl && val > 2 ? 'ring-2 ring-red-300' : ''}`}
+                                                        className={`w-full h-2 bg-gray-100 rounded-full appearance-none cursor-pointer accent-[#454040] ${!artifactUrl && val > 2 ? 'ring-2 ring-red-300' : ''}`}
                                                     />
-                                                    <p className={`text-[10px] mt-1 font-medium ${sfiaInfo?.color}`}>
+                                                    <p className={`text-[10px] mt-3 font-bold uppercase tracking-tight leading-relaxed ${sfiaInfo?.color}`}>
                                                         {levelDescription}
                                                     </p>
                                                     {!artifactUrl && val > 2 && (
-                                                        <p className="text-[10px] text-red-500 mt-0.5">⚠️ Artifact required for &gt; 2</p>
+                                                        <p className="text-[9px] font-black text-red-500 mt-2 uppercase tracking-widest">⚠️ Evidence required</p>
                                                     )}
                                                 </div>
                                             );
@@ -682,25 +685,25 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
                                     </div>
                                     
                                     {/* Smart Feedback */}
-                                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
-                                                <MessageSquare size={12} /> Individual Feedback
+                                    <div className="bg-gray-50/30 p-4 rounded-[1.5rem] border border-gray-50">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <label className="text-[9px] font-black text-gray-300 uppercase tracking-widest flex items-center gap-2">
+                                                <MessageSquare size={12} className="opacity-30" /> Feedback
                                             </label>
                                             <button 
                                                 type="button" 
                                                 onClick={() => generateFeedback(student.id)}
-                                                className="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded flex items-center gap-1 hover:bg-indigo-200"
+                                                className="text-[8px] bg-white text-[#454040] px-3 py-1 rounded-full flex items-center gap-2 hover:bg-[#454040] hover:text-white transition-all font-black uppercase tracking-widest shadow-sm border border-gray-100"
                                             >
-                                                <Sparkles size={10} /> Auto-Generate
+                                                <Sparkles size={10} /> Auto-Gen
                                             </button>
                                         </div>
                                         <textarea 
                                             value={score.feedback || ''}
                                             onChange={(e) => handleFeedbackChange(student.id, e.target.value)}
-                                            placeholder="Write specific feedback here..."
+                                            placeholder="Specify observations..."
                                             rows={2}
-                                            className="w-full text-sm p-2 rounded border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                                            className="w-full text-xs p-3.5 rounded-[1.2rem] border-gray-50 focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-white font-medium"
                                         />
                                     </div>
                                 </div>
@@ -713,76 +716,78 @@ export const MentorLogForm: React.FC<MentorLogFormProps> = ({ initialData, onSuc
         </section>
 
         {/* Section 4: Summary Note */}
-        <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <section className="bg-gray-50/50 p-5 rounded-[1.5rem] border border-gray-50">
              <div className="mb-4">
-                 <div className="flex justify-between items-center mb-2">
-                    <label className="block text-sm font-medium text-gray-700">Session Overview (Log Summary)</label>
+                 <div className="flex justify-between items-center mb-3">
+                    <label className="block text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] ml-1">Session Overview</label>
                     <button 
                         type="button" 
                         onClick={toggleVoiceInput}
-                        className={`text-xs flex items-center gap-1 px-2 py-1 rounded transition-all ${isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
+                        className={`text-[8px] font-black uppercase tracking-widest flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border ${isListening ? 'bg-red-50 text-red-500 border-red-100 animate-pulse' : 'bg-white text-gray-400 border-gray-50 hover:bg-gray-50'}`}
                     >
-                        <Mic size={12} /> {isListening ? 'Listening...' : 'Dictate'}
+                        <Mic size={12} /> {isListening ? 'Listening...' : 'Voice Dictate'}
                     </button>
                  </div>
                  <textarea 
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
-                    placeholder="Briefly describe what was covered..."
+                    placeholder="Describe session summary, blockers, and next steps..."
                     rows={3}
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 p-2 border"
+                    className="w-full rounded-[1.2rem] border-gray-50 p-4 text-xs font-bold focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-white"
                  />
              </div>
         </section>
         
         {/* Integrity Check */}
-        <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100 flex items-start gap-3">
-            <input 
-                type="checkbox" 
-                id="digitalSig"
-                checked={digitalSignature}
-                onChange={(e) => setDigitalSignature(e.target.checked)}
-                className="mt-1 w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-            />
+        <div className="p-5 bg-[#454040]/5 rounded-[1.5rem] border border-[#454040]/10 flex items-start gap-5">
+            <div className="relative flex items-center mt-0.5">
+                <input 
+                    type="checkbox" 
+                    id="digitalSig"
+                    checked={digitalSignature}
+                    onChange={(e) => setDigitalSignature(e.target.checked)}
+                    className="w-5 h-5 text-[#454040] border-gray-100 rounded-[0.4rem] focus:ring-[#454040] cursor-pointer"
+                />
+            </div>
             <div>
-                <label htmlFor="digitalSig" className="block text-sm font-bold text-indigo-900 cursor-pointer">
+                <label htmlFor="digitalSig" className="block text-[11px] font-black text-[#454040] uppercase tracking-widest cursor-pointer">
                     Digital Signature / Integrity Pledge
                 </label>
-                <p className="text-xs text-indigo-700 mt-1">
-                    I certify that this mentoring session occurred as recorded, and the assessment accurately reflects the students' performance. 
-                    I understand that this log is used for budget disbursement and academic verification.
+                <p className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.1em] mt-1 leading-relaxed">
+                    I certify that this mentoring session occurred as recorded, and the assessment accurately reflects performance.
                 </p>
             </div>
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-gray-100 gap-4">
-             <div className="text-sm text-gray-500 w-full sm:w-auto text-center sm:text-left">
-                System Status: <span className="font-semibold text-gray-800">Online</span>
+        <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gray-50 gap-6">
+             <div className="text-[9px] font-black text-gray-200 uppercase tracking-[0.25em] w-full sm:w-auto text-center sm:text-left">
+                Secured Submission Protocol <span className="text-emerald-500/50 ml-2">● Active</span>
              </div>
              <div className="flex gap-3 w-full sm:w-auto">
                  <button 
                     type="button" 
                     onClick={() => submitForm(LogStatus.DRAFT)}
                     disabled={isSubmitting}
-                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2 text-indigo-700 bg-indigo-50 border border-indigo-200 px-6 py-2.5 rounded-lg font-medium transition-all hover:bg-indigo-100 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2.5 text-[#454040] bg-white border border-gray-100 px-8 py-3 rounded-[1.5rem] font-black text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50 shadow-sm active:scale-95 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                  >
-                    <Save className="w-4 h-4" />
+                    <Save className="w-4 h-4 opacity-40" />
                     Save Draft
                  </button>
                  <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''} ${isAdmin ? 'bg-indigo-700 hover:bg-indigo-800' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2.5 text-white px-8 py-3 rounded-[1.5rem] font-black text-[9px] uppercase tracking-[0.25em] shadow-xl shadow-[#454040]/10 transition-all active:scale-95 border border-white/10 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'bg-[#454040] hover:bg-[#353030]'}`}
                  >
                     <Send className="w-4 h-4" />
-                    {isSubmitting ? 'Submitting...' : 'Submit Log'}
+                    {isSubmitting ? 'SAVING...' : 'SUBMIT LOG'}
                  </button>
              </div>
         </div>
         {successMsg && (
-            <div className="bg-green-100 text-green-800 p-4 rounded-lg flex items-center gap-2 animate-bounce">
-                <CheckCircle className="w-5 h-5" /> {successMsg}
+            <div className="bg-emerald-50 text-emerald-700 p-6 rounded-[1.5rem] border border-emerald-100 flex items-center gap-4 animate-in slide-in-from-bottom-4 shadow-xl shadow-emerald-900/5">
+                <CheckCircle className="w-6 h-6" /> 
+                <span className="font-black uppercase tracking-widest text-sm">{successMsg}</span>
             </div>
         )}
       </form>

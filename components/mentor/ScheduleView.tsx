@@ -39,20 +39,20 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
 
     return (
         <div className="space-y-8 animate-fade-in pb-20">
-             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 mb-8 uppercase tracking-tighter">
-                <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-xl">
-                    <Calendar size={24} />
-                </div>
+             <h2 className="text-2xl font-black text-[#454040] flex items-center gap-4 mb-10 tracking-tighter">
+                {/* <div className="p-3 bg-[#454040] rounded-[1.5rem] text-white shadow-xl shadow-[#454040]/10">
+                    <Calendar size={28} />
+                </div> */}
                 My Schedule
              </h2>
              
              {moduleOrder.length === 0 ? (
-                 <div className="p-16 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100 text-gray-400">
-                     <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                         <Calendar size={36} className="text-gray-200" />
+                 <div className="p-20 text-center bg-white rounded-[1.5rem] border border-dashed border-gray-100 text-gray-400">
+                     <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8">
+                         <Calendar size={44} className="text-gray-200" />
                      </div>
-                     <p className="font-bold text-gray-500">No published classes scheduled.</p>
-                     <p className="text-xs font-bold uppercase tracking-widest mt-2">Draft plans from admin are not visible here.</p>
+                     <p className="font-black text-[#454040] uppercase tracking-widest">No published classes scheduled.</p>
+                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-3 opacity-50">Draft plans from admin are not visible here.</p>
                  </div>
              ) : (
                  <div className="space-y-12">
@@ -63,17 +63,17 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                          return (
                              <div key={moduleId} className="relative">
                                  {/* Module Header */}
-                                 <div className="flex items-center gap-4 mb-8 sticky top-0 bg-gray-50/80 backdrop-blur-xl py-4 z-10">
-                                     <div className="h-px bg-gray-200 flex-1"></div>
-                                     <div className="flex items-center gap-3 bg-white px-5 py-2.5 rounded-2xl border border-gray-100 shadow-xl shadow-indigo-900/5">
-                                         <div className="p-1.5 bg-indigo-50 rounded-lg">
-                                            <FolderOpen size={16} className="text-indigo-600" />
-                                         </div>
-                                         <span className="text-sm font-black text-indigo-900 uppercase tracking-widest">{mod?.name || 'Unknown Module'}</span>
-                                         <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-black shadow-lg shadow-indigo-600/20">{plans.length} Sessions</span>
-                                     </div>
-                                     <div className="h-px bg-gray-200 flex-1"></div>
-                                 </div>
+                                    <div className="flex items-center gap-4 mb-10 sticky top-0 bg-[#EDE9E6] backdrop-blur-xl py-6 z-10">
+                                        <div className="h-px bg-gray-200 flex-1"></div>
+                                            <div className="flex items-center gap-4 bg-white px-6 py-3 rounded-[1.5rem] border border-gray-100 shadow-xl shadow-[#454040]/5">
+                                                <div className="p-2 bg-[#454040]/5 rounded-xl">
+                                                    <FolderOpen size={18} className="text-[#454040]" />
+                                                </div>
+                                                <span className="text-sm font-black text-[#454040] uppercase tracking-[0.2em]">{mod?.name || 'Unknown Module'}</span>
+                                                <span className="bg-[#454040] text-white px-3 py-1 rounded-full text-[10px] font-black shadow-lg shadow-[#454040]/20 tracking-widest">{plans.length} SESSIONS</span>
+                                            </div>
+                                        <div className="h-px bg-gray-200 flex-1"></div>
+                                    </div>
 
                                  <div className="grid gap-6">
                                      {plans.map(plan => {
@@ -81,26 +81,26 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                          const isLogged = myLogs.some(l => l.date === plan.date && l.startTime === plan.startTime);
                                          
                                          return (
-                                             <div key={plan.id} className={`group bg-white p-6 rounded-3xl border transition-all hover:shadow-2xl hover:-translate-y-1.5 flex flex-col md:flex-row md:items-center justify-between gap-6 ${isPast && !isLogged ? 'border-red-200 bg-red-50/20' : 'border-gray-100 shadow-xl shadow-gray-900/5'}`}>
+                                             <div key={plan.id} className={`group bg-white p-5 rounded-[1.5rem] border transition-all hover:shadow-2xl hover:-translate-y-1.5 flex flex-col md:flex-row md:items-center justify-between gap-6 ${isPast && !isLogged ? 'border-red-100 bg-red-50/20' : 'border-gray-100 shadow-sm'}`}>
                                                  <div className="flex gap-6 items-start">
-                                                     <div className={`p-4 rounded-2xl flex flex-col items-center justify-center min-w-[80px] shadow-lg ${isPast && !isLogged ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-indigo-600 text-white shadow-indigo-600/20'}`}>
-                                                         <span className="text-[10px] font-black uppercase tracking-widest opacity-80">{new Date(plan.date).toLocaleDateString('en-US', { month: 'short' })}</span>
-                                                         <span className="text-2xl font-black tabular-nums leading-none mt-1">{new Date(plan.date).getDate()}</span>
+                                                     <div className={`p-4 rounded-2xl flex flex-col items-center justify-center min-w-[75px] shadow-lg ${isPast && !isLogged ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-[#454040] text-white shadow-[#454040]/20'}`}>
+                                                         <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">{new Date(plan.date).toLocaleDateString('en-US', { month: 'short' })}</span>
+                                                         <span className="text-xl font-black tabular-nums leading-none mt-2">{new Date(plan.date).getDate()}</span>
                                                      </div>
                                                      <div>
-                                                         <div className="flex items-center gap-3 text-[10px] mb-2 font-black uppercase tracking-widest">
-                                                             <span className="text-gray-900">{plan.date}</span>
-                                                             <span className="text-gray-200">/</span>
-                                                             <span className="text-gray-400 flex items-center gap-1.5"><Clock size={12} className="opacity-70" /> {plan.startTime} - {plan.endTime}</span>
+                                                         <div className="flex items-center gap-4 text-[9px] mb-2 font-black uppercase tracking-[0.25em]">
+                                                             <span className="text-[#454040]/50">{plan.date}</span>
+                                                             <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                                                             <span className="text-gray-300 flex items-center gap-2 font-bold"><Clock size={12} className="opacity-60" /> {plan.startTime} - {plan.endTime}</span>
                                                              {isPast && !isLogged && (
-                                                                <span className="flex items-center gap-1.5 text-[9px] bg-red-100 text-red-600 px-2.5 py-1 rounded-full animate-pulse ring-1 ring-red-200">
-                                                                    <AlertOctagon size={10} /> Overdue
+                                                                <span className="flex items-center gap-2 text-[8px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full animate-pulse ring-1 ring-red-200">
+                                                                    <AlertOctagon size={10} /> OVERDUE
                                                                 </span>
                                                              )}
                                                          </div>
-                                                         <h3 className="font-black text-xl text-gray-900 group-hover:text-indigo-600 transition-colors uppercase tracking-tight leading-tight">{plan.topic}</h3>
-                                                         <div className="flex items-center gap-2 mt-2">
-                                                             <span className={`text-[9px] font-black px-3 py-1 rounded-full border uppercase tracking-widest ${plan.activityType === ActivityType.LECTURE ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
+                                                         <h3 className="font-black text-lg text-[#454040] group-hover:translate-x-1 transition-transform uppercase tracking-tighter leading-tight">{plan.topic}</h3>
+                                                         <div className="flex items-center gap-3 mt-3">
+                                                             <span className={`text-[8px] font-black px-3 py-1 rounded-full border uppercase tracking-widest ${plan.activityType === ActivityType.LECTURE ? 'bg-[#454040]/5 text-[#454040] border-[#454040]/10' : 'bg-emerald-50/50 text-emerald-600 border-emerald-100'}`}>
                                                                  {plan.activityType}
                                                              </span>
                                                          </div>
@@ -110,18 +110,18 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                                      {!isLogged && (
                                                          <button 
                                                              onClick={() => onStartLog(plan)}
-                                                             className="w-full md:w-auto bg-indigo-600 text-white px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-2xl shadow-indigo-600/20 transition-all active:scale-95 flex items-center justify-center gap-3 group"
+                                                             className="w-full md:w-auto bg-[#454040] text-white px-6 py-3 rounded-[1.5rem] text-[9px] font-black uppercase tracking-[0.25em] hover:bg-[#353030] shadow-xl shadow-[#454040]/10 transition-all active:scale-95 flex items-center justify-center gap-4 group/btn border border-white/10"
                                                          >
-                                                             <div className="p-1 bg-white/10 rounded-lg group-hover:bg-white/20">
-                                                                <PlayCircle size={20} />
+                                                             <div className="p-1 bg-white/10 rounded-lg group-hover/btn:bg-white/20 transition-colors">
+                                                                <PlayCircle size={18} />
                                                              </div>
                                                              Log Session
                                                          </button>
                                                      )}
                                                      {isLogged && (
-                                                         <div className="flex items-center gap-3 text-green-600 font-black text-xs uppercase tracking-widest bg-green-50 px-6 py-3.5 rounded-2xl border border-green-100 shadow-lg shadow-green-900/5">
-                                                             <div className="p-1 bg-green-100 rounded-lg">
-                                                                <CheckCircle size={18} />
+                                                         <div className="flex items-center gap-4 text-emerald-600 font-black text-[9px] uppercase tracking-[0.25em] bg-emerald-50 px-6 py-3 rounded-[1.5rem] border border-emerald-100 shadow-lg shadow-emerald-900/5">
+                                                             <div className="p-1 bg-emerald-100 rounded-lg">
+                                                                <CheckCircle size={16} />
                                                              </div>
                                                              Completed
                                                          </div>

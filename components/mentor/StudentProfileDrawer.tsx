@@ -83,44 +83,43 @@ export const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ stud
     return (
         <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl z-[60] flex flex-col animate-slide-in-right">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-indigo-900 text-white">
-                <div className="flex items-center gap-4">
+            <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-[#454040] text-white">
+                <div className="flex items-center gap-5">
                     <div className="relative">
-                        <img src={student.avatarUrl} className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-lg object-cover" />
-                        <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-indigo-900 rounded-full"></span>
+                        <img src={student.avatarUrl} className="w-14 h-14 rounded-[1.2rem] border-2 border-white/20 shadow-lg object-cover" />
+                        <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-[#454040] rounded-full"></span>
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold">{student.fullName}</h2>
-                        <p className="text-indigo-200 text-sm">{student.email}</p>
+                        <h2 className="text-xl font-black uppercase tracking-tighter italic">{student.fullName}</h2>
+                        <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.2em] mt-0.5">{student.email}</p>
                     </div>
                 </div>
-                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/70 hover:text-white">
-                    <XCircle size={28} />
+                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
+                    <XCircle size={24} />
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-gray-50/30">
-                <div className="p-6 space-y-8">
+                <div className="p-6 space-y-6">
                     {/* Growth Analytics Section */}
-                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <section className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-100">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="font-bold text-gray-800 flex items-center gap-2"><TrendingUp size={18} className="text-indigo-600" /> Growth Radar</h3>
+                            <h3 className="font-black text-[#454040] flex items-center gap-3 uppercase tracking-tighter italic text-sm"><TrendingUp size={18} /> Growth Radar</h3>
                             <button 
                                 onClick={() => setShowBatchAvg(!showBatchAvg)}
-                                className={`text-[10px] uppercase font-black px-3 py-1 rounded-full border transition-all ${showBatchAvg ? 'bg-indigo-600 text-white border-indigo-600' : 'text-gray-400 border-gray-200'}`}
+                                className={`text-[8px] uppercase font-black px-3 py-1.5 rounded-full border transition-all tracking-widest ${showBatchAvg ? 'bg-[#454040] text-white border-[#454040] shadow-lg shadow-[#454040]/20' : 'text-gray-300 border-gray-100 hover:border-[#454040]/30 hover:text-[#454040]'}`}
                             >
-                                {showBatchAvg ? 'Showing Batch Avg' : 'Compare with Batch'}
+                                {showBatchAvg ? 'Showing Batch' : 'Batch Comparison'}
                             </button>
                         </div>
                         
                         <div className="h-64 w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                                    <PolarGrid />
-                                    <PolarAngleAxis dataKey="subject" tick={{fontSize: 10}} />
+                                    <PolarGrid stroke="#f1f5f9" />
+                                    <PolarAngleAxis dataKey="subject" tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
                                     <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} />
-                                    <Radar name="Student" dataKey="Student" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.6} />
-                                    {showBatchAvg && <Radar name="Batch Avg" dataKey="Batch" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.2} strokeDasharray="4 4" />}
+                                    <Radar name="Student" dataKey="Student" stroke="#454040" fill="#454040" fillOpacity={0.6} />
+                                    {showBatchAvg && <Radar name="Batch Avg" dataKey="Batch" stroke="#cbd5e1" fill="#cbd5e1" fillOpacity={0.15} strokeDasharray="4 4" />}
                                     <Tooltip />
                                     <Legend />
                                 </RadarChart>
@@ -129,18 +128,18 @@ export const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ stud
                     </section>
 
                     {/* Progress Timeline */}
-                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2">
-                             <TrendingUp size={18} className="text-indigo-600" /> Progress Timeline
+                    <section className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-100">
+                        <h3 className="font-black text-[#454040] mb-6 flex items-center gap-3 uppercase tracking-tighter italic text-sm">
+                             <TrendingUp size={18} strokeWidth={3} /> Progress Timeline
                         </h3>
                         <div className="h-48 w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={progressData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                                     <XAxis dataKey="date" hide />
                                     <YAxis domain={[0, 5]} hide />
                                     <Tooltip />
-                                    <Line type="monotone" dataKey="score" stroke="#4f46e5" strokeWidth={3} dot={{r: 4, fill: '#4f46e5'}} activeDot={{r: 8}} />
+                                    <Line type="monotone" dataKey="score" stroke="#454040" strokeWidth={4} dot={{r: 5, fill: '#454040', strokeWidth: 2, stroke: '#fff'}} activeDot={{r: 8}} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -148,28 +147,28 @@ export const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ stud
 
                     {/* Attendance & Stats Highlights */}
                     <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-white p-4 rounded-xl border border-gray-100 text-center shadow-sm">
-                            <p className="text-[10px] font-black uppercase text-gray-400 mb-1">Total Classes</p>
-                            <p className="text-xl font-black text-gray-900">{studentLogs.length}</p>
+                        <div className="bg-white p-4 rounded-[1.5rem] border border-gray-50 text-center shadow-sm">
+                            <p className="text-[8px] font-black uppercase tracking-widest text-gray-300 mb-1.5">Total Classes</p>
+                            <p className="text-lg font-black text-[#454040] italic tracking-tighter">{studentLogs.length}</p>
                         </div>
-                        <div className="bg-white p-4 rounded-xl border border-gray-100 text-center shadow-sm">
-                            <p className="text-[10px] font-black uppercase text-gray-400 mb-1">Avg Score</p>
-                            <p className="text-xl font-black text-indigo-600">
+                        <div className="bg-white p-4 rounded-[1.5rem] border border-gray-50 text-center shadow-sm">
+                            <p className="text-[8px] font-black uppercase tracking-widest text-gray-300 mb-1.5">Avg Rating</p>
+                            <p className="text-lg font-black text-[#454040] italic tracking-tighter">
                                 {progressData.length ? (progressData.reduce((a,b)=>a+b.score,0)/progressData.length).toFixed(1) : '0.0'}
                             </p>
                         </div>
-                        <div className="bg-white p-4 rounded-xl border border-gray-100 text-center shadow-sm">
-                            <p className="text-[10px] font-black uppercase text-gray-400 mb-1">Red Flags</p>
-                            <p className="text-xl font-black text-red-500">0</p>
+                        <div className="bg-white p-4 rounded-[1.5rem] border border-gray-50 text-center shadow-sm">
+                            <p className="text-[8px] font-black uppercase tracking-widest text-gray-300 mb-1.5">Red Flags</p>
+                            <p className="text-lg font-black text-red-500 italic tracking-tighter">0</p>
                         </div>
                     </div>
 
                     {/* Feedback Logs */}
-                    <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="font-black text-[10px] uppercase tracking-widest text-gray-500">Session History</h3>
-                            <button className="text-indigo-600 text-[10px] font-bold flex items-center gap-1 hover:underline">
-                                <Download size={12} /> Export Portfolio
+                    <section className="bg-white rounded-[1.5rem] shadow-sm border border-gray-50 overflow-hidden">
+                        <div className="p-6 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+                            <h3 className="font-black text-[10px] uppercase tracking-[0.25em] text-gray-400">Session History</h3>
+                            <button className="text-[#454040] text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:underline">
+                                <Download size={14} /> Export Portfolio
                             </button>
                         </div>
                         <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
@@ -184,39 +183,39 @@ export const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ stud
                                     : '0.0';
                                 
                                 return (
-                                    <div key={log.id} className="p-4 hover:bg-gray-50 transition-colors group">
-                                        <div className="flex justify-between items-start mb-2">
+                                    <div key={log.id} className="p-5 hover:bg-gray-50 transition-colors group">
+                                        <div className="flex justify-between items-start mb-3">
                                             <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="text-[10px] font-bold text-gray-400">{log.date}</span>
-                                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${score?.attendance === AttendanceStatus.PRESENT ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                                <div className="flex items-center gap-3 mb-1.5">
+                                                    <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest">{log.date}</span>
+                                                    <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest ${score?.attendance === AttendanceStatus.PRESENT ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                                                         {score?.attendance}
                                                     </span>
                                                 </div>
-                                                <h4 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                                                <h4 className="font-black text-[#454040] group-hover:italic transition-all uppercase tracking-tighter text-base">
                                                     {modules.find(m => m.id === log.moduleId)?.name || 'Unknown Module'}
                                                 </h4>
                                             </div>
                                             <div className="flex flex-col items-end">
-                                               <span className="text-lg font-black text-indigo-600">{avgScore}</span>
-                                               <span className="text-[8px] uppercase font-bold text-gray-400">Avg Rating</span>
+                                               <span className="text-2xl font-black text-[#454040] italic tracking-tighter">{avgScore}</span>
+                                               <span className="text-[8px] uppercase font-black text-gray-300 tracking-widest">Rating</span>
                                             </div>
                                         </div>
                                         
                                         {score?.feedback && (
-                                            <div className="relative bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/50 flex gap-3 mt-2">
-                                                <MessageCircle size={14} className="text-indigo-300 mt-1 flex-shrink-0" />
-                                                <p className="text-xs text-indigo-900 leading-relaxed italic">"{score.feedback}"</p>
+                                            <div className="relative bg-gray-50 p-4 rounded-[1.2rem] border border-gray-100 flex gap-4 mt-4">
+                                                <MessageCircle size={16} className="text-gray-300 mt-1 flex-shrink-0" />
+                                                <p className="text-[13px] text-[#454040] leading-relaxed italic font-medium">"{score.feedback}"</p>
                                             </div>
                                         )}
 
                                         {log.artifactUrl && (
-                                            <div className="mt-3 flex items-center justify-between">
-                                                <a href={log.artifactUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-white border border-indigo-100 px-3 py-1.5 rounded-lg shadow-sm active:scale-95 transition-all">
-                                                    <Download size={14} /> Session Artifact
+                                            <div className="mt-6 flex items-center justify-between">
+                                                <a href={log.artifactUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-[#454040] hover:bg-[#454040] hover:text-white bg-white border border-gray-100 px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-all">
+                                                    <Download size={16} /> Session Artifact
                                                 </a>
                                                 {score?.studentArtifactUrl && (
-                                                    <a href={score.studentArtifactUrl} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-green-600 hover:underline">
+                                                    <a href={score.studentArtifactUrl} target="_blank" rel="noreferrer" className="text-[9px] font-black uppercase tracking-widest text-emerald-600 hover:underline">
                                                         Student Submission
                                                     </a>
                                                 )}
@@ -229,21 +228,20 @@ export const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ stud
                     </section>
 
                     {/* Private Mentor Notes */}
-                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><MessageSquare size={18} className="text-indigo-600" /> Private Mentor Notes</h3>
+                    <section className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-100">
+                        <h3 className="font-black text-[#454040] mb-5 flex items-center gap-3 uppercase tracking-tighter italic text-sm"><MessageSquare size={18} /> Private Notes</h3>
                         <textarea 
                             value={privateNote}
                             onChange={(e) => setPrivateNote(e.target.value)}
-                            placeholder="Add private observations about this student's learning behavior, challenges, or focus areas. These are NOT visible to the student."
-                            className="w-full h-32 p-4 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                            placeholder="Add private observations..."
+                            className="w-full h-24 p-5 text-xs bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all"
                         />
                         <div className="flex justify-between items-center mt-3">
-                            <p className="text-[10px] text-gray-400 flex items-center gap-1"><AlertTriangle size={12} /> Auto-saved to local workspace.</p>
-                            <button className="text-[10px] font-black text-indigo-600 uppercase hover:underline">Save Note</button>
+                            <p className="text-[8px] font-black text-gray-300 uppercase tracking-widest flex items-center gap-2"><AlertTriangle size={12} className="opacity-50" /> Local storage</p>
+                            <button className="text-[9px] font-black text-[#454040] uppercase tracking-widest hover:underline">Save Note</button>
                         </div>
                     </section>
                 </div>
             </div>
-        </div>
     );
 };

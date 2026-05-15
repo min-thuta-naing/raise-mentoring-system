@@ -211,24 +211,24 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
 
     return (
         <div className="animate-fade-in max-w-6xl mx-auto pb-20">
-            <div className={`bg-white rounded-[2rem] shadow-2xl overflow-hidden border ${isAdmin ? 'border-indigo-200' : 'border-gray-100'}`}>
+            <div className={`bg-white rounded-[1.5rem] shadow-2xl overflow-hidden border ${isAdmin ? 'border-[#454040]/30' : 'border-gray-50'}`}>
                 {/* Header */}
-                <div className={`p-8 border-b ${isAdmin ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-900 border-indigo-100'}`}>
+                <div className={`p-10 border-b ${isAdmin ? 'bg-[#454040] text-white' : 'bg-gray-50 text-[#454040] border-gray-100'}`}>
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-4">
-                            <button onClick={() => navigate(-1)} className="p-2.5 bg-white/10 hover:bg-white/20 rounded-xl transition-colors text-white backdrop-blur-sm">
-                                <ArrowLeft size={20} />
+                        <div className="flex items-center gap-6">
+                            <button onClick={() => navigate(-1)} className="p-3.5 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white backdrop-blur-sm shadow-xl">
+                                <ArrowLeft size={24} />
                             </button>
                             <div>
-                                <h1 className="text-2xl font-black uppercase tracking-tighter italic">Edit Session Log</h1>
-                                <p className="text-xs font-bold opacity-80 uppercase tracking-widest mt-1">
+                                <h1 className="text-3xl font-black uppercase tracking-tighter italic">Edit Session Log</h1>
+                                <p className="text-[10px] font-black opacity-50 uppercase tracking-[0.2em] mt-2">
                                     Updating log from {log.date}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg ${
-                                log.status === LogStatus.REJECTED ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-amber-500 text-white shadow-amber-500/20'
+                        <div className="flex items-center gap-4">
+                            <div className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl ${
+                                log.status === LogStatus.REJECTED ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-orange-500 text-white shadow-orange-500/20'
                             }`}>
                                 Previous Status: {log.status}
                             </div>
@@ -241,24 +241,24 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                     {/* Section 1: Session Scope */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Teaching Module</label>
-                            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 font-bold text-gray-900">
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Teaching Module</label>
+                            <div className="p-5 bg-gray-50 rounded-[1.5rem] border border-gray-100 font-black text-[#454040] uppercase tracking-tighter italic text-lg">
                                 {modules.find(m => m.id === selectedModuleId)?.name || 'Unknown Module'}
                             </div>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Duration (Minutes)</label>
-                            <div className={`p-4 rounded-2xl border font-black text-2xl transition-all ${duration >= 50 ? 'bg-green-50 border-green-100 text-green-700' : 'bg-red-50 border-red-100 text-red-600'}`}>
-                                {duration} <span className="text-xs uppercase tracking-widest font-bold opacity-60">min</span>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Duration (Minutes)</label>
+                            <div className={`p-5 rounded-[1.5rem] border font-black text-3xl italic tracking-tighter transition-all ${duration >= 50 ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-600'}`}>
+                                {duration} <span className="text-xs uppercase tracking-widest font-black opacity-40">min</span>
                             </div>
                         </div>
                         <div>
-                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Proof of Work (Artifact)</label>
+                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Proof of Work (Artifact)</label>
                            <input 
                                 type="url" 
                                 value={artifactUrl}
                                 onChange={(e) => setArtifactUrl(e.target.value)}
-                                className="w-full p-4 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-indigo-900/5 focus:ring-4 ring-indigo-500/10 transition-all font-bold text-sm"
+                                className="w-full p-5 bg-white border border-gray-100 rounded-[1.5rem] shadow-sm focus:ring-4 ring-[#454040]/5 focus:border-[#454040] transition-all font-bold text-sm outline-none"
                                 placeholder="https://github.com/..."
                             />
                         </div>
@@ -266,11 +266,11 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
 
                     {/* Section 2: Student Assessments */}
                     <div className="space-y-6">
-                        <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
-                            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600">
-                                <Users size={18} />
+                        <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                            <div className="w-10 h-10 bg-[#454040] rounded-[1.2rem] flex items-center justify-center text-white shadow-lg shadow-[#454040]/10">
+                                <Users size={20} />
                             </div>
-                            <h2 className="text-sm font-black uppercase tracking-widest text-gray-900">Student Performance Assessments</h2>
+                            <h2 className="text-xl font-black uppercase tracking-tighter italic text-[#454040]">Student Performance Assessments</h2>
                         </div>
 
                         <div className="space-y-4">
@@ -280,22 +280,25 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                                 const qualifiers = score.sfiaQualifiers || [];
 
                                 return (
-                                    <div key={student.id} className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-indigo-900/5 p-6 hover:border-indigo-100 transition-all group">
-                                        <div className="flex flex-col lg:flex-row justify-between gap-6">
+                                    <div key={student.id} className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm p-8 hover:border-[#454040]/30 transition-all group/student">
+                                        <div className="flex flex-col lg:flex-row justify-between gap-10">
                                             {/* Left: Student Info */}
-                                            <div className="flex items-start gap-4 flex-1">
-                                                <img src={student.avatarUrl} className="w-14 h-14 rounded-2xl border-4 border-gray-50 shadow-lg" alt="" />
-                                                <div className="space-y-3 flex-1">
+                                            <div className="flex items-start gap-6 flex-1">
+                                                <div className="relative shrink-0">
+                                                    <img src={student.avatarUrl} className="w-20 h-20 rounded-full border-4 border-gray-50 shadow-md object-cover group-hover/student:scale-110 transition-transform duration-500" alt="" />
+                                                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full shadow-sm"></div>
+                                                </div>
+                                                <div className="space-y-4 flex-1">
                                                     <div>
-                                                        <h3 className="font-black text-gray-900 text-lg uppercase tracking-tight">{student.fullName}</h3>
-                                                        <div className="flex gap-2 mt-2">
+                                                        <h3 className="font-black text-[#454040] text-2xl uppercase tracking-tighter italic">{student.fullName}</h3>
+                                                        <div className="flex gap-2 mt-4">
                                                             {['Autonomy', 'Complexity', 'Knowledge'].map(q => (
                                                                 <button
                                                                     key={q}
                                                                     type="button"
                                                                     onClick={() => toggleSfiaQualifier(student.id, q)}
-                                                                    className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${
-                                                                        qualifiers.includes(q) ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/30' : 'bg-white text-gray-400 border-gray-100'
+                                                                    className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${
+                                                                        qualifiers.includes(q) ? 'bg-[#454040] text-white border-[#454040] shadow-lg shadow-[#454040]/10' : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-gray-100'
                                                                     }`}
                                                                 >
                                                                     {q}
@@ -304,14 +307,14 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                                                         </div>
                                                     </div>
 
-                                                    <div className="bg-gray-50/50 rounded-2xl p-4 border border-gray-100">
-                                                        <div className="flex justify-between items-center mb-4">
-                                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">SFIA Metrics</span>
+                                                    <div className="bg-gray-50/30 rounded-[1.5rem] p-6 border border-gray-50">
+                                                        <div className="flex justify-between items-center mb-6">
+                                                            <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.25em]">Rubric Evaluation</span>
                                                             <button 
                                                                 type="button" 
                                                                 onClick={() => handleDraftAssessmentWithAI(student.id)}
                                                                 disabled={isDraftingAI[student.id]}
-                                                                className="text-[9px] font-black bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl uppercase tracking-widest flex items-center gap-2 hover:bg-indigo-100 transition-all disabled:opacity-50"
+                                                                className="text-[9px] font-black bg-white text-[#454040] px-4 py-2 rounded-xl uppercase tracking-widest flex items-center gap-2 shadow-sm border border-gray-100 hover:bg-[#454040] hover:text-white transition-all disabled:opacity-50"
                                                             >
                                                                 {isDraftingAI[student.id] ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
                                                                 {isDraftingAI[student.id] ? 'Drafting...' : 'AI Suggestions'}
@@ -321,16 +324,16 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                                                             {activeCategories.map(cat => {
                                                                 const val = score.metrics[cat.name] || 0;
                                                                 return (
-                                                                    <div key={cat.id}>
-                                                                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest mb-1 shadow-sm">
+                                                                    <div key={cat.id} className="space-y-3">
+                                                                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
                                                                             <span className="text-gray-400">{cat.name}</span>
-                                                                            <span className="text-indigo-600">{val}/5</span>
+                                                                            <span className="text-[#454040] font-black">Level {val}</span>
                                                                         </div>
                                                                         <input 
                                                                             type="range" min="0" max="5" step="1" 
                                                                             value={val} 
                                                                             onChange={(e) => handleScoreChange(student.id, cat.name, parseInt(e.target.value))}
-                                                                            className="w-full h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-indigo-600 shadow-inner"
+                                                                            className="w-full h-2 bg-gray-100 rounded-full appearance-none cursor-pointer accent-[#454040] shadow-inner"
                                                                         />
                                                                     </div>
                                                                 );
@@ -341,29 +344,33 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                                             </div>
 
                                             {/* Right: Feedback & Attendance */}
-                                            <div className="lg:w-80 space-y-4">
-                                                <div className="flex bg-gray-100 rounded-2xl p-1.5 shadow-inner">
+                                            <div className="lg:w-96 space-y-6">
+                                                <div className="flex bg-gray-50 rounded-full p-1.5 border border-gray-100">
                                                     {[AttendanceStatus.PRESENT, AttendanceStatus.LATE, AttendanceStatus.ABSENT].map(status => (
                                                         <button
                                                             key={status} type="button"
                                                             onClick={() => handleAttendanceChange(student.id, status)}
-                                                            className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all ${
-                                                                score.attendance === status ? 'bg-white text-indigo-600 shadow-md ring-1 ring-gray-900/5' : 'text-gray-400 hover:text-gray-600'
+                                                            className={`flex-1 py-2 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${
+                                                                score.attendance === status 
+                                                                ? status === AttendanceStatus.PRESENT ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                                                                : status === AttendanceStatus.LATE ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                                                                : 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                                                                : 'text-gray-400 hover:text-gray-600'
                                                             }`}
                                                         >
                                                             {status}
                                                         </button>
                                                     ))}
                                                 </div>
-
-                                                <div className="relative group/feedback">
-                                                    <div className="absolute top-3 left-4 text-[9px] font-black uppercase text-indigo-600 bg-white px-2 py-0.5 rounded-full shadow-sm z-10 border border-indigo-50">
-                                                        Feedback
+ 
+                                                <div className="relative">
+                                                    <div className="absolute -top-3 left-6 text-[9px] font-black uppercase text-[#454040] bg-white px-3 py-1 rounded-full shadow-sm z-10 border border-gray-100 tracking-widest">
+                                                        Performance Note
                                                     </div>
                                                     <textarea 
                                                         value={score.feedback || ''}
                                                         onChange={(e) => handleFeedbackChange(student.id, e.target.value)}
-                                                        className="w-full h-32 p-6 pt-10 text-xs font-bold bg-white border border-gray-100 rounded-3xl shadow-xl shadow-indigo-900/5 focus:ring-4 ring-indigo-500/10 transition-all"
+                                                        className="w-full h-40 p-8 pt-10 text-xs font-bold bg-white border border-gray-100 rounded-[1.5rem] shadow-sm focus:ring-4 ring-[#454040]/5 focus:border-[#454040] transition-all outline-none leading-relaxed"
                                                         placeholder="Write detailed assessment..."
                                                     />
                                                 </div>
@@ -376,26 +383,26 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                     </div>
 
                     {/* Section 3: Summary & Signature */}
-                    <div className="space-y-8 bg-gray-50/50 p-8 rounded-[2rem] border border-gray-100">
+                    <div className="space-y-10 bg-gray-50/50 p-10 rounded-[1.5rem] border border-gray-100">
                         <div>
                              <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Overall Session Summary</label>
                              <textarea 
                                 value={summary}
                                 onChange={(e) => setSummary(e.target.value)}
-                                className="w-full h-24 p-6 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-indigo-900/5 font-bold text-xs"
+                                className="w-full h-32 p-8 bg-white border border-gray-100 rounded-[1.5rem] shadow-sm font-bold text-xs outline-none focus:ring-4 ring-[#454040]/5"
                                 placeholder="..."
                             />
                         </div>
-
-                        <div className="flex items-center gap-6 p-6 bg-white rounded-3xl shadow-xl shadow-indigo-900/5 border border-indigo-50">
+ 
+                        <div className="flex items-center gap-8 p-8 bg-white rounded-[1.5rem] shadow-sm border border-gray-50 group hover:border-[#454040]/30 transition-all">
                             <input 
                                 type="checkbox" checked={digitalSignature}
                                 onChange={(e) => setDigitalSignature(e.target.checked)}
-                                className="w-6 h-6 rounded-lg text-indigo-600 border-gray-200 focus:ring-4 ring-indigo-500/10 transition-all cursor-pointer"
+                                className="w-8 h-8 rounded-xl text-[#454040] border-gray-200 focus:ring-4 ring-[#454040]/10 transition-all cursor-pointer accent-[#454040]"
                             />
                             <div>
-                                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">Update Certification Signature</h4>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed mt-1">
+                                <h4 className="text-sm font-black text-[#454040] uppercase tracking-tighter italic">Update Certification Signature</h4>
+                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] leading-relaxed mt-2">
                                     I certify these updates are accurate and reflect real student performance.
                                 </p>
                             </div>
@@ -403,22 +410,22 @@ export const MentorLogEdit: React.FC<MentorLogEditProps> = ({ onSuccess }) => {
                     </div>
 
                     {/* Footer Actions */}
-                    <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-gray-100 gap-6">
-                        <div className="flex gap-4 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row justify-between items-center pt-10 border-t border-gray-100 gap-8">
+                        <div className="flex gap-6 w-full sm:w-auto">
                             <button 
                                 type="button" 
                                 onClick={() => submitForm(LogStatus.DRAFT)}
-                                className="flex-1 sm:flex-none px-8 py-4 bg-white text-gray-400 font-black uppercase text-[10px] tracking-widest rounded-2xl border border-gray-100 hover:bg-gray-50 transition-all"
+                                className="flex-1 sm:flex-none px-10 py-5 bg-white text-gray-400 font-black uppercase text-[10px] tracking-[0.2em] rounded-[1.5rem] border border-gray-100 hover:bg-gray-50 transition-all"
                             >
                                 Save Draft
                             </button>
                         </div>
-                        <div className="flex gap-4 w-full sm:w-auto">
+                        <div className="flex gap-6 w-full sm:w-auto">
                             <button 
                                 type="submit" disabled={isSubmitting}
-                                className="flex-1 sm:flex-none px-12 py-4 bg-indigo-600 text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-2xl shadow-2xl shadow-indigo-600/30 hover:bg-indigo-700 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                                className="flex-1 sm:flex-none px-14 py-5 bg-[#454040] text-white font-black uppercase text-[10px] tracking-[0.25em] rounded-[1.5rem] shadow-xl shadow-[#454040]/20 hover:bg-[#353030] transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50"
                             >
-                                {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                                {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                                 Update Log Entry
                             </button>
                         </div>

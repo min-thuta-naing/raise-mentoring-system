@@ -57,25 +57,25 @@ export const GroupChatDrawer: React.FC<GroupChatDrawerProps> = ({ group, onClose
             <div className="absolute inset-y-0 right-0 max-w-full flex">
                 <div className="relative w-screen max-w-md bg-white shadow-2xl flex flex-col animate-slide-in">
                     {/* Header */}
-                    <div className="p-6 bg-indigo-600 text-white flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
-                                <Hash size={24} />
+                    <div className="p-5 bg-[#454040] text-white flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="p-2 bg-white/10 rounded-[1.2rem] backdrop-blur-sm">
+                                <Hash size={18} />
                             </div>
                             <div>
-                                <h2 className="text-xl font-black uppercase tracking-tighter">{group.name}</h2>
-                                <p className="text-[10px] font-bold text-indigo-100 uppercase tracking-widest">Group Discussion</p>
+                                <h2 className="text-lg font-black tracking-tighter uppercase italic">{group.name}</h2>
+                                <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] mt-0.5">Group Chat</p>
                             </div>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                            <X size={24} />
+                        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
+                            <X size={20} />
                         </button>
                     </div>
 
                     {/* Messages List */}
                     <div 
                         ref={scrollRef}
-                        className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50"
+                        className="flex-1 overflow-y-auto p-5 space-y-5 bg-gray-50/30"
                     >
                         {groupMessages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
@@ -96,47 +96,47 @@ export const GroupChatDrawer: React.FC<GroupChatDrawerProps> = ({ group, onClose
 
                                 return (
                                     <div key={msg.id} className={`flex ${isSelf ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`flex max-w-[85%] gap-3 ${isSelf ? 'flex-row-reverse' : 'flex-row'}`}>
-                                            {/* Avatar with Role Badge - Bulletproof Positioning */}
-                                            <div className="relative w-12 h-12 shrink-0">
+                                        <div className={`flex max-w-[85%] gap-4 ${isSelf ? 'flex-row-reverse' : 'flex-row'}`}>
+                                            {/* Avatar with Role Badge */}
+                                            <div className="relative w-10 h-10 shrink-0">
                                                 <img 
                                                     src={msg.senderAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.senderName)}`} 
-                                                    className={`w-full h-full rounded-2xl object-cover shadow-sm border-2 ${
-                                                        isMentor ? 'border-amber-400' : 'border-indigo-400'
+                                                    className={`w-full h-full rounded-xl object-cover shadow-sm border-2 ${
+                                                        isMentor ? 'border-amber-400' : 'border-[#454040]/30'
                                                     }`} 
                                                     alt="" 
                                                 />
                                                 <div 
-                                                    style={{ position: 'absolute', bottom: '-6px', right: '-6px' }}
-                                                    className={`w-7 h-7 rounded-full border-[3px] border-white shadow-xl flex items-center justify-center z-20 ${
-                                                        isMentor ? 'bg-amber-500 text-white' : 'bg-indigo-500 text-white'
+                                                    style={{ position: 'absolute', bottom: '-4px', right: '-4px' }}
+                                                    className={`w-6 h-6 rounded-full border-[2px] border-white shadow-xl flex items-center justify-center z-20 ${
+                                                        isMentor ? 'bg-amber-500 text-white' : 'bg-[#454040] text-white'
                                                     }`}
                                                 >
-                                                    {isMentor ? <Shield size={14} strokeWidth={3} /> : <GraduationCap size={14} strokeWidth={3} />}
+                                                    {isMentor ? <Shield size={10} strokeWidth={3} /> : <GraduationCap size={10} strokeWidth={3} />}
                                                 </div>
                                             </div>
                                             
-                                            <div className={`space-y-1 ${isSelf ? 'items-end' : 'items-start'}`}>
+                                            <div className={`space-y-1.5 ${isSelf ? 'items-end' : 'items-start'}`}>
                                                 <div className={`flex items-center gap-2 ${isSelf ? 'flex-row-reverse' : 'flex-row'}`}>
                                                     <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
                                                         {msg.senderName}
                                                     </span>
-                                                    <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-[0.2em] border ${
+                                                    <span className={`text-[7px] font-black px-2 py-0.5 rounded-full uppercase tracking-[0.2em] border ${
                                                         isMentor 
                                                             ? 'bg-amber-50 border-amber-200 text-amber-600' 
-                                                            : 'bg-indigo-50 border-indigo-200 text-indigo-600'
+                                                            : 'bg-gray-50 border-gray-200 text-[#454040]'
                                                     }`}>
                                                         {isMentor ? 'Mentor' : 'Student'}
                                                     </span>
                                                 </div>
-                                                <div className={`p-4 rounded-2xl shadow-sm text-sm font-medium leading-relaxed ${
+                                                <div className={`p-3.5 rounded-[1.5rem] shadow-sm text-[13px] font-bold leading-relaxed ${
                                                     isSelf 
-                                                        ? 'bg-indigo-600 text-white rounded-tr-none' 
-                                                        : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
+                                                        ? 'bg-[#454040] text-white rounded-tr-none shadow-lg shadow-[#454040]/10' 
+                                                        : 'bg-white text-gray-800 border border-gray-50 rounded-tl-none'
                                                 }`}>
                                                     {msg.content}
                                                 </div>
-                                                <span className="text-[8px] font-bold text-gray-300 uppercase tracking-widest px-1">
+                                                <span className="text-[7px] font-black text-gray-300 uppercase tracking-widest px-2">
                                                     {formatTimestamp(msg.timestamp)}
                                                 </span>
                                             </div>
@@ -148,28 +148,28 @@ export const GroupChatDrawer: React.FC<GroupChatDrawerProps> = ({ group, onClose
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-6 bg-white border-t border-gray-100">
-                        <form onSubmit={handleSendMessage} className="relative flex items-center gap-3">
+                    <div className="p-5 bg-white border-t border-gray-100">
+                        <form onSubmit={handleSendMessage} className="relative flex items-center gap-4">
                             <input 
                                 type="text"
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Message your group..."
-                                className="flex-1 bg-gray-100 border-none rounded-2xl p-4 pr-14 text-sm font-bold placeholder:text-gray-400 focus:ring-2 ring-indigo-500/20 transition-all"
+                                className="flex-1 bg-gray-50 border-none rounded-[1.2rem] p-4 pr-14 text-xs font-bold placeholder:text-gray-300 focus:ring-4 ring-[#454040]/5 transition-all outline-none"
                             />
                             <button 
                                 type="submit"
                                 disabled={!newMessage.trim() || isSending}
                                 className={`absolute right-2 p-2.5 rounded-xl transition-all ${
                                     newMessage.trim() && !isSending
-                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 active:scale-95'
-                                        : 'bg-gray-200 text-gray-400'
+                                        ? 'bg-[#454040] text-white shadow-lg shadow-[#454040]/10 active:scale-95'
+                                        : 'bg-gray-100 text-gray-200'
                                 }`}
                             >
-                                <Send size={20} />
+                                <Send size={18} />
                             </button>
                         </form>
-                        <p className="text-center text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mt-4">
+                        <p className="text-center text-[8px] font-black text-gray-200 uppercase tracking-[0.2em] mt-3">
                             Real-time Messaging Active
                         </p>
                     </div>

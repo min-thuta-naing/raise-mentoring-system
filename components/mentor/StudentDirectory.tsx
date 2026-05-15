@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Users, Filter, Download, MessageCircle, Edit3, Search, ArrowUpDown, Layers, XCircle, CheckCircle, AlertOctagon } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Users, Filter, Download, MessageCircle, Edit3, Search, ArrowUpDown, Layers, XCircle, CheckCircle, AlertOctagon, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { User, Group, Module, MentoringLog, Role, AttendanceStatus } from '../../types';
@@ -178,28 +179,28 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
     return (
         <div className="space-y-6 animate-fade-in relative pb-20">
             {/* 1. Top Filter Bar */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-4">
+            <div className="bg-white p-5 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col gap-5">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                     {/* Toggle */}
-                    <div className="flex bg-gray-100 p-1 rounded-lg">
+                    <div className="flex bg-gray-50 p-1 rounded-[1.5rem] border border-gray-100">
                         <button 
                             onClick={() => { setFilterMode('ALL'); setSelectedGroupId(''); }}
-                            className={`px-6 py-2 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${filterMode === 'ALL' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`px-6 py-2 text-[11px] font-black uppercase tracking-widest rounded-[1.5rem] transition-all flex items-center gap-2 ${filterMode === 'ALL' ? 'bg-[#454040] shadow-lg shadow-[#454040]/20 text-white' : 'text-gray-300 hover:text-[#454040]'}`}
                         >
-                            <Users size={16} /> All Students
+                            <Users size={14} /> All Students
                         </button>
                         <button 
                             onClick={() => { setFilterMode('MY_GROUPS'); if(myGroups.length > 0) setSelectedGroupId(myGroups[0].id); }}
-                            className={`px-6 py-2 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${filterMode === 'MY_GROUPS' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`px-6 py-2 text-[11px] font-black uppercase tracking-widest rounded-[1.5rem] transition-all flex items-center gap-2 ${filterMode === 'MY_GROUPS' ? 'bg-[#454040] shadow-lg shadow-[#454040]/20 text-white' : 'text-gray-300 hover:text-[#454040]'}`}
                         >
-                            <Filter size={16} /> My Groups
+                            <Filter size={14} /> My Groups
                         </button>
                     </div>
 
                     {/* Group Action Tools (Only for My Groups) */}
                     {filterMode === 'MY_GROUPS' && (
                         <div className="flex gap-2">
-                             <button className="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors">
+                             <button className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-all border border-emerald-100">
                                  <Download size={14} /> Report
                              </button>
                              <button 
@@ -207,11 +208,11 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                                     if(selectedGroupId) setIsChatOpen(true);
                                     else toast.info("Please select a specific group first to start chatting.");
                                 }}
-                                className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-[#454040]/5 text-[#454040] rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-[#454040]/10 transition-all border border-[#454040]/10"
                              >
                                  <MessageCircle size={14} /> Group Chat
                              </button>
-                             <button className="flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold hover:bg-orange-100 transition-colors">
+                             <button className="flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-600 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-orange-100 transition-all border border-orange-100">
                                  <Edit3 size={14} /> Bulk Assess
                              </button>
                         </div>
@@ -223,11 +224,11 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                 {/* Filters Row */}
                 <div className="flex flex-col md:flex-row gap-4 items-center">
                     {/* Module/Group Dropdowns */}
-                    <div className="flex gap-2 w-full md:w-auto">
+                    <div className="flex gap-3 w-full md:w-auto">
                         <select 
                             value={selectedModuleId}
                             onChange={(e) => setSelectedModuleId(e.target.value)}
-                            className="rounded-lg border-gray-300 text-sm p-2 border focus:ring-2 focus:ring-indigo-500 w-1/2 md:w-40"
+                            className="rounded-[1.5rem] border-gray-100 text-sm p-3 border focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all w-1/2 md:w-48 bg-gray-50/50"
                         >
                             <option value="">All Modules</option>
                             {myModules.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -235,7 +236,7 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                         <select 
                             value={selectedGroupId}
                             onChange={(e) => setSelectedGroupId(e.target.value)}
-                            className="rounded-lg border-gray-300 text-sm p-2 border focus:ring-2 focus:ring-indigo-500 w-1/2 md:w-40"
+                            className="rounded-[1.5rem] border-gray-100 text-sm p-3 border focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all w-1/2 md:w-48 bg-gray-50/50"
                         >
                             <option value="">All Groups</option>
                             {myGroups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
@@ -244,24 +245,24 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
 
                     {/* Search */}
                     <div className="relative flex-1 w-full">
-                        <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+                        <Search className="absolute left-4 top-3 text-gray-300 w-3.5 h-3.5" />
                         <input 
                             type="text" 
-                            placeholder="Search by name or ID..." 
+                            placeholder="Search by name..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 rounded-lg border-gray-300 text-sm p-2 border focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-11 rounded-[1.5rem] border-gray-50 text-[11px] font-bold p-3 border focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all bg-gray-50/50 focus:bg-white"
                         />
                     </div>
 
                     {/* Sort & Compare */}
-                    <div className="flex gap-2 w-full md:w-auto">
+                    <div className="flex gap-3 w-full md:w-auto">
                         <div className="relative">
-                            <ArrowUpDown className="absolute left-2 top-2.5 text-gray-400 w-4 h-4" />
+                            <ArrowUpDown className="absolute left-3 top-3.5 text-gray-400 w-4 h-4" />
                             <select 
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value as any)}
-                                className="pl-8 rounded-lg border-gray-300 text-sm p-2 border focus:ring-2 focus:ring-indigo-500 appearance-none pr-8 cursor-pointer bg-white"
+                                className="pl-10 rounded-[1.5rem] border-gray-100 text-sm p-3 border focus:ring-4 focus:ring-[#454040]/5 focus:border-[#454040] outline-none transition-all appearance-none pr-10 cursor-pointer bg-gray-50/50"
                             >
                                 <option value="NAME">Name (A-Z)</option>
                                 <option value="SCORE_DESC">Score (High-Low)</option>
@@ -270,7 +271,7 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                         </div>
                         <button 
                             onClick={() => { setCompareMode(!compareMode); setSelectedForCompare([]); }}
-                            className={`px-3 py-2 text-sm font-bold rounded-lg border flex items-center gap-2 transition-colors whitespace-nowrap ${compareMode ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white border-gray-300 text-gray-600'}`}
+                            className={`px-5 py-3 text-sm font-bold rounded-[1.5rem] border flex items-center gap-2 transition-all whitespace-nowrap ${compareMode ? 'bg-[#454040] text-white border-[#454040] shadow-lg shadow-[#454040]/20' : 'bg-white border-gray-100 text-[#454040] hover:bg-gray-50'}`}
                         >
                             <Layers size={16} /> Compare
                         </button>
@@ -280,16 +281,21 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
 
             {/* Floating Comparison Bar */}
             {compareMode && selectedForCompare.length > 0 && (
-                <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl z-40 flex items-center gap-4 animate-bounce-in">
-                    <span className="text-sm font-bold">{selectedForCompare.length} Selected</span>
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#0a0a0f]/90 backdrop-blur-xl text-white px-8 py-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[90] flex items-center gap-6 animate-in slide-in-from-bottom-10 border border-white/10">
+                    <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span className="text-sm font-black uppercase tracking-widest">{selectedForCompare.length} Selected</span>
+                    </div>
                     <button 
                         onClick={() => setShowCompareModal(true)}
                         disabled={selectedForCompare.length < 2}
-                        className={`bg-indigo-500 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-indigo-400 transition-colors ${selectedForCompare.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`bg-white text-[#0a0a0f] px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-emerald-400 transition-all active:scale-95 ${selectedForCompare.length < 2 ? 'opacity-30 cursor-not-allowed' : ''}`}
                     >
                         Compare Now
                     </button>
-                    <button onClick={() => setSelectedForCompare([])} className="text-gray-400 hover:text-white"><XCircle size={20}/></button>
+                    <button onClick={() => setSelectedForCompare([])} className="text-white/40 hover:text-white transition-colors">
+                        <XCircle size={22}/>
+                    </button>
                 </div>
             )}
 
@@ -302,8 +308,8 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                     return (
                         <div 
                             key={student.id} 
-                            className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden flex flex-col
-                                ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200'}
+                            className={`bg-white rounded-[1.5rem] border shadow-sm hover:shadow-xl transition-all cursor-pointer group relative overflow-hidden flex flex-col
+                                ${isSelected ? 'border-[#454040] ring-4 ring-[#454040]/5' : 'border-gray-100'}
                                 ${stats?.isRedFlag ? 'border-l-4 border-l-red-500' : ''}
                             `}
                             onClick={() => {
@@ -312,45 +318,45 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
                             }}
                         >
                             {compareMode && (
-                                <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border flex items-center justify-center transition-colors z-10 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-300'}`}>
+                                <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all z-10 ${isSelected ? 'bg-[#454040] border-[#454040] scale-110' : 'bg-white/80 backdrop-blur-sm border-gray-200'}`}>
                                     {isSelected && <CheckCircle size={14} className="text-white" />}
                                 </div>
                             )}
 
                             {/* Card Header */}
-                            <div className="p-4 flex items-center gap-4">
+                            <div className="p-4 flex items-center gap-3">
                                 <div className="relative">
-                                    <img src={student.avatarUrl} alt={student.fullName} className="w-12 h-12 rounded-full bg-gray-100 object-cover" />
+                                    <img src={student.avatarUrl} alt={student.fullName} className="w-12 h-12 rounded-full bg-gray-50 object-cover ring-2 ring-gray-50 group-hover:ring-[#454040]/10 transition-all" />
                                     {stats?.isRedFlag && (
-                                        <div className="absolute -bottom-1 -right-1 bg-red-500 text-white p-0.5 rounded-full border-2 border-white" title="Red Flag: Low Performance">
-                                            <AlertOctagon size={12} />
+                                        <div className="absolute -bottom-0.5 -right-0.5 bg-red-500 text-white p-0.5 rounded-full border-2 border-white shadow-lg" title="Red Flag">
+                                            <AlertOctagon size={10} />
                                         </div>
                                     )}
                                 </div>
                                 <div className="flex-1 overflow-hidden">
-                                    <h4 className="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{student.fullName}</h4>
-                                    <p className="text-xs text-gray-500 truncate">{student.email}</p>
-                                    <div className="mt-1 flex gap-1 flex-wrap">
+                                    <h4 className="font-black text-xs text-[#454040] truncate uppercase tracking-tight">{student.fullName}</h4>
+                                    <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest truncate mt-0.5">{student.email}</p>
+                                    <div className="mt-1.5 flex gap-1 flex-wrap">
                                          {groups.filter(g => g.studentIds.includes(student.id)).map(g => (
-                                             <span key={g.id} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 rounded">{g.name}</span>
+                                             <span key={g.id} className="text-[8px] font-black uppercase tracking-tight bg-[#454040]/5 text-[#454040]/60 px-2 py-0.5 rounded-full border border-[#454040]/5">{g.name}</span>
                                          ))}
                                     </div>
                                 </div>
                             </div>
                             
                             {/* Card Stats */}
-                            <div className="mt-auto border-t border-gray-50 bg-gray-50/50 p-3 flex justify-between items-center text-center">
-                                 <div className="flex-1 border-r border-gray-200">
-                                     <div className={`font-bold text-lg ${stats?.avg && stats.avg < 2.5 ? 'text-red-600' : 'text-gray-800'}`}>
+                            <div className="mt-auto border-t border-gray-50 bg-gray-50/20 p-3 flex justify-between items-center text-center">
+                                 <div className="flex-1 border-r border-gray-50">
+                                     <div className={`font-black text-base ${stats?.avg && stats.avg < 2.5 ? 'text-red-600' : 'text-[#454040]'}`}>
                                          {stats?.avg ? stats.avg.toFixed(1) : '-'}
                                      </div>
-                                     <div className="text-[10px] text-gray-400 uppercase font-black">Avg Score</div>
+                                     <div className="text-[8px] text-gray-300 uppercase font-black tracking-widest mt-0.5">Avg Score</div>
                                  </div>
                                  <div className="flex-1">
-                                     <div className={`font-bold text-lg ${stats?.attendance && stats.attendance < 80 ? 'text-orange-500' : 'text-gray-800'}`}>
+                                     <div className={`font-black text-base ${stats?.attendance && stats.attendance < 80 ? 'text-orange-500' : 'text-[#454040]'}`}>
                                          {stats?.attendance ? Math.round(stats.attendance) : 0}%
                                      </div>
-                                     <div className="text-[10px] text-gray-400 uppercase font-black">Attendance</div>
+                                     <div className="text-[8px] text-gray-300 uppercase font-black tracking-widest mt-0.5">Attendance</div>
                                  </div>
                             </div>
                         </div>
@@ -367,35 +373,46 @@ export const StudentDirectory: React.FC<StudentDirectoryProps> = ({ users, group
             )}
 
             {/* Comparison Modal */}
-            {showCompareModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 relative">
-                        <button onClick={() => setShowCompareModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><XCircle size={24} /></button>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2"><Layers size={24} /> Student Comparison</h2>
+            {showCompareModal && createPortal(
+                <div className="fixed inset-0 bg-[#0a0a0f]/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[1.5rem] shadow-2xl max-w-5xl w-full p-10 relative animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh] overflow-hidden">
+                        <button onClick={() => setShowCompareModal(false)} className="absolute top-6 right-6 text-gray-400 hover:text-[#454040] p-2 hover:bg-gray-100 rounded-full transition-all">
+                            <X size={24} />
+                        </button>
                         
-                        <div className="h-96 w-full">
+                        <div className="mb-8">
+                            <h2 className="text-xl font-black text-[#454040] flex items-center gap-4 italic tracking-tight uppercase">
+                                <Layers size={24} className="text-[#454040]" /> 
+                                Student Comparison
+                            </h2>
+                            <p className="text-[10px] text-gray-300 font-black uppercase tracking-[0.2em] mt-2 ml-10">Competency overlap overview</p>
+                        </div>
+                        
+                        <div className="flex-1 min-h-[400px] w-full bg-gray-50/50 rounded-[1.5rem] p-6 border border-gray-100">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={comparisonData}>
-                                    <PolarGrid />
-                                    <PolarAngleAxis dataKey="subject" />
-                                    <PolarRadiusAxis angle={30} domain={[0, 5]} />
-                                    <Tooltip />
-                                    <Legend />
+                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={comparisonData}>
+                                    <PolarGrid stroke="#e2e8f0" />
+                                    <PolarAngleAxis dataKey="subject" tick={{fontSize: 11, fontWeight: 'bold', fill: '#454040'}} />
+                                    <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} stroke="#e2e8f0" />
+                                    <Tooltip contentStyle={{borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '16px 20px'}} />
+                                    <Legend wrapperStyle={{paddingTop: '20px', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.1em'}} />
                                     {users.filter(u => selectedForCompare.includes(u.id)).map((s, idx) => (
                                         <Radar 
                                             key={s.id}
                                             name={s.fullName} 
                                             dataKey={s.fullName} 
-                                            stroke={idx === 0 ? '#4f46e5' : idx === 1 ? '#10b981' : '#f59e0b'} 
-                                            fill={idx === 0 ? '#4f46e5' : idx === 1 ? '#10b981' : '#f59e0b'} 
-                                            fillOpacity={0.3} 
+                                            stroke={idx === 0 ? '#454040' : idx === 1 ? '#10b981' : '#f59e0b'} 
+                                            fill={idx === 0 ? '#454040' : idx === 1 ? '#10b981' : '#f59e0b'} 
+                                            strokeWidth={3}
+                                            fillOpacity={0.25} 
                                         />
                                     ))}
                                 </RadarChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Group Chat Drawer */}

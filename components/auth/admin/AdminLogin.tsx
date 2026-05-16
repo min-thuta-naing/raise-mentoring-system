@@ -20,6 +20,11 @@ export const AdminLogin: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // Restriction: Only specific email can login as admin
+      if (email.toLowerCase() !== 'raise.mfu@gmail.com') {
+        setError('Unauthorized administrator access.');
+        return;
+      }
       await login(email, password, Role.ADMIN);
       navigate('/admin');
     } catch (err: any) {

@@ -30,6 +30,12 @@ export const AdminSignup: React.FC = () => {
     e.preventDefault();
     if (!isPasswordValid(password)) return;
 
+    // Restriction: Only specific email can register as admin
+    if (email.toLowerCase() !== 'raise.mfu@gmail.com') {
+      setError('Unauthorized email address. Only authorized personnel can initialize administrative access.');
+      return;
+    }
+
     setError(null);
     setIsSubmitting(true);
 

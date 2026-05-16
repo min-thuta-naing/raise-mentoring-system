@@ -84,6 +84,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
   const pendingRoleRef = useRef<Role | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const isRegisteringRef = useRef(false);
+
+  const setIsRegisteringWithRef = (val: boolean) => {
+    setIsRegistering(val);
+    isRegisteringRef.current = val;
+  };
 
   // Notification State (Synced via Firestore)
   const lastReadTimestamps = useMemo(() => {
@@ -391,25 +397,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            const role = data.role as Role;
-            
-            // Admins don't have a 'status' field in DB, so we default it to APPROVED
-            // For others, we assume APPROVED if field is missing, or normalize to uppercase
-            let status = UserStatus.APPROVED;
-            if (role !== Role.ADMIN && data.status) {
-              status = (data.status.toString().toUpperCase() as UserStatus);
+            const foundRole = data.role as Role;
+            let userStatus = UserStatus.APPROVED;
+            if (foundRole !== Role.ADMIN && data.status) {
+              userStatus = (data.status.toString().toUpperCase() as UserStatus);
             }
 
             return {
               id: uid,
               email: data.email,
               fullName: data.fullName,
-              role: role,
+              role: foundRole,
               avatarUrl: data.avatarUrl,
               coverPhotoUrl: data.coverPhotoUrl,
               mentorType: data.mentorType,
               batchId: data.batchId,
-              status: status
+              status: userStatus
             } as User;
         }
         return null;
@@ -435,7 +438,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     console.log('[AUTH] Initialization: Mounting Auth Listener.');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (isRegistering) {
+      if (isRegisteringRef.current) {
         console.log('[AUTH_LOCK] Ignoring auth change during registration lock.');
         return;
       }
@@ -462,7 +465,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         // Approval Guard: If user is pending, sign out immediately
-        if (profile.status === UserStatus.PENDING) {
+        // Note: Admins bypass this as they are self-authorizing or authorized by system
+        if (profile.status === UserStatus.PENDING && profile.role !== Role.ADMIN) {
           console.log('[AUTH] User is pending approval. Signing out.');
           await signOut(auth);
           setCurrentUser(null);
@@ -484,6 +488,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string, role: Role) => {
     try {
+      // Security Guard: Restrict Admin Login by Email
+      if (role === Role.ADMIN && email.toLowerCase() !== 'raise.mfu@gmail.com') {
+        throw new Error('Unauthorized administrator access.');
+      }
+      setIsLoading(true);
       console.log(`[AUTH_LOGIN] Phase 1: Sign-in intent for role: ${role}`);
       setPendingRole(role);
       pendingRoleRef.current = role; 
@@ -512,7 +521,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const signup = async (userData: Omit<User, 'id'>, password: string) => {
     try {
-      setIsRegistering(true);
+      // Security Guard: Restrict Admin Registration by Email
+      if (userData.role === Role.ADMIN && userData.email.toLowerCase() !== 'raise.mfu@gmail.com') {
+        throw new Error('Unauthorized administrator email address.');
+      }
+
+      setIsLoading(true);
+      setIsRegisteringWithRef(true);
       console.log(`[AUTH_SIGNUP] Phase 1: Creating Firebase Auth account for ${userData.email}...`);
       
       const userCredential = await createUserWithEmailAndPassword(auth, userData.email, password);
@@ -561,7 +576,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error('[AUTH_SIGNUP] Registration Chain Failed:', error);
       throw error;
     } finally {
-      setIsRegistering(false);
+      setIsRegisteringWithRef(false);
     }
   };
 
